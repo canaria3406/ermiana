@@ -17,8 +17,8 @@ export async function handlePixivRegex( result, message ){
         pixivEmbed.setColor(2210780);
         pixivEmbed.setTitle(resp.data.body.title);
         pixivEmbed.setURL(result[0]);
+        pixivEmbed.setDescription(resp.data.body.extraData.meta.twitter.description);
         pixivEmbed.addFields(
-            { name: '簡介', value: resp.data.body.extraData.meta.twitter.description},
             { name: '作者', value: resp.data.body.userName, inline : true},
             { name: '收藏', value: resp.data.body.bookmarkCount.toString(), inline : true},
             { name: '標籤', value: tagString}
