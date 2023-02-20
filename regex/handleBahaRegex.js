@@ -39,5 +39,6 @@ export async function handleBahaRegex( result, message ){
     }
     catch{
         console.log("baha error");
+        await reloadBahaTK();
     }
 };
