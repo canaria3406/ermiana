@@ -5,6 +5,7 @@ import { runBahaCron } from './common/runBahaCron.js';
 import { handleEhRegex } from "./regex/handleEhRegex.js";
 import { handlePttRegex } from "./regex/handlePttRegex.js";
 import { handleBahaRegex } from "./regex/handleBahaRegex.js";
+import { handlePixivRegex } from "./regex/handlePixivRegex.js";
 
 const client = new Client({
     intents:[
@@ -25,7 +26,9 @@ const regexs = [
     { regex: /https?:\/\/www\.ptt\.cc\/bbs\/((?:G|g)ossiping|AC_In)\/M\.([0-9]+)\.A\.([0-9A-Z]+)\.html/,
         handler: handlePttRegex },
     { regex: /https?:\/\/([a-z]+)\.gamer\.com\.tw([^>])*bsn=60076([^>])*/,
-        handler: handleBahaRegex }
+        handler: handleBahaRegex },
+    { regex: /https:\/\/www\.pixiv\.net\/artworks\/([0-9]+)/,
+        handler: handlePixivRegex }
 ];
   
 client.on("messageCreate", async (message) => {

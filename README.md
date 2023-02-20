@@ -34,7 +34,4 @@ BHPD="你的巴哈密碼"
 - [x] 巴哈姆特電玩資訊站
   - [x] 場外休憩區
 - [x] e-hentai、exhentai
-- [ ] twitter
-  
-  
-  
+- [x] pixiv
