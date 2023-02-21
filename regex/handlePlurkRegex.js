@@ -15,6 +15,7 @@ export async function handlePlurkRegex( result, message ){
 
         const rePlurk = $('script').text().match(/"replurkers_count": (\d+),/)[1] || "0";
         const favPlurk = $('script').text().match(/"favorite_count": (\d+),/)[1] || "0";
+        const respPlurk = $('script').text().match(/"response_count": (\d+),/)[1] || "0";
 
         const plurkEmbed = new EmbedBuilder();
         plurkEmbed.setColor(16556594);
@@ -24,8 +25,9 @@ export async function handlePlurkRegex( result, message ){
             plurkEmbed.setDescription($('.text_holder').text());
         } catch{}
         plurkEmbed.addFields(
+            { name: '喜歡', value: favPlurk, inline : true},
             { name: '轉噗', value: rePlurk, inline : true},
-            { name: '喜歡', value: favPlurk, inline : true}
+            { name: '回應', value: respPlurk, inline : true}
         );
         try {
             plurkEmbed.setImage($('script').text().match(/https:\/\/images\.plurk\.com\/[^"]+\.(jpg|png)/)[0]);
