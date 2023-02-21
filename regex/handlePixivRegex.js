@@ -24,9 +24,9 @@ export async function handlePixivRegex( result, message ){
             { name: '標籤', value: tagString}
         );
         try {
-            pixivEmbed.setImage("https://pixiv.cat/" + pid + ".png");
+            pixivEmbed.setImage("https://pixiv.cat/" + pid + ".jpg");
         } catch{}
-        pixivEmbed.setFooter({ text: 'canaria3406', iconURL: 'https://cdn.discordapp.com/avatars/242927802557399040/1f3b1744568e4333a8889eafaa1f982a.png'});
+        pixivEmbed.setFooter({ text: "canaria3406", iconURL: "https://cdn.discordapp.com/avatars/242927802557399040/1f3b1744568e4333a8889eafaa1f982a.png"});
 
         try{
             message.suppressEmbeds(true);
