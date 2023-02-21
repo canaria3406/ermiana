@@ -13,26 +13,26 @@ export async function handlePlurkRegex( result, message ){
     
         const $ = cheerio.load(pageHTML.data);
 
-        const rePlurk = $('script').text().match(/"replurkers_count": (\d+),/)[1] || "0";
-        const favPlurk = $('script').text().match(/"favorite_count": (\d+),/)[1] || "0";
-        const respPlurk = $('script').text().match(/"response_count": (\d+),/)[1] || "0";
+        const rePlurk = $("script").text().match(/"replurkers_count": (\d+),/)[1] || "0";
+        const favPlurk = $("script").text().match(/"favorite_count": (\d+),/)[1] || "0";
+        const respPlurk = $("script").text().match(/"response_count": (\d+),/)[1] || "0";
 
         const plurkEmbed = new EmbedBuilder();
         plurkEmbed.setColor(16556594);
-        plurkEmbed.setTitle($('.name').text());
+        plurkEmbed.setTitle($(".name").text());
         plurkEmbed.setURL(result[0]);
         try {
-            plurkEmbed.setDescription($('.text_holder').text());
+            plurkEmbed.setDescription($(".text_holder").text());
         } catch{}
         plurkEmbed.addFields(
-            { name: '喜歡', value: favPlurk, inline : true},
-            { name: '轉噗', value: rePlurk, inline : true},
-            { name: '回應', value: respPlurk, inline : true}
+            { name: "喜歡", value: favPlurk, inline : true},
+            { name: "轉噗", value: rePlurk, inline : true},
+            { name: "回應", value: respPlurk, inline : true}
         );
         try {
-            plurkEmbed.setImage($('script').text().match(/https:\/\/images\.plurk\.com\/[^"]+\.(jpg|png)/)[0]);
+            plurkEmbed.setImage($("script").text().match(/https:\/\/images\.plurk\.com\/[^"]+\.(jpg|png)/)[0]);
         } catch{}
-        plurkEmbed.setFooter({ text: 'canaria3406', iconURL: 'https://cdn.discordapp.com/avatars/242927802557399040/1f3b1744568e4333a8889eafaa1f982a.png'});
+        plurkEmbed.setFooter({ text: "canaria3406", iconURL: "https://cdn.discordapp.com/avatars/242927802557399040/1f3b1744568e4333a8889eafaa1f982a.png"});
         
         try{
             message.suppressEmbeds(true);

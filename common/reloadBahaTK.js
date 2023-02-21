@@ -1,5 +1,5 @@
 import axios from "axios";
-import Conf from 'conf';
+import Conf from "conf";
 import { configManager } from "./configManager.js";
 
 export async function reloadBahaTK() {
@@ -19,7 +19,7 @@ export async function reloadBahaTK() {
         data: data
     })
     .then((response) => {
-        const ermianaBH = new Conf({projectName: 'ermianaJS'});
+        const ermianaBH = new Conf({projectName: "ermianaJS"});
         const cookies = response.headers["set-cookie"];
         cookies.forEach((element) => {
             if (element.startsWith("BAHAENUR=")) {

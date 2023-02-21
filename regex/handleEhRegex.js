@@ -59,16 +59,16 @@ export async function handleEhRegex( result, message ){
         const ehEmbed = new EmbedBuilder();
         ehEmbed.setColor(16185594);
         ehEmbed.addFields(
-                { name: '標題', value: resp.data.gmetadata[0].title},
-                { name: '類別', value: resp.data.gmetadata[0].category, inline : true},
-                { name: '評分', value: resp.data.gmetadata[0].rating, inline : true},
-                { name: '上傳者', value: resp.data.gmetadata[0].uploader, inline : true},
-                { name: '標籤', value: translateTags.join("\n")}
+                { name: "標題", value: resp.data.gmetadata[0].title},
+                { name: "類別", value: resp.data.gmetadata[0].category, inline : true},
+                { name: "評分", value: resp.data.gmetadata[0].rating, inline : true},
+                { name: "上傳者", value: resp.data.gmetadata[0].uploader, inline : true},
+                { name: "標籤", value: translateTags.join("\n")}
         );
         try {
             ehEmbed.setImage(resp.data.gmetadata[0].thumb);
         } catch{}
-        ehEmbed.setFooter({ text: 'canaria3406', iconURL: 'https://cdn.discordapp.com/avatars/242927802557399040/1f3b1744568e4333a8889eafaa1f982a.png'});
+        ehEmbed.setFooter({ text: "canaria3406", iconURL: "https://cdn.discordapp.com/avatars/242927802557399040/1f3b1744568e4333a8889eafaa1f982a.png"});
 
         messageSender(message.channel, ehEmbed);
     }

@@ -16,12 +16,12 @@ export async function handlePttRegex( result, message ){
 
         const pttEmbed = new EmbedBuilder();
         pttEmbed.setColor(2894892);
-        pttEmbed.setTitle($('meta[property=og:title]').attr('content'));
+        pttEmbed.setTitle($("meta[property=og:title]").attr("content"));
         pttEmbed.setURL(result[0]);
         try {
-            pttEmbed.setDescription($('meta[property=og:description]').attr('content'));
+            pttEmbed.setDescription($("meta[property=og:description]").attr("content"));
         } catch{}
-        pttEmbed.setFooter({ text: 'canaria3406', iconURL: 'https://cdn.discordapp.com/avatars/242927802557399040/1f3b1744568e4333a8889eafaa1f982a.png'});
+        pttEmbed.setFooter({ text: "canaria3406", iconURL: "https://cdn.discordapp.com/avatars/242927802557399040/1f3b1744568e4333a8889eafaa1f982a.png"});
 
         messageSender(message.channel, pttEmbed);
     }

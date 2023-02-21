@@ -1,19 +1,19 @@
 import { EmbedBuilder } from "discord.js";
 import axios from "axios";
 import cheerio from "cheerio";
-import Conf from 'conf';
+import Conf from "conf";
 import { messageSender } from "../common/messageSender.js";
 import { reloadBahaTK } from "../common/reloadBahaTK.js";
 
 export async function handleBahaRegex( result, message ){
     await message.channel.sendTyping();
     try {
-        const ermianaBH = new Conf({projectName: 'ermianaJS'});
-        if(!ermianaBH.get('BAHAENUR') || !ermianaBH.get('BAHARUNE')){
+        const ermianaBH = new Conf({projectName: "ermianaJS"});
+        if(!ermianaBH.get("BAHAENUR") || !ermianaBH.get("BAHARUNE")){
             await reloadBahaTK();
         }
-        const BAHAENUR = ermianaBH.get('BAHAENUR');
-        const BAHARUNE = ermianaBH.get('BAHARUNE');
+        const BAHAENUR = ermianaBH.get("BAHAENUR");
+        const BAHARUNE = ermianaBH.get("BAHARUNE");
 
         const pageHTML = await axios.request({
             url: result[0],
@@ -25,15 +25,15 @@ export async function handleBahaRegex( result, message ){
 
         const bahaEmbed = new EmbedBuilder();
         bahaEmbed.setColor(1559500);
-        bahaEmbed.setTitle($('meta[property=og:title]').attr('content'));
+        bahaEmbed.setTitle($("meta[property=og:title]").attr("content"));
         bahaEmbed.setURL(result[0]);
         try {
-            bahaEmbed.setDescription($('meta[property=og:description]').attr('content'));
+            bahaEmbed.setDescription($("meta[property=og:description]").attr("content"));
         } catch{}
         try {
-            bahaEmbed.setImage($('meta[property=og:image]').attr('content'));
+            bahaEmbed.setImage($("meta[property=og:image]").attr("content"));
         } catch{}
-        bahaEmbed.setFooter({ text: 'canaria3406', iconURL: 'https://cdn.discordapp.com/avatars/242927802557399040/1f3b1744568e4333a8889eafaa1f982a.png'});
+        bahaEmbed.setFooter({ text: "canaria3406", iconURL: "https://cdn.discordapp.com/avatars/242927802557399040/1f3b1744568e4333a8889eafaa1f982a.png"});
 
         try{
             message.suppressEmbeds(true);
