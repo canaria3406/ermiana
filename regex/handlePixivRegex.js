@@ -11,7 +11,7 @@ export async function handlePixivRegex( result, message ){
             url: "https://www.pixiv.net/ajax/illust/" + pid,
         });
 
-        const tagString = resp.data.body.tags.tags.map(element => element.tag).join(", ");
+        const tagString = resp.data.body.tags.tags.map(element => `[${element.tag}](https://www.pixiv.net/tags/${element.tag}/artworks)`).join(", ");
         
         const pixivEmbed = new EmbedBuilder();
         pixivEmbed.setColor(2210780);
@@ -19,7 +19,7 @@ export async function handlePixivRegex( result, message ){
         pixivEmbed.setURL(result[0]);
         pixivEmbed.setDescription(resp.data.body.extraData.meta.twitter.description);
         pixivEmbed.addFields(
-            { name: "作者", value: resp.data.body.userName, inline : true},
+            { name: "作者", value: `[${resp.data.body.userName}](https://www.pixiv.net/users/${resp.data.body.userId})`, inline : true},
             { name: "收藏", value: resp.data.body.bookmarkCount.toString(), inline : true},
             { name: "標籤", value: tagString}
         );
