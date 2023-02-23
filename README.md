@@ -3,7 +3,7 @@
     ermianaJS
 </h1>
 
-ermiana is a Discord BOT that enhances the user experience by hiding useless webpage previews from multiple websites and generating more detailed webpage and image previews. ermianaJS is not limited by the R-18 content hiding restrictions and supports ptt.cc, 巴哈姆特電玩資訊站, e-hentai, Plurk, and Pixiv.
+ermiana is a Discord bot that enhances the user experience by hiding unuseful webpage previews from multiple websites and generating more detailed image and webpage previews. ermianaJS is not limited by the R-18 content hiding restrictions and supports ptt.cc, 巴哈姆特電玩資訊站, e-hentai, Plurk, and Pixiv.
 
 ![demo](pic/demo1.png)
 
