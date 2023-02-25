@@ -26,7 +26,7 @@ export async function handlePixivRegex( result, message ){
             { name: "標籤", value: tagString}
         );
         try {
-            pixivEmbed.setImage(resp.data.body.urls.regular.replace("i.pximg.net", "i.pixiv.cat"));
+            pixivEmbed.setImage("https://pixiv.cat/" + pid + ".jpg");
         } catch{}
         pixivEmbed.setFooter({ text: "canaria3406", iconURL: "https://cdn.discordapp.com/avatars/242927802557399040/1f3b1744568e4333a8889eafaa1f982a.png"});
 
