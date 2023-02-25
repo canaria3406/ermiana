@@ -3,9 +3,9 @@ import axios from "axios";
 import { messageSender } from "../common/messageSender.js";
 
 export async function handlePixivRegex( result, message ){
+    await message.channel.sendTyping();
     const pid = result[1];
     try{
-        await message.channel.sendTyping();
         const resp = await axios.request({
             method: "get",
             url: "https://www.pixiv.net/ajax/illust/" + pid,

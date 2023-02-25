@@ -3,10 +3,10 @@ import axios from "axios";
 import { messageSender } from "../common/messageSender.js";
 
 export async function handleEhRegex( result, message ){
+    await message.channel.sendTyping();
     const galleryId = parseInt(result[1]);
     const galleryToken = result[2];
     try{
-        await message.channel.sendTyping();
         const resp = await axios.request({
         method: "post",
         url: "https://api.e-hentai.org/api.php",
