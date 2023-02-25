@@ -28,7 +28,12 @@ export async function handlePixivRegex( result, message ){
             pixivEmbed.addFields({ name: "標籤", value: tagString});
         } catch{}
         try {
-            pixivEmbed.setImage("https://pixiv.cat/" + pid + ".jpg");
+            if(resp.data.body.pageCount == 1){
+                pixivEmbed.setImage("https://pixiv.cat/" + pid + ".jpg");
+            }
+            else{
+                pixivEmbed.setImage("https://pixiv.cat/" + pid + "-1.jpg");
+            }
         } catch{}
         pixivEmbed.setFooter({ text: "canaria3406", iconURL: "https://cdn.discordapp.com/avatars/242927802557399040/1f3b1744568e4333a8889eafaa1f982a.png"});
 
