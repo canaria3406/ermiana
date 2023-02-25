@@ -4,8 +4,8 @@ import cheerio from "cheerio";
 import { messageSender } from "../common/messageSender.js";
 
 export async function handlePlurkRegex( result, message ){
-    await message.channel.sendTyping();
     try{
+        await message.channel.sendTyping();
         const pageHTML = await axios.request({
             url: result[0],
             method: "get"
