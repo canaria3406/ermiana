@@ -64,9 +64,11 @@ export async function handleEhRegex( result, message ){
                 { name: "標題", value: resp.data.gmetadata[0].title},
                 { name: "類別", value: resp.data.gmetadata[0].category, inline : true},
                 { name: "評分", value: resp.data.gmetadata[0].rating, inline : true},
-                { name: "上傳者", value: resp.data.gmetadata[0].uploader, inline : true},
-                { name: "標籤", value: translateTags.join("\n")}
+                { name: "上傳者", value: resp.data.gmetadata[0].uploader, inline : true}
         );
+        try{
+            ehEmbed.addFields({ name: "標籤", value: translateTags.join("\n")});
+        } catch{}
         try {
             ehEmbed.setImage(resp.data.gmetadata[0].thumb);
         } catch{}

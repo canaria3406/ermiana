@@ -22,9 +22,11 @@ export async function handlePixivRegex( result, message ){
         pixivEmbed.setDescription(resp.data.body.extraData.meta.twitter.description);
         pixivEmbed.addFields(
             { name: "作者", value: `[${resp.data.body.userName}](https://www.pixiv.net/users/${resp.data.body.userId})`, inline : true},
-            { name: "收藏", value: resp.data.body.bookmarkCount.toString(), inline : true},
-            { name: "標籤", value: tagString}
+            { name: "收藏", value: resp.data.body.bookmarkCount.toString(), inline : true}            
         );
+        try {
+            pixivEmbed.addFields({ name: "標籤", value: tagString});
+        } catch{}
         try {
             pixivEmbed.setImage("https://pixiv.cat/" + pid + ".jpg");
         } catch{}
