@@ -3,7 +3,9 @@ import axios from "axios";
 import { messageSender } from "../common/messageSender.js";
 
 export async function handlePixivRegex( result, message ){
-    await message.channel.sendTyping();
+    try{
+        await message.channel.sendTyping();
+    } catch{}
     const pid = result[1];
     try{
         const resp = await axios.request({

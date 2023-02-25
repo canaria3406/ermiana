@@ -3,7 +3,9 @@ import axios from "axios";
 import { messageSender } from "../common/messageSender.js";
 
 export async function handleEhRegex( result, message ){
-    await message.channel.sendTyping();
+    try{
+        await message.channel.sendTyping();
+    } catch{}
     const galleryId = parseInt(result[1]);
     const galleryToken = result[2];
     try{

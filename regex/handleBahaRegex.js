@@ -6,7 +6,9 @@ import { messageSender } from "../common/messageSender.js";
 import { reloadBahaTK } from "../common/reloadBahaTK.js";
 
 export async function handleBahaRegex( result, message ){
-    await message.channel.sendTyping();
+    try{
+        await message.channel.sendTyping();
+    } catch{}
     try {
         const ermianaBH = new Conf({projectName: "ermianaJS"});
         if(!ermianaBH.get("BAHAENUR") || !ermianaBH.get("BAHARUNE")){
