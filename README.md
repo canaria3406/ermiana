@@ -3,9 +3,18 @@
     ermianaJS
 </h1>
 
+<p align="center">
+    <img src="https://img.shields.io/github/license/canaria3406/ermianaJS?style=flat-square">
+    <a href="https://discord.com/api/oauth2/authorize?client_id=1078919650764652594&permissions=274878000128&scope=bot%20applications.commands"><img src="https://img.shields.io/badge/invite-%40ermiana-7289da?style=flat-square"></a>
+</p>
+
 ermiana is a Discord bot that enhances the user experience by hiding unuseful webpage previews from multiple websites and generating more detailed image and webpage previews. ermianaJS is not limited by the R-18 content hiding restrictions and supports ptt.cc, 巴哈姆特電玩資訊站, e-hentai, Plurk, and Pixiv.
 
 ![demo](pic/demo1.png)
+
+## Live Demo
+
+[url.canaria.cc/ermianaJS](https://url.canaria.cc/ermianaJS)
 
 ## Getting Started
 
