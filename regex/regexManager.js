@@ -3,6 +3,7 @@ import { handlePttRegex } from "./handlePttRegex.js";
 import { handleBahaRegex } from "./handleBahaRegex.js";
 import { handlePixivRegex } from "./handlePixivRegex.js";
 import { handlePlurkRegex } from "./handlePlurkRegex.js";
+import { handleSgoRegex } from "./handleSgoRegex.js";
 
 export const regexs =  [
     {
@@ -19,5 +20,8 @@ export const regexs =  [
         handler: handlePixivRegex },
     {
         regex: /https:\/\/www\.plurk\.com\/p\/([^"]+)/,
-        handler: handlePlurkRegex }
+        handler: handlePlurkRegex },
+    {
+        regex: /https:\/\/swordgale\.online\/report\/([0-9]+)/,
+        handler: handleSgoRegex }
 ];

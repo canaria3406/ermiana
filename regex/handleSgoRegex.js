@@ -13,29 +13,40 @@ export async function handleSgoRegex(result, message) {
             url: "https://api.swordgale.online/api/report/" + rid,
             headers: { token: "" }
         });
-	
-        const battletime = resp.time.toLocaleString("en-US", {
+
+        const options = {
             timeZone: "Asia/Taipei",
             hour12: false,
-            month: "2-digit",
-            day: "2-digit",
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit"
-        }).replace(",", "");
-        const battlezone = " " + resp.zone + " (" + resp.stage + ")";
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+        };
+
+        const date = new Date(resp.data.time);
+        const formatter = Intl.DateTimeFormat('zh-TW', options);
+        const battletime = formatter.format(date).replace(",", "");
+        const battlezone = resp.data.zone + " (" + resp.data.stage + ")";
 	
         const teamA = [];
-        resp.meta.teamA.forEach((element) => {
+        resp.data.meta.teamA.forEach((element) => {
             teamA.push(element.name + "\nHP: " + element.hp + " 體: " + element.sp);
         });
+
         const teamB = [];
-        resp.meta.teamB.forEach((element) => {
-            teamB.push(element.name + "\nHP: " + element.hp + " 體: " + element.sp);
+        resp.data.meta.teamB.forEach((element) => {
+            teamB.push(element.name);
         });
-	
+
+        const teamBn = teamB.length;
+        if(teamBn >= 3){
+            teamB.splice(3);
+            teamB.push("...等" + (teamBn - 3) + "個未顯示");
+        }
+
         const criticalevent = [];
-        resp.messages.forEach((element) => {
+        resp.data.messages.forEach((element) => {
             if (element.s == "critical") {
                 criticalevent.push(element.m);
             }
@@ -44,7 +55,8 @@ export async function handleSgoRegex(result, message) {
         const sgoEmbed = new EmbedBuilder();
         sgoEmbed.setColor(2210780);
         sgoEmbed.addFields(
-			    { name: "時間地點", value: battletime + battlezone },
+			    { name: "時間", value: battletime },
+                { name: "地點", value: battlezone },
 			    { name: "攻擊方", value: teamA.join("\n"), inline: true },
 			    { name: "防守方", value: teamB.join("\n"), inline: true },
 			    { name: "戰鬥摘要", value: criticalevent.join("\n")}
