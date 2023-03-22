@@ -1,6 +1,8 @@
 import { EmbedBuilder } from "discord.js";
 import axios from "axios";
+import Conf from "conf";
 import { messageSender } from "../common/messageSender.js";
+import { reloadSgoTK } from "../common/reloadSgoTK.js";
 
 export async function handleSgoRegex(result, message) {
     try {
@@ -8,10 +10,16 @@ export async function handleSgoRegex(result, message) {
     } catch {}
     const rid = result[1];
     try {
+        const eermianaSGO = new Conf({projectName: "ermianaJS"});
+        if(!ermianaSGO.get("SGOtoken")){
+            await reloadSgoTK();
+        }
+        const SGOtoken = ermianaSGO.get("SGOtoken");
+        
         const resp = await axios.request({
             method: "get",
             url: "https://api.swordgale.online/api/report/" + rid,
-            headers: { token: "" }
+            headers: { token: SGOtoken }
         });
 
         const options = {
@@ -33,6 +41,12 @@ export async function handleSgoRegex(result, message) {
         resp.data.meta.teamA.forEach((element) => {
             teamA.push(element.name + "\nHP: " + element.hp + " 體: " + element.sp);
         });
+        
+        const teamAn = teamA.length;
+        if(teamAn >= 4){
+            teamA.splice(3);
+            teamA.push("...等" + (teamAn - 3) + "個未顯示");
+        }
 
         const teamB = [];
         resp.data.meta.teamB.forEach((element) => {
@@ -40,9 +54,9 @@ export async function handleSgoRegex(result, message) {
         });
 
         const teamBn = teamB.length;
-        if(teamBn >= 3){
-            teamB.splice(3);
-            teamB.push("...等" + (teamBn - 3) + "個未顯示");
+        if(teamBn >= 5){
+            teamB.splice(4);
+            teamB.push("...等" + (teamBn - 4) + "個未顯示");
         }
 
         const criticalevent = [];
