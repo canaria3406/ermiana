@@ -10,7 +10,7 @@ export async function handleSgoRegex(result, message) {
     } catch {}
     const rid = result[1];
     try {
-        const eermianaSGO = new Conf({projectName: "ermianaJS"});
+        const ermianaSGO = new Conf({projectName: "ermianaJS"});
         if(!ermianaSGO.get("SGOtoken")){
             await reloadSgoTK();
         }
