@@ -94,7 +94,7 @@ export async function handleSgoRegex(result, message) {
                 { name: "時間", value: battletime },
                 { name: "地點", value: battlezone },
                 { name: "攻擊方", value: teamA.join("\n"), inline: true },
-                { name: "防守方", value: teamB.join("\n"), inline: true },
+                { name: "防守方", value: teamB2.join("\n"), inline: true },
                 { name: "戰鬥摘要", value: criticalevent.join("\n")}
         );
         sgoEmbed.setFooter({ text: "canaria3406", iconURL: "https://cdn.discordapp.com/avatars/242927802557399040/1f3b1744568e4333a8889eafaa1f982a.png"});
