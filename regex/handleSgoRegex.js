@@ -58,22 +58,27 @@ export async function handleSgoRegex(result, message) {
         if (teamBn > 5) {
             const teamBMap = {};
             teamB.forEach((element) => {
-              const match = element.match(/([\u4E00-\u9FA5\u3040-\u30FFa-zA-Z]+)(\d+)/);
-              if (match) {
+                const match = element.match(/([\u4E00-\u9FA5\u3040-\u30FFa-zA-Z]+)(\d+)/);
+                if (match) {
                   const name = match[1];
                   const number = parseInt(match[2], 10);
                   if (!teamBMap[name] || number > teamBMap[name].number) {
                       teamBMap[name] = { name, number };
                   }
-              }
-              else{
+                }
+                else{
                   teamB2.push(element);
-              }
+                }
             });
 
             for (const name in teamBMap) {
                 teamB2.push(`${name}${teamBMap[name].number}`);
             }
+        }
+        else if(teamBn <= 5){
+            teamB.forEach((element) => {
+                teamB2.push(element);
+            })
         }
 
         if(teamB2.length >= 5){
