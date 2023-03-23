@@ -102,6 +102,9 @@ export async function handleSgoRegex(result, message) {
                 { name: "防守方", value: teamB2.join("\n"), inline: true },
                 { name: "戰鬥摘要", value: criticalevent.join("\n")}
         );
+        try {
+            sgoEmbed.setThumbnail("https://swordgale.b-cdn.net/" + resp.data.meta.teamA[0].avatar);
+        } catch {}
         sgoEmbed.setFooter({ text: "canaria3406", iconURL: "https://cdn.discordapp.com/avatars/242927802557399040/1f3b1744568e4333a8889eafaa1f982a.png"});
         
         messageSender(message.channel, sgoEmbed);
