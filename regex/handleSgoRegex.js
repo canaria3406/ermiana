@@ -88,7 +88,7 @@ export async function handleSgoRegex(result, message) {
 
         const criticalevent = [];
         resp.data.messages.forEach((element) => {
-            if (element.s == "critical" || element.s == "subInfo") {
+            if (element.s == "critical") {
                 criticalevent.push(element.m);
             }
         });
