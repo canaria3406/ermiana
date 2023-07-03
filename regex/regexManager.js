@@ -3,6 +3,7 @@ import { handlePttRegex } from "./handlePttRegex.js";
 import { handleBahaRegex } from "./handleBahaRegex.js";
 import { handlePixivRegex } from "./handlePixivRegex.js";
 import { handlePlurkRegex } from "./handlePlurkRegex.js";
+import { handleTwitterRegex } from "./handleTwitterRegex.js";
 import { handleSgoRegex } from "./handleSgoRegex.js";
 
 export const regexs =  [
@@ -21,6 +22,9 @@ export const regexs =  [
     {
         regex: /https:\/\/www\.plurk\.com\/p\/([^"]+)/,
         handler: handlePlurkRegex },
+    {
+        regex: /https:\/\/twitter\.com\/[A-Za-z0-9_]{4,15}\/status\/([0-9]+)/,
+        handler: handleTwitterRegex },
     {
         regex: /https:\/\/swordgale\.online\/report\/([0-9]+)/,
         handler: handleSgoRegex }
