@@ -2,6 +2,7 @@ import { EmbedBuilder } from "discord.js";
 import axios from "axios";
 import cheerio from "cheerio";
 import { messageSender } from "../common/messageSender.js";
+import { embedSuppresser } from "../common/embedSuppresser.js";
 
 export async function handlePlurkRegex( result, message ){
     try{
@@ -36,12 +37,8 @@ export async function handlePlurkRegex( result, message ){
         } catch{}
         plurkEmbed.setFooter({ text: "canaria3406", iconURL: "https://cdn.discordapp.com/avatars/242927802557399040/1f3b1744568e4333a8889eafaa1f982a.png"});
         
-        try{
-            message.suppressEmbeds(true);
-        } catch{
-            console.log("no permission");
-        }
-
+        embedSuppresser(message);
+        
         messageSender(message.channel, plurkEmbed);
     }
     catch{

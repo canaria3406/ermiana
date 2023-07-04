@@ -1,6 +1,7 @@
 import { EmbedBuilder } from "discord.js";
 import axios from "axios";
 import { messageSender } from "../common/messageSender.js";
+import { embedSuppresser } from "../common/embedSuppresser.js";
 
 export async function handlePixivRegex( result, message ){
     try{
@@ -37,11 +38,7 @@ export async function handlePixivRegex( result, message ){
         } catch{}
         pixivEmbed.setFooter({ text: "canaria3406", iconURL: "https://cdn.discordapp.com/avatars/242927802557399040/1f3b1744568e4333a8889eafaa1f982a.png"});
 
-        try{
-            message.suppressEmbeds(true);
-        } catch{
-            console.log("no permission");
-        }
+        embedSuppresser(message);
 
         messageSender(message.channel, pixivEmbed);
     }
