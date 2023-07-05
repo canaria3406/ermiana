@@ -3,6 +3,7 @@ import axios from "axios";
 import Conf from "conf";
 import { messageSender } from "../common/messageSender.js";
 import { reloadTwitterTK } from "../common/reloadTwitterTK.js";
+import { embedSuppresser } from "../common/embedSuppresser.js";
 
 export async function handleTwitterRegex( result, message ){
     try{
@@ -50,22 +51,23 @@ export async function handleTwitterRegex( result, message ){
 
         const result = resp.data.data.threaded_conversation_with_injections_v2.instructions[0].entries[0].content.itemContent.tweet_results.result;
 
+        const tweetinfo = " | 💬" + result.legacy.reply_count.toString() + " 🔁" + result.legacy.retweet_count.toString() + " ❤️" + result.legacy.favorite_count.toString();
+
         const twitterEmbed = new EmbedBuilder();
         twitterEmbed.setColor(0x1DA1F2);
         twitterEmbed.setAuthor({ name: result.core.user_results.result.legacy.screen_name, iconURL: result.core.user_results.result.legacy.profile_image_url_https})
         twitterEmbed.setTitle(result.core.user_results.result.legacy.name);
         twitterEmbed.setURL("https://twitter.com/i/status/" + tid);
-        twitterEmbed.addFields(
-            { name: "喜歡", value: result.legacy.favorite_count.toString(), inline: true },
-            { name: "轉推", value: result.legacy.retweet_count.toString(), inline: true }
-        );
+
         try{
             twitterEmbed.setDescription(result.legacy.full_text);
         } catch{}
         try {
             twitterEmbed.setImage(result.legacy.entities?.media[0].media_url_https);
         } catch{}
-        twitterEmbed.setFooter({ text: "canaria3406", iconURL: "https://cdn.discordapp.com/avatars/242927802557399040/1f3b1744568e4333a8889eafaa1f982a.png"});
+        twitterEmbed.setFooter({ text: "canaria3406" + tweetinfo , iconURL: "https://cdn.discordapp.com/avatars/242927802557399040/1f3b1744568e4333a8889eafaa1f982a.png"});
+
+        embedSuppresser(message);
 
         messageSender(message.channel, twitterEmbed);
     }
