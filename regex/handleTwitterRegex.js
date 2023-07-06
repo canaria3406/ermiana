@@ -67,7 +67,7 @@ export async function handleTwitterRegex( result, message ){
         } catch{}
         try {
             if(result.legacy.extended_entities.media[0].type == "photo"){
-                    twitterEmbed.setImage(result.legacy.extended_entities.media[0].media_url_https);
+                    twitterEmbed.setImage(result.legacy.extended_entities.media[0].media_url_https + "?name=large");
             }
         } catch{}
         twitterEmbed.setFooter({ text: "canaria3406" + tweetinfo , iconURL: "https://cdn.discordapp.com/avatars/242927802557399040/1f3b1744568e4333a8889eafaa1f982a.png"});
@@ -76,11 +76,17 @@ export async function handleTwitterRegex( result, message ){
 
         messageSender(message.channel, twitterEmbed);
 
-        // TODO: put video in embed.
-
         try {
-            if(result.legacy.extended_entities.media[0].type == "video" || "animated_gif"){
-                message.channel.send(result.legacy.extended_entities.media[0].video_info.variants[0].url);
+            if(result.legacy.extended_entities?.media[0].type == "video" || "animated_gif"){
+                let maxBitrate = -1;
+                let maxBitrateUrl = 'error';
+                result.legacy.extended_entities.media[0].video_info.variants.forEach(variant => {
+                    if (variant.content_type === 'video/mp4' && variant.bitrate > maxBitrate) {
+                      maxBitrate = variant.bitrate;
+                      maxBitrateUrl = variant.url;
+                    }
+                  });
+                message.channel.send(maxBitrateUrl);
             }
         }
         catch {}
