@@ -51,6 +51,9 @@ export async function handleTwitterRegex( result, message ){
 
         const result = resp.data.data.threaded_conversation_with_injections_v2.instructions[0].entries[0].content.itemContent.tweet_results.result;
 
+        // if (result.rest_id != tid){}
+        // TODO: check tweet = tweetid
+
         const tweetinfo = " | 💬" + result.legacy.reply_count.toString() + " 🔁" + result.legacy.retweet_count.toString() + " ❤️" + result.legacy.favorite_count.toString();
 
         const twitterEmbed = new EmbedBuilder();
@@ -58,18 +61,30 @@ export async function handleTwitterRegex( result, message ){
         twitterEmbed.setAuthor({ name: result.core.user_results.result.legacy.screen_name, iconURL: result.core.user_results.result.legacy.profile_image_url_https})
         twitterEmbed.setTitle(result.core.user_results.result.legacy.name);
         twitterEmbed.setURL("https://twitter.com/i/status/" + tid);
-
+        
         try{
             twitterEmbed.setDescription(result.legacy.full_text);
         } catch{}
         try {
-            twitterEmbed.setImage(result.legacy.entities?.media[0].media_url_https);
+            if(result.legacy.extended_entities.media[0].type == "photo"){
+                    twitterEmbed.setImage(result.legacy.extended_entities.media[0].media_url_https);
+            }
         } catch{}
         twitterEmbed.setFooter({ text: "canaria3406" + tweetinfo , iconURL: "https://cdn.discordapp.com/avatars/242927802557399040/1f3b1744568e4333a8889eafaa1f982a.png"});
 
         embedSuppresser(message);
 
         messageSender(message.channel, twitterEmbed);
+
+        // TODO: put video in embed.
+
+        try {
+            if(result.legacy.extended_entities.media[0].type == "video" || "animated_gif"){
+                message.channel.send(result.legacy.extended_entities.media[0].video_info.variants[0].url);
+            }
+        }
+        catch {}
+
     }
     catch{
         console.log("twitter error");
