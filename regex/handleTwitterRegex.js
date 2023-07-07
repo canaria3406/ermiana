@@ -49,10 +49,16 @@ export async function handleTwitterRegex( result, message ){
             headers: headers
         });
 
-        const result = resp.data.data.threaded_conversation_with_injections_v2.instructions[0].entries[0].content.itemContent.tweet_results.result;
+        let result = resp.data.data.threaded_conversation_with_injections_v2.instructions[0].entries[0].content.itemContent?.tweet_results.result;
 
-        // if (result.rest_id != tid){}
-        // TODO: check tweet = tweetid
+        if (result.rest_id != tid){
+            resp.data.data.threaded_conversation_with_injections_v2.instructions[0].entries.forEach(entry => {
+                if (entry.content.itemContent?.tweet_results.result.rest_id == tid) {
+                    result = entry.content.itemContent.tweet_results.result;
+                }
+            });
+        }
+
 
         const tweetinfo = " | 💬" + result.legacy.reply_count.toString() + " 🔁" + result.legacy.retweet_count.toString() + " ❤️" + result.legacy.favorite_count.toString();
 
