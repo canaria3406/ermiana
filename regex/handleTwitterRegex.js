@@ -1,14 +1,16 @@
-import { EmbedBuilder } from "discord.js";
+// import { EmbedBuilder } from "discord.js";
 import axios from "axios";
 import Conf from "conf";
-import { messageSender } from "../common/messageSender.js";
+// import { messageSender } from "../common/messageSender.js";
 import { reloadTwitterTK } from "../common/reloadTwitterTK.js";
-import { embedSuppresser } from "../common/embedSuppresser.js";
+// import { embedSuppresser } from "../common/embedSuppresser.js";
 
 export async function handleTwitterRegex( result, message ){
+    /*
     try{
         await message.channel.sendTyping();
     } catch{}
+    */
     const tid = result[1];
     try{
         const ermianaTwitter = new Conf({projectName: "ermianaJS"});
@@ -59,7 +61,7 @@ export async function handleTwitterRegex( result, message ){
             });
         }
 
-
+        /*
         const tweetinfo = " | 💬" + result.legacy.reply_count.toString() + " 🔁" + result.legacy.retweet_count.toString() + " ❤️" + result.legacy.favorite_count.toString();
 
         const twitterEmbed = new EmbedBuilder();
@@ -79,8 +81,8 @@ export async function handleTwitterRegex( result, message ){
         twitterEmbed.setFooter({ text: "canaria3406" + tweetinfo , iconURL: "https://cdn.discordapp.com/avatars/242927802557399040/1f3b1744568e4333a8889eafaa1f982a.png"});
 
         embedSuppresser(message);
-
         messageSender(message.channel, twitterEmbed);
+        */
 
         try {
             if(result.legacy.extended_entities?.media[0].type == "video" || "animated_gif"){
