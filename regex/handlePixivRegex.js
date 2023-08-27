@@ -28,19 +28,27 @@ export async function handlePixivRegex( result, message ){
         try {
             pixivEmbed.addFields({ name: "標籤", value: tagString});
         } catch{}
-        try {
-            if(resp.data.body.pageCount == 1){
-                pixivEmbed.setImage("https://pixiv.cat/" + pid + ".jpg");
-            }
-            else{
-                pixivEmbed.setImage("https://pixiv.cat/" + pid + "-1.jpg");
-            }
-        } catch{}
         pixivEmbed.setFooter({ text: "canaria3406", iconURL: "https://cdn.discordapp.com/avatars/242927802557399040/1f3b1744568e4333a8889eafaa1f982a.png"});
 
         embedSuppresser(message);
 
         messageSender(message.channel, pixivEmbed);
+
+        try {
+            const originalPicUrl = resp.data.body.urls.original.replace("i.pximg.net", "i.pixiv.cat");
+            message.channel.send(originalPicUrl);
+            if(resp.data.body.pageCount > 1){
+                message.channel.send(originalPicUrl.replace("_p0", "_p1"));
+            }
+            if(resp.data.body.pageCount > 2){
+                message.channel.send(originalPicUrl.replace("_p1", "_p2"));
+            }
+            if(resp.data.body.pageCount > 3){
+                message.channel.send(originalPicUrl.replace("_p2", "_p3"));
+            }
+        }
+        catch {}
+
     }
     catch{
         console.log("pixiv error");
