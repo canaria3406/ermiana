@@ -35,16 +35,27 @@ export async function handlePixivRegex( result, message ){
         messageSender(message.channel, pixivEmbed);
 
         try {
-            const originalPicUrl = resp.data.body.urls.original.replace("i.pximg.net", "i.pixiv.cat");
-            message.channel.send(originalPicUrl);
-            if(resp.data.body.pageCount > 1){
-                message.channel.send(originalPicUrl.replace("_p0", "_p1"));
+            if (resp.data.body.urls.original != null){
+                const originalPicUrl = resp.data.body.urls.original.replace("i.pximg.net", "i.pixiv.cat");
+                message.channel.send(originalPicUrl);
+                if(resp.data.body.pageCount > 1){
+                    message.channel.send(originalPicUrl.replace("_p0", "_p1"));
+                }
+                if(resp.data.body.pageCount > 2){
+                    message.channel.send(originalPicUrl.replace("_p1", "_p2"));
+                }
+                if(resp.data.body.pageCount > 3){
+                    message.channel.send(originalPicUrl.replace("_p2", "_p3"));
+                }
             }
-            if(resp.data.body.pageCount > 2){
-                message.channel.send(originalPicUrl.replace("_p1", "_p2"));
-            }
-            if(resp.data.body.pageCount > 3){
-                message.channel.send(originalPicUrl.replace("_p2", "_p3"));
+            else {
+                if (resp.data.body.userIllusts[pid]) {
+                    const thumbPic = resp.data.body.userIllusts[pid].url.replace("i.pximg.net", "i.pixiv.cat");
+                    message.channel.send(thumbPic);
+                }
+                else {
+                    message.channel.send("error");
+                }
             }
         }
         catch {}
