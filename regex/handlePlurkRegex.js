@@ -10,7 +10,7 @@ export async function handlePlurkRegex( result, message ){
     } catch{}
     try{
         const pageHTML = await axios.request({
-            url: result[0],
+            url: "https://www.plurk.com/p/" + result[1],
             method: "get"
         });
     
@@ -23,7 +23,7 @@ export async function handlePlurkRegex( result, message ){
         const plurkEmbed = new EmbedBuilder();
         plurkEmbed.setColor(16556594);
         plurkEmbed.setTitle($(".name").text());
-        plurkEmbed.setURL(result[0]);
+        plurkEmbed.setURL("https://www.plurk.com/p/" + result[1]);
         try {
             plurkEmbed.setDescription($(".text_holder").text());
         } catch{}

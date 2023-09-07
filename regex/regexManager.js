@@ -20,6 +20,9 @@ export const regexs =  [
         regex: /https:\/\/www\.pixiv\.net\/artworks\/([0-9]+)/,
         handler: handlePixivRegex },
     {
+        regex: /https:\/\/www\.plurk\.com\/m\/p\/([^"]+)/,
+        handler: handlePlurkRegex },
+    {
         regex: /https:\/\/www\.plurk\.com\/p\/([^"]+)/,
         handler: handlePlurkRegex },
     {

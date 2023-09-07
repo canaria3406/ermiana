@@ -20,7 +20,7 @@ export async function handlePixivRegex( result, message ){
         pixivEmbed.setColor(2210780);
         pixivEmbed.setTitle(resp.data.body.title);
         pixivEmbed.setURL(result[0]);
-        pixivEmbed.setDescription(resp.data.body.extraData.meta.twitter.description);
+        pixivEmbed.setDescription(resp.data.body.extraData.meta.twitter.description.substring(0, 300));
         pixivEmbed.addFields(
             { name: "作者", value: `[${resp.data.body.userName}](https://www.pixiv.net/users/${resp.data.body.userId})`, inline : true},
             { name: "收藏", value: resp.data.body.bookmarkCount.toString(), inline : true}            
@@ -46,6 +46,9 @@ export async function handlePixivRegex( result, message ){
                     message.channel.send(originalPicUrl.replace("_p2", "_p3"));
                 }
                 embedSuppresser(message);
+            }
+            else {
+                message.channel.send("https://embed.pixiv.net/decorate.php?illust_id=" + pid);
             }
             /*
             else {
