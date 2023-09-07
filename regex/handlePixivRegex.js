@@ -30,6 +30,8 @@ export async function handlePixivRegex( result, message ){
         } catch{}
         pixivEmbed.setFooter({ text: "canaria3406", iconURL: "https://cdn.discordapp.com/avatars/242927802557399040/1f3b1744568e4333a8889eafaa1f982a.png"});
 
+        embedSuppresser(message);
+
         messageSender(message.channel, pixivEmbed);
 
         try {
@@ -45,7 +47,6 @@ export async function handlePixivRegex( result, message ){
                 if(resp.data.body.pageCount > 3){
                     message.channel.send(originalPicUrl.replace("_p2", "_p3"));
                 }
-                embedSuppresser(message);
             }
             else {
                 message.channel.send("https://embed.pixiv.net/decorate.php?illust_id=" + pid);
