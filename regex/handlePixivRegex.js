@@ -30,12 +30,12 @@ export async function handlePixivRegex( result, message ){
         } catch{}
         pixivEmbed.setFooter({ text: "canaria3406", iconURL: "https://cdn.discordapp.com/avatars/242927802557399040/1f3b1744568e4333a8889eafaa1f982a.png"});
 
+        messageSender(message.channel, pixivEmbed);
+
         try {
             if (resp.data.body.urls.original != null){
                 const originalPicUrl = resp.data.body.urls.original.replace("i.pximg.net", "pixiv.canaria.cc");
-                messageSender(message.channel, pixivEmbed);
                 message.channel.send(originalPicUrl);
-                embedSuppresser(message);
                 if(resp.data.body.pageCount > 1){
                     message.channel.send(originalPicUrl.replace("_p0", "_p1"));
                 }
@@ -46,20 +46,26 @@ export async function handlePixivRegex( result, message ){
                     message.channel.send(originalPicUrl.replace("_p0", "_p3"));
                 }
             }
-            /*
             else {
-                message.channel.send("https://embed.pixiv.net/decorate.php?illust_id=" + pid);
+                try {
+                    const resp2 = await axios.request({
+                        method: "post",
+                        url: 'https://api.pixiv.cat/v1/generate',
+                        data: {
+                            p: result[0]
+                        }
+                    });
+                    if (resp2.data?.original_url) {
+                        message.channel.send(resp2.data.original_url.replace('i.pximg.net', 'pixiv.canaria.cc'));
+                    }
+                    if (resp2.data?.original_urls) {
+                        for (let i = 0; i < Math.min(resp2.data.original_urls.length, 4); i++) {
+                            message.channel.send(resp2.data.original_urls[i].replace('i.pximg.net', 'pixiv.canaria.cc'));
+                        }
+                    }
+                } catch {}
             }
-            else {
-                if (resp.data.body.userIllusts[pid]) {
-                    const thumbPic = resp.data.body.userIllusts[pid].url.replace("i.pximg.net", "i.pixiv.cat");
-                    message.channel.send(thumbPic);
-                }
-                else {
-                    message.channel.send("error");
-                }
-            }
-            */
+            embedSuppresser(message);
         }
         catch {}
 
