@@ -1,6 +1,7 @@
 import { EmbedBuilder } from "discord.js";
 import axios from "axios";
 import { messageSender } from "../common/messageSender.js";
+import { embedSuppresser } from "../common/embedSuppresser.js";
 
 export async function handleEhRegex( result, message ){
     try{
@@ -60,8 +61,9 @@ export async function handleEhRegex( result, message ){
 
         const ehEmbed = new EmbedBuilder();
         ehEmbed.setColor(16185594);
+        ehEmbed.setTitle(resp.data.gmetadata[0].title);
+        ehEmbed.setURL(result[0]);
         ehEmbed.addFields(
-                { name: "標題", value: resp.data.gmetadata[0].title},
                 { name: "類別", value: resp.data.gmetadata[0].category, inline : true},
                 { name: "評分", value: resp.data.gmetadata[0].rating, inline : true},
                 { name: "上傳者", value: resp.data.gmetadata[0].uploader, inline : true}
@@ -75,6 +77,7 @@ export async function handleEhRegex( result, message ){
         ehEmbed.setFooter({ text: "canaria3406", iconURL: "https://cdn.discordapp.com/avatars/242927802557399040/1f3b1744568e4333a8889eafaa1f982a.png"});
 
         messageSender(message.channel, ehEmbed);
+        embedSuppresser(message);
     }
     catch{
         console.log("eh error");
