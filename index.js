@@ -15,6 +15,8 @@ const client = new Client({
 client.on("ready",() =>{
     console.log(`Ready! 以 ${client.user.tag} 身分登入`);
     currentTime();
+    console.log(`在 ${client.guilds.cache.size} 個伺服器上運作中`);
+    client.user.setActivity(`運作於 ${client.guilds.cache.size} 個伺服器上`);
 });
   
 client.on("messageCreate", async (message) => {
