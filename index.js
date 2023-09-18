@@ -1,4 +1,4 @@
-import { Client, GatewayIntentBits} from "discord.js";
+import { Client, GatewayIntentBits, ActivityType} from "discord.js";
 import { currentTime } from "./common/currentTime.js";
 import { configManager } from "./common/configManager.js";
 import { runBahaCron } from "./common/runBahaCron.js";
@@ -16,7 +16,10 @@ client.on("ready",() =>{
     console.log(`Ready! 以 ${client.user.tag} 身分登入`);
     currentTime();
     console.log(`在 ${client.guilds.cache.size} 個伺服器上運作中`);
-    client.user.setActivity(`運作於 ${client.guilds.cache.size} 個伺服器上`);
+    client.user.setPresence({
+        activities: [{ name: `${client.guilds.cache.size} 個班級的魔法課`, type: ActivityType.Listening }],
+        status: 'online',
+    });
 });
   
 client.on("messageCreate", async (message) => {
