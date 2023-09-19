@@ -35,15 +35,8 @@ export async function handlePixivRegex( result, message ){
         try {
             if (resp.data.body.urls.original != null){
                 const originalPicUrl = resp.data.body.urls.original.replace("i.pximg.net", "pixiv.canaria.cc");
-                message.channel.send(originalPicUrl);
-                if(resp.data.body.pageCount > 1){
-                    message.channel.send(originalPicUrl.replace("_p0", "_p1"));
-                }
-                if(resp.data.body.pageCount > 2){
-                    message.channel.send(originalPicUrl.replace("_p0", "_p2"));
-                }
-                if(resp.data.body.pageCount > 3){
-                    message.channel.send(originalPicUrl.replace("_p0", "_p3"));
+                for (let i = 0; i < Math.min(resp.data.body.pageCount, 4); i++) {
+                    message.channel.send(originalPicUrl.replace("_p0", "_p" + i ));
                 }
             }
             else {
