@@ -6,6 +6,6 @@ export function runBahaCron() {
         console.log("Cronjob running...");
         reloadBahaTK();
     }, null, true, "Asia/Taipei");
-    console.log("Cronjob set ok!");
+    console.log("Baha Cronjob set ok!");
     job.start();
 }

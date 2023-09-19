@@ -2,6 +2,7 @@ import { Client, GatewayIntentBits, ActivityType} from "discord.js";
 import { currentTime } from "./common/currentTime.js";
 import { configManager } from "./common/configManager.js";
 import { runBahaCron } from "./common/runBahaCron.js";
+import { runPresenceCron } from "./common/runPresenceCron.js";
 import { regexs } from "./regex/regexManager.js";
 
 const client = new Client({
@@ -21,6 +22,7 @@ client.on("ready",() =>{
         activities: [{ name: `${client.guilds.cache.size} 個伺服器的魔法詠唱`, type: ActivityType.Listening }],
         status: 'online',
     });
+    runPresenceCron(client);
 });
 
 client.on("messageCreate", async (message) => {
