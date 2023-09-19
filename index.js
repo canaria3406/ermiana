@@ -14,14 +14,15 @@ const client = new Client({
 
 client.on("ready",() =>{
     console.log(`Ready! 以 ${client.user.tag} 身分登入`);
-    currentTime();
     console.log(`在 ${client.guilds.cache.size} 個伺服器上運作中`);
+    client.user.setPresence({ status: 'dnd' });
+    currentTime();
     client.user.setPresence({
-        activities: [{ name: `${client.guilds.cache.size} 個班級的魔法課`, type: ActivityType.Listening }],
+        activities: [{ name: `${client.guilds.cache.size} 個伺服器的魔法詠唱`, type: ActivityType.Listening }],
         status: 'online',
     });
 });
-  
+
 client.on("messageCreate", async (message) => {
     regexs.forEach(({ regex, handler }) => {
         if (regex.test(message.content)) {
