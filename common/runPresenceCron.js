@@ -2,7 +2,7 @@ import { ActivityType} from "discord.js";
 import { CronJob } from "cron";
 
 export function runPresenceCron(client) {
-    const job2 = new CronJob("00 40 4 * * 2,5", function() {
+    const job2 = new CronJob("00 40 4 * * *", function() {
         client.user.setPresence({ status: 'dnd' });
         console.log("Cronjob running...");
         client.user.setPresence({

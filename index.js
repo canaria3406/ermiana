@@ -18,6 +18,9 @@ client.on("ready",() =>{
     console.log(`在 ${client.guilds.cache.size} 個伺服器上運作中`);
     client.user.setPresence({ status: 'dnd' });
     currentTime();
+    client.guilds.cache.forEach( (guild) => {
+        console.log(`${guild.name} | ${guild.memberCount} | ${guild.id}`)
+    });
     client.user.setPresence({
         activities: [{ name: `${client.guilds.cache.size} 個伺服器的魔法詠唱`, type: ActivityType.Listening }],
         status: 'online',
