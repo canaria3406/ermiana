@@ -1,16 +1,16 @@
-// import { EmbedBuilder } from "discord.js";
+import { EmbedBuilder } from "discord.js";
 import axios from "axios";
 import Conf from "conf";
-// import { messageSender } from "../common/messageSender.js";
+import { messageSender } from "../common/messageSender.js";
 import { reloadTwitterTK } from "../common/reloadTwitterTK.js";
-// import { embedSuppresser } from "../common/embedSuppresser.js";
+import { embedSuppresser } from "../common/embedSuppresser.js";
 
 export async function handleTwitterRegex( result, message ){
-    /*
+    
     try{
         await message.channel.sendTyping();
     } catch{}
-    */
+    
     const tid = result[1];
     try{
         const ermianaTwitter = new Conf({projectName: "ermianaJS"});
@@ -61,13 +61,16 @@ export async function handleTwitterRegex( result, message ){
             });
         }
 
-        /*
-        const tweetinfo = " | 💬" + result.legacy.reply_count.toString() + " 🔁" + result.legacy.retweet_count.toString() + " ❤️" + result.legacy.favorite_count.toString();
+        //const tweetinfo = " 💬" + result.legacy.reply_count.toString() + " 🔁" + result.legacy.retweet_count.toString() + " ❤️" + result.legacy.favorite_count.toString();
 
         const twitterEmbed = new EmbedBuilder();
         twitterEmbed.setColor(0x1DA1F2);
-        twitterEmbed.setAuthor({ name: result.core.user_results.result.legacy.screen_name, iconURL: result.core.user_results.result.legacy.profile_image_url_https})
+        twitterEmbed.setAuthor({ name: "@" + result.core.user_results.result.legacy.screen_name , iconURL: result.core.user_results.result.legacy.profile_image_url_https})
         twitterEmbed.setTitle(result.core.user_results.result.legacy.name);
+        twitterEmbed.addFields(
+            { name: "Likes", value: result.legacy.favorite_count.toString(), inline : true},
+            { name: "Retweets", value: result.legacy.retweet_count.toString(), inline : true}            
+        );
         twitterEmbed.setURL("https://twitter.com/i/status/" + tid);
         
         try{
@@ -78,12 +81,11 @@ export async function handleTwitterRegex( result, message ){
                     twitterEmbed.setImage(result.legacy.extended_entities.media[0].media_url_https + "?name=large");
             }
         } catch{}
-        twitterEmbed.setFooter({ text: "canaria3406" + tweetinfo , iconURL: "https://cdn.discordapp.com/avatars/242927802557399040/1f3b1744568e4333a8889eafaa1f982a.png"});
+        twitterEmbed.setFooter({ text: "canaria3406" , iconURL: "https://cdn.discordapp.com/avatars/242927802557399040/1f3b1744568e4333a8889eafaa1f982a.png"});
 
         embedSuppresser(message);
         messageSender(message.channel, twitterEmbed);
-        */
-
+        
         try {
             if(result.legacy.extended_entities?.media[0].type == "video" || "animated_gif"){
                 let maxBitrate = -1;
