@@ -30,8 +30,5 @@ export const regexs =  [
         handler: handleTwitterRegex },
     {
         regex: /https:\/\/x\.com\/[A-Za-z0-9_]{4,15}\/status\/([0-9]+)/,
-        handler: handleTwitterRegex },
-    {
-        regex: /https:\/\/swordgale\.online\/report\/([0-9]+)/,
-        handler: handleSgoRegex }
+        handler: handleTwitterRegex }
 ];

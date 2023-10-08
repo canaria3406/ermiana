@@ -46,5 +46,4 @@ git clone https://github.com/canaria3406/ermianaJS.git
 - [x] e-hentai、exhentai
 - [x] Plurk
 - [x] Pixiv
-- [x] swordgale.online
 - [x] Twitter

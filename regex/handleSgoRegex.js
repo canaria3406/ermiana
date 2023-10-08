@@ -4,6 +4,8 @@ import Conf from "conf";
 import { messageSender } from "../common/messageSender.js";
 import { reloadSgoTK } from "../common/reloadSgoTK.js";
 
+// /https:\/\/swordgale\.online\/report\/([0-9]+)/
+
 export async function handleSgoRegex(result, message) {
     if(message.channel.id != "719142522433175582"){
         try {
