@@ -29,6 +29,12 @@ export async function handleMisskeyRegex( result, message ){
                 misskeyEmbed.setDescription(resp.data.text);
             } catch{}
 
+            try {
+                if(resp.data.files[0]?.type == "image/webp" || "image/png" || "image/jpg"){
+                    misskeyEmbed.setImage(resp.data.files[0].url);
+                }
+            } catch{}
+
             function sumReactions(reactions) {
                 let total = 0;
                 for (const key in reactions) {
@@ -43,8 +49,21 @@ export async function handleMisskeyRegex( result, message ){
             embedSuppresser(message);
             messageSender(message.channel, misskeyEmbed);
 
+            try {
+                if(resp.data.files[0]?.type == "video/mp4"){
+                    if(resp.data.files[0].url.match(/https:\/\/media\.misskeyusercontent\.com\/io\/.*\.mp4/)){
+                        message.channel.send(resp.data.files[0].url);
+                    }
+                    else if(resp.data.files[0].url.match(/https:\/\/proxy\.misskeyusercontent\.com\/image\.webp\?url=.*\.mp4/)){
+                        let othersiteUrl = decodeURIComponent(resp.data.files[0].url.match(/url=(.+)/)[1]);
+                        message.channel.send(othersiteUrl);
+                    }
+                }
+            }
+            catch {}
+
         } else {
-            console.error(`Request failed`);
+            console.error("Request failed");
         }
 
     }
