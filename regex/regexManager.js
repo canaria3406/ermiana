@@ -14,10 +14,10 @@ export const regexs =  [
         regex: /https?:\/\/www\.ptt\.cc\/bbs\/((?:G|g)ossiping|AC_In)\/M\.([0-9]+)\.A\.([0-9A-Z]+)\.html/,
         handler: handlePttRegex },
     {
-        regex: /https:\/\/m\.gamer\.com\.tw\/forum\/C\.php\?bsn=60076&snA=\d+/,
+        regex: /https?:\/\/m\.gamer\.com\.tw\/forum\/C\.php\?bsn=60076&snA=\d+/,
         handler: handleBahaRegex },
     {
-        regex: /https:\/\/forum\.gamer\.com\.tw\/C\.php\?bsn=60076&snA=\d+/,
+        regex: /https?:\/\/forum\.gamer\.com\.tw\/C\.php\?bsn=60076&snA=\d+/,
         handler: handleBahaRegex },
     {
         regex: /https:\/\/www\.pixiv\.net\/artworks\/([0-9]+)/,
