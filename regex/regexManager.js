@@ -4,7 +4,7 @@ import { handleBahaRegex } from "./handleBahaRegex.js";
 import { handlePixivRegex } from "./handlePixivRegex.js";
 import { handlePlurkRegex } from "./handlePlurkRegex.js";
 import { handleTwitterRegex } from "./handleTwitterRegex.js";
-import { handleSgoRegex } from "./handleSgoRegex.js";
+import { handleMisskeyRegex } from "./handleMisskeyRegex.js";
 
 export const regexs =  [
     {
@@ -30,5 +30,8 @@ export const regexs =  [
         handler: handleTwitterRegex },
     {
         regex: /https:\/\/x\.com\/[A-Za-z0-9_]{4,15}\/status\/([0-9]+)/,
-        handler: handleTwitterRegex }
+        handler: handleTwitterRegex },
+    {
+        regex: /https:\/\/misskey\.io\/notes\/([a-zA-Z0-9]{10})/,
+        handler: handleMisskeyRegex }
 ];

@@ -47,3 +47,4 @@ git clone https://github.com/canaria3406/ermianaJS.git
 - [x] Plurk
 - [x] Pixiv
 - [x] Twitter
+- [x] Misskey
