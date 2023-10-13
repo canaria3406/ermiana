@@ -8,7 +8,8 @@
     <a href="https://discord.com/api/oauth2/authorize?client_id=1078919650764652594&permissions=274878000128&scope=bot%20applications.commands"><img src="https://img.shields.io/badge/invite-%40ermiana-7289da?style=flat-square"></a>
 </p>
 
-ermiana is a Discord bot that enhances the user experience by hiding unuseful webpage previews from multiple websites and generating more detailed image and webpage previews. ermianaJS is not limited by the R-18 content hiding restrictions and supports ptt.cc, 巴哈姆特電玩資訊站, e-hentai, Plurk, Pixiv, and Twitter.
+ermiana is a discord bot that converts unuseful webpage previews to more detailed image and webpage previews.  
+Supports multiple websites such as ptt.cc, 巴哈姆特電玩資訊站, e-hentai, Plurk, Pixiv, and Twitter.
 
 ![demo](pic/demo1.png)
 
@@ -38,13 +39,19 @@ git clone https://github.com/canaria3406/ermianaJS.git
 
 ## Support
 
-- [x] ptt.cc
-  - [x] [八卦] Gossiping
-  - [x] [裏洽] AC_IN
-- [x] 巴哈姆特電玩資訊站
-  - [x] 場外休憩區
-- [x] e-hentai、exhentai
-- [x] Plurk
-- [x] Pixiv
-- [x] Twitter
-- [x] Misskey
+- [x] Community
+  - [x] ptt.cc
+    - [x] [八卦] Gossiping
+    - [x] [裏洽] AC_IN
+  - [x] 巴哈姆特電玩資訊站
+    - [x] 場外休憩區
+  - [ ] Dcard
+- [x] Social media
+  - [x] Plurk
+  - [x] Twitter
+  - [x] Misskey
+- [x] Image sharing service
+  - [x] Pixiv
+  - [x] e-hentai
+  - [x] exhentai
+  - [ ] nhentai
