@@ -37,6 +37,8 @@ git clone https://github.com/canaria3406/ermianaJS.git
 
 ![demo](pic/demo4.png)
 
+![demo](pic/demo5.png)
+
 ## Support
 
 - [x] Community
