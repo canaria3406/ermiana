@@ -1,4 +1,5 @@
 import { handleEhRegex } from "./handleEhRegex.js";
+import { handleNhRegex } from "./handleNhRegex.js";
 import { handlePttRegex } from "./handlePttRegex.js";
 import { handleBahaRegex } from "./handleBahaRegex.js";
 import { handlePixivRegex } from "./handlePixivRegex.js";
@@ -10,6 +11,9 @@ export const regexs =  [
     {
         regex: /https:\/\/e(?:x|-)hentai\.org\/g\/([0-9]+)\/([0-9a-z]+)\//,
         handler: handleEhRegex },
+    {
+        regex: /https:\/\/nhentai\.net\/g\/([0-9]+)\//,
+        handler: handleNhRegex },
     {
         regex: /https?:\/\/www\.ptt\.cc\/bbs\/((?:G|g)ossiping|AC_In)\/M\.([0-9]+)\.A\.([0-9A-Z]+)\.html/,
         handler: handlePttRegex },

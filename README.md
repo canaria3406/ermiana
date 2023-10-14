@@ -56,4 +56,4 @@ git clone https://github.com/canaria3406/ermianaJS.git
   - [x] Pixiv
   - [x] e-hentai
   - [x] exhentai
-  - [ ] nhentai
+  - [x] nhentai
