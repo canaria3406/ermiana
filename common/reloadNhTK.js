@@ -6,11 +6,9 @@ export async function reloadNhTK() {
     try {
         const config = await configManager();
 
-        const cf_clearance = config.NHCC;
-        const csrftoken = config.NHCT;
+        const NhHeaderCookie = config.NHHC;
         const ermianaNh = new Conf({projectName: "ermianaJS"});
-        ermianaNh.set("cf_clearance", cf_clearance);
-        ermianaNh.set("csrftoken", csrftoken);
+        ermianaNh.set("NhHeaderCookie", NhHeaderCookie);
     }
     catch {
         console.log("nh token error");

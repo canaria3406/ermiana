@@ -16,16 +16,16 @@ export async function handleNhRegex( result, message ){
     try{
         
         const ermianaNh = new Conf({projectName: "ermianaJS"});
-        if(!ermianaNh.get("cf_clearance")){
+        if(!ermianaNh.get("NhHeaderCookie")){
             await reloadNhTK();
         }
         
-        const cf_clearance = ermianaNh.get("cf_clearance");
-        const csrftoken = ermianaNh.get("csrftoken");
+        const NhHeaderCookie = ermianaNh.get("NhHeaderCookie");
 
         const headers = {
+            "Host": "nhentai.net",
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/118.0",
-            "Cookie": "cf_clearance=" + cf_clearance + "; csrftoken=" + csrftoken + ";"
+            "Cookie": NhHeaderCookie
         };
         
         const resp = await axios.request({
