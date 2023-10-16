@@ -10,8 +10,7 @@ export async function configManager() {
         TWHT: process.env.TWHT,
         TWHA: process.env.TWHA,
         TWHC: process.env.TWHC,
-        NHCC: process.env.NHCC,
-        NHCT: process.env.NHCT
+        NHHC: process.env.NHHC
     };
     return config;
 }
