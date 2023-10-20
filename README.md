@@ -35,16 +35,16 @@ git clone https://github.com/canaria3406/ermianaJS.git
 
 ![demo](pic/demo3.png)
 
-![demo](pic/demo4.png)
-
 ![demo](pic/demo5.png)
+
+![demo](pic/demo4.png)
 
 ## Support
 
 - [x] Community
-  - [x] ptt.cc
-    - [x] [八卦] Gossiping
-    - [x] [裏洽] AC_IN
+  - [x] PTT.cc
+    - [x] Gossiping
+    - [x] AC_IN
   - [x] 巴哈姆特電玩資訊站
     - [x] 場外休憩區
   - [ ] Dcard
