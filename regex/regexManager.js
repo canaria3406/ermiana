@@ -15,28 +15,28 @@ export const regexs = [
     regex: /https:\/\/nhentai\.net\/g\/([0-9]+)\//,
     handler: handleNhRegex },
   {
-    regex: /https?:\/\/www\.ptt\.cc\/bbs\/((?:G|g)ossiping|AC_In)\/M\.([0-9]+)\.A\.([0-9A-Z]+)\.html/,
+    regex: /https?:\/\/www\.ptt\.cc\/bbs\/((?:G|g)ossiping|AC_In)\/M\.[0-9]+\.A\.[0-9A-Z]+\.html/,
     handler: handlePttRegex },
   {
-    regex: /https?:\/\/m\.gamer\.com\.tw\/forum\/C\.php\?bsn=60076&snA=\d+/,
+    regex: /https?:\/\/m\.gamer\.com\.tw\/forum\/C\.php\?bsn=60076&snA=[0-9]+/,
     handler: handleBahaRegex },
   {
-    regex: /https?:\/\/forum\.gamer\.com\.tw\/C\.php\?bsn=60076&snA=\d+/,
+    regex: /https?:\/\/forum\.gamer\.com\.tw\/C\.php\?bsn=60076&snA=[0-9]+/,
     handler: handleBahaRegex },
   {
     regex: /https:\/\/www\.pixiv\.net\/artworks\/([0-9]+)/,
     handler: handlePixivRegex },
   {
-    regex: /https:\/\/www\.plurk\.com\/m\/p\/([^"]+)/,
+    regex: /https:\/\/www\.plurk\.com\/m\/p\/([a-zA-Z0-9]{3,10})/,
     handler: handlePlurkRegex },
   {
-    regex: /https:\/\/www\.plurk\.com\/p\/([^"]+)/,
+    regex: /https:\/\/www\.plurk\.com\/p\/([a-zA-Z0-9]{3,10})/,
     handler: handlePlurkRegex },
   {
-    regex: /https:\/\/twitter\.com\/[A-Za-z0-9_]{4,15}\/status\/([0-9]+)/,
+    regex: /https:\/\/twitter\.com\/[A-Za-z0-9_]{1,15}\/status\/([0-9]+)/,
     handler: handleTwitterRegex },
   {
-    regex: /https:\/\/x\.com\/[A-Za-z0-9_]{4,15}\/status\/([0-9]+)/,
+    regex: /https:\/\/x\.com\/[A-Za-z0-9_]{1,15}\/status\/([0-9]+)/,
     handler: handleTwitterRegex },
   {
     regex: /https:\/\/misskey\.io\/notes\/([a-zA-Z0-9]{10})/,
