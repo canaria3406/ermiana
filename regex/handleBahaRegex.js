@@ -36,10 +36,9 @@ export async function handleBahaRegex( result, message ){
         try {
             bahaEmbed.setImage($("meta[property=og:image]").attr("content"));
         } catch{}
-        bahaEmbed.setFooter({ text: "canaria3406", iconURL: "https://cdn.discordapp.com/avatars/242927802557399040/1f3b1744568e4333a8889eafaa1f982a.png"});
 
         embedSuppresser(message);
-        messageSender(message.channel, bahaEmbed);
+        messageSender(message.channel, bahaEmbed, "canaria3406");
     }
     catch{
         console.log("baha error");
@@ -67,10 +66,9 @@ export async function handleBahaRegex( result, message ){
             try {
                 bahaEmbed2.setImage($("meta[property=og:image]").attr("content"));
             } catch{}
-            bahaEmbed2.setFooter({ text: "canaria3406", iconURL: "https://cdn.discordapp.com/avatars/242927802557399040/1f3b1744568e4333a8889eafaa1f982a.png"});
 
             embedSuppresser(message);
-            messageSender(message.channel, bahaEmbed2);
+            messageSender(message.channel, bahaEmbed2, "canaria3406");
         }
         catch {
             console.log("baha second try error");

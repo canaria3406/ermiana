@@ -32,11 +32,10 @@ export async function handlePlurkRegex( result, message ){
         } catch{}
 
         const plurkInfo = " • 💬" + respPlurk + " 🔁" + rePlurk + " ❤️" + favPlurk;
-        plurkEmbed.setFooter({ text: "canaria3406" + plurkInfo, iconURL: "https://cdn.discordapp.com/avatars/242927802557399040/1f3b1744568e4333a8889eafaa1f982a.png"});
-        
+    
         embedSuppresser(message);
         
-        messageSender(message.channel, plurkEmbed);
+        messageSender(message.channel, plurkEmbed, "canaria3406" + plurkInfo);
     }
     catch{
        console.log("plurk error");

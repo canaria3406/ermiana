@@ -28,9 +28,8 @@ export async function handlePixivRegex( result, message ){
         try {
             pixivEmbed.addFields({ name: "標籤", value: tagString});
         } catch{}
-        pixivEmbed.setFooter({ text: "canaria3406", iconURL: "https://cdn.discordapp.com/avatars/242927802557399040/1f3b1744568e4333a8889eafaa1f982a.png"});
 
-        messageSender(message.channel, pixivEmbed);
+        messageSender(message.channel, pixivEmbed, "canaria3406");
 
         try {
             if (resp.data.body.urls.original != null){

@@ -44,10 +44,9 @@ export async function handleMisskeyRegex( result, message ){
             }
 
             const noteinfo = " • 💬" + resp.data.repliesCount.toString() + " 🔁" + resp.data.renoteCount.toString() + " ❤️" + sumReactions(resp.data.reactions).toString();
-            misskeyEmbed.setFooter({ text: "canaria3406" + noteinfo, iconURL: "https://cdn.discordapp.com/avatars/242927802557399040/1f3b1744568e4333a8889eafaa1f982a.png"});
 
             embedSuppresser(message);
-            messageSender(message.channel, misskeyEmbed);
+            messageSender(message.channel, misskeyEmbed, "canaria3406" + noteinfo);
 
             try {
                 if(resp.data.files[0]?.type == "video/mp4"){

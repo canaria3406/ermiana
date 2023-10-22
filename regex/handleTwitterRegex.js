@@ -39,10 +39,9 @@ export async function handleTwitterRegex( result, message ){
             } catch{}
 
             const fxapitweetinfo = " • 💬" + fxapiResp.data.tweet.replies.toString() + " 🔁" + fxapiResp.data.tweet.retweets.toString() + " ❤️" + fxapiResp.data.tweet.likes.toString();
-            fxapitwitterEmbed.setFooter({ text: "canaria3406" + fxapitweetinfo, iconURL: "https://cdn.discordapp.com/avatars/242927802557399040/1f3b1744568e4333a8889eafaa1f982a.png"});
 
             embedSuppresser(message);
-            messageSender(message.channel, fxapitwitterEmbed);
+            messageSender(message.channel, fxapitwitterEmbed, "canaria3406" + fxapitweetinfo);
             
             try {
                 if(fxapiResp.data.tweet.media.all[0].type != "photo"){
@@ -80,10 +79,9 @@ export async function handleTwitterRegex( result, message ){
                 } catch{}
 
                 const vxapitweetinfo = " • 💬" + vxapiResp.data.replies.toString() + " 🔁" + vxapiResp.data.retweets.toString() + " ❤️" + vxapiResp.data.likes.toString();
-                vxapitwitterEmbed.setFooter({ text: "canaria3406" + vxapitweetinfo, iconURL: "https://cdn.discordapp.com/avatars/242927802557399040/1f3b1744568e4333a8889eafaa1f982a.png"});
-    
+
                 embedSuppresser(message);
-                messageSender(message.channel, vxapitwitterEmbed);
+                messageSender(message.channel, vxapitwitterEmbed, "canaria3406" + vxapitweetinfo);
 
                 try {
                     if(vxapiResp.data.media_extended[0].type != "image"){
@@ -161,10 +159,9 @@ export async function handleTwitterRegex( result, message ){
                 } catch{}
 
                 const tweetinfo = " • 💬" + result.legacy.reply_count.toString() + " 🔁" + result.legacy.retweet_count.toString() + " ❤️" + result.legacy.favorite_count.toString();
-                twitterEmbed.setFooter({ text: "canaria3406" + tweetinfo, iconURL: "https://cdn.discordapp.com/avatars/242927802557399040/1f3b1744568e4333a8889eafaa1f982a.png"});
 
                 embedSuppresser(message);
-                messageSender(message.channel, twitterEmbed);
+                messageSender(message.channel, twitterEmbed, "canaria3406" + tweetinfo);
                 
                 try {
                     if(result.legacy.extended_entities?.media[0].type == "video" || "animated_gif"){

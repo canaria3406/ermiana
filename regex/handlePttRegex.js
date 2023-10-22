@@ -23,9 +23,8 @@ export async function handlePttRegex( result, message ){
         try {
             pttEmbed.setDescription($("meta[property=og:description]").attr("content"));
         } catch{}
-        pttEmbed.setFooter({ text: "canaria3406", iconURL: "https://cdn.discordapp.com/avatars/242927802557399040/1f3b1744568e4333a8889eafaa1f982a.png"});
 
-        messageSender(message.channel, pttEmbed);
+        messageSender(message.channel, pttEmbed, "canaria3406");
     }
     catch{
         console.log("ptt error");

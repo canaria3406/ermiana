@@ -74,9 +74,8 @@ export async function handleEhRegex( result, message ){
         try {
             ehEmbed.setImage(resp.data.gmetadata[0].thumb);
         } catch{}
-        ehEmbed.setFooter({ text: "canaria3406", iconURL: "https://cdn.discordapp.com/avatars/242927802557399040/1f3b1744568e4333a8889eafaa1f982a.png"});
 
-        messageSender(message.channel, ehEmbed);
+        messageSender(message.channel, ehEmbed, "canaria3406");
         embedSuppresser(message);
     }
     catch{

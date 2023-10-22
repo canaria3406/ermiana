@@ -99,9 +99,8 @@ export async function handleNhRegex( result, message ){
             try {
                 nhEmbed.setImage("https://t.nhentai.net/galleries/" + resp.data.media_id + "/thumb.jpg");
             } catch{}
-            nhEmbed.setFooter({ text: "canaria3406", iconURL: "https://cdn.discordapp.com/avatars/242927802557399040/1f3b1744568e4333a8889eafaa1f982a.png"});
 
-            messageSender(message.channel, nhEmbed);
+            messageSender(message.channel, nhEmbed, "canaria3406");
             embedSuppresser(message);
 
         } else {

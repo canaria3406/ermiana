@@ -108,9 +108,8 @@ export async function handleSgoRegex(result, message) {
             try {
                 sgoEmbed.setThumbnail("https://swordgale.b-cdn.net/" + resp.data.meta.teamA[0].avatar);
             } catch {}
-            sgoEmbed.setFooter({ text: "canaria3406", iconURL: "https://cdn.discordapp.com/avatars/242927802557399040/1f3b1744568e4333a8889eafaa1f982a.png"});
-            
-            messageSender(message.channel, sgoEmbed);
+
+            messageSender(message.channel, sgoEmbed, "canaria3406");
         } catch {
             console.log("sgo error");
         }
