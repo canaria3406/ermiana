@@ -1,10 +1,10 @@
 <h1 align="center">
     <img width="120" height="120" src="pic/logo.svg" alt=""><br>
-    ermianaJS
+    ermiana
 </h1>
 
 <p align="center">
-    <img src="https://img.shields.io/github/license/canaria3406/ermianaJS?style=flat-square">
+    <img src="https://img.shields.io/github/license/canaria3406/ermiana?style=flat-square">
     <a href="https://discord.com/api/oauth2/authorize?client_id=1078919650764652594&permissions=274878000128&scope=bot%20applications.commands"><img src="https://img.shields.io/badge/invite-%40ermiana-7289da?style=flat-square"></a>
 </p>
 
@@ -15,14 +15,14 @@ Supports multiple websites such as ptt.cc, 巴哈姆特電玩資訊站, e-hentai
 
 ## Live Demo
 
-[url.canaria.cc/ermianaJS](https://url.canaria.cc/ermianaJS)
+[url.canaria.cc/ermiana](https://url.canaria.cc/ermiana)
 
 ## Getting Started
 
 ### Clone
 
 ```shell
-git clone https://github.com/canaria3406/ermianaJS.git
+git clone https://github.com/canaria3406/ermiana.git
 ```
 
 ### Settings
