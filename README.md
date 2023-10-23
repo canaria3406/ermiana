@@ -4,8 +4,9 @@
 </h1>
 
 <p align="center">
-    <img src="https://img.shields.io/github/license/canaria3406/ermiana?style=flat-square">
+    <a href="https://github.com/canaria3406/ermiana/blob/master/LICENSE"><img src="https://img.shields.io/github/license/canaria3406/ermiana?style=flat-square"></a>
     <a href="https://discord.com/api/oauth2/authorize?client_id=1078919650764652594&permissions=274878000128&scope=bot%20applications.commands"><img src="https://img.shields.io/badge/invite-%40ermiana-7289da?style=flat-square"></a>
+    <a href="https://github.com/canaria3406/ermiana/discussions"><img src="https://img.shields.io/github/discussions/canaria3406/ermiana?style=flat-square"></a>
 </p>
 
 ermiana is a discord bot that converts unuseful webpage previews to more detailed image and webpage previews.  
