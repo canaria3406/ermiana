@@ -15,7 +15,7 @@ export const regexs = [
     regex: /https:\/\/nhentai\.net\/g\/([0-9]+)\//,
     handler: handleNhRegex },
   {
-    regex: /https?:\/\/www\.ptt\.cc\/bbs\/((?:G|g)ossiping|AC_In)\/M\.[0-9]+\.A\.[0-9A-Z]+\.html/,
+    regex: /https?:\/\/www\.ptt\.cc\/bbs\/((?:G|g)ossiping|AC_In)\/(M\.[0-9]+\.A\.[0-9A-Z]+)\.html/,
     handler: handlePttRegex },
   {
     regex: /https?:\/\/m\.gamer\.com\.tw\/forum\/C\.php\?bsn=60076&snA=[0-9]+/,
