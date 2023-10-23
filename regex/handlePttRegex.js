@@ -8,6 +8,7 @@ export async function handlePttRegex( result, message ) {
     await message.channel.sendTyping();
   } catch {}
   try {
+    // use moptt api
     const pttResp = await axios.request({
       method: 'get',
       url: 'https://moptt.tw/ptt/' + result[1] + '.' + result[2],
@@ -18,13 +19,26 @@ export async function handlePttRegex( result, message ) {
       mopttEmbed.setColor(2894892);
       mopttEmbed.setTitle(pttResp.data.title);
       mopttEmbed.setURL(pttResp.data.url);
-      // try {
-      //   if (pttResp.data.author) {
-      //     mopttEmbed.setAuthor({ name: '@' + pttResp.data.author });
-      //   }      
-      // } catch {}
+
+      let pttDescription = '';
       try {
-        if (pttResp.data.description) {
+          // use vanilla ptt description
+          const pageDATA = await axios.request({
+            url: result[0],
+            method: 'get',
+            headers: { Cookie: 'over18=1;' },
+            timeout: 2000,
+          });
+          const $ = cheerio.load(pageDATA.data);
+          if ($('meta[property=og:description]').attr('content')) {
+            pttDescription = $('meta[property=og:description]').attr('content');
+          }
+      } catch{}
+      try {
+        if (pttDescription) {
+          mopttEmbed.setDescription(pttDescription);
+        }
+        else if (pttResp.data.description) {
           mopttEmbed.setDescription(pttResp.data.description);
         }      
       } catch {}
@@ -38,6 +52,7 @@ export async function handlePttRegex( result, message ) {
     }
   } catch {
     console.log('moptt api error');
+    // use vanilla ptt as backup
     try {
       const pageHTML = await axios.request({
         url: result[0],
