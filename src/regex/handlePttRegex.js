@@ -22,25 +22,24 @@ export async function handlePttRegex( result, message ) {
 
       let pttDescription = '';
       try {
-          // use vanilla ptt description
-          const pageDATA = await axios.request({
-            url: result[0],
-            method: 'get',
-            headers: { Cookie: 'over18=1;' },
-            timeout: 2000,
-          });
-          const $ = cheerio.load(pageDATA.data);
-          if ($('meta[property=og:description]').attr('content')) {
-            pttDescription = $('meta[property=og:description]').attr('content');
-          }
-      } catch{}
+        // use vanilla ptt description
+        const pageDATA = await axios.request({
+          url: result[0],
+          method: 'get',
+          headers: { Cookie: 'over18=1;' },
+          timeout: 2000,
+        });
+        const $ = cheerio.load(pageDATA.data);
+        if ($('meta[property=og:description]').attr('content')) {
+          pttDescription = $('meta[property=og:description]').attr('content');
+        }
+      } catch {}
       try {
         if (pttDescription) {
           mopttEmbed.setDescription(pttDescription);
-        }
-        else if (pttResp.data.description) {
+        } else if (pttResp.data.description) {
           mopttEmbed.setDescription(pttResp.data.description);
-        }      
+        }
       } catch {}
       try {
         if (pttResp.data.imageSource) {
@@ -60,9 +59,9 @@ export async function handlePttRegex( result, message ) {
         headers: { Cookie: 'over18=1;' },
         timeout: 2000,
       });
-  
+
       const $ = cheerio.load(pageHTML.data);
-  
+
       const pttEmbed = new EmbedBuilder();
       pttEmbed.setColor(2894892);
       pttEmbed.setTitle($('meta[property=og:title]').attr('content'));
@@ -72,7 +71,7 @@ export async function handlePttRegex( result, message ) {
           pttEmbed.setDescription($('meta[property=og:description]').attr('content'));
         }
       } catch {}
-  
+
       messageSender(message.channel, pttEmbed, 'canaria3406');
     } catch {
       console.log('ptt error');
