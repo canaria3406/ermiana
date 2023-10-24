@@ -3,7 +3,6 @@ import axios from 'axios';
 import Conf from 'conf';
 import { messageSender } from '../common/messageSender.js';
 import { reloadTwitterTK } from '../common/reloadTwitterTK.js';
-import { embedSuppresser } from '../common/embedSuppresser.js';
 
 export async function handleTwitterRegex( result, message ) {
   try {
@@ -39,8 +38,11 @@ export async function handleTwitterRegex( result, message ) {
 
       const fxapitweetinfo = '💬' + fxapiResp.data.tweet.replies.toString() + ' 🔁' + fxapiResp.data.tweet.retweets.toString() + ' ❤️' + fxapiResp.data.tweet.likes.toString();
 
-      embedSuppresser(message);
-      messageSender(message.channel, fxapitwitterEmbed, fxapitweetinfo);
+      if (!message.embeds[0]) {
+        messageSender(message.channel, fxapitwitterEmbed, fxapitweetinfo);
+      } else {
+        // use vallina embeds
+      }
 
       try {
         if (fxapiResp.data.tweet.media.all[0].type != 'photo') {
@@ -77,8 +79,11 @@ export async function handleTwitterRegex( result, message ) {
 
         const vxapitweetinfo = '💬' + vxapiResp.data.replies.toString() + ' 🔁' + vxapiResp.data.retweets.toString() + ' ❤️' + vxapiResp.data.likes.toString();
 
-        embedSuppresser(message);
-        messageSender(message.channel, vxapitwitterEmbed, vxapitweetinfo);
+        if (!message.embeds[0]) {
+          messageSender(message.channel, vxapitwitterEmbed, vxapitweetinfo);
+        } else {
+          // use vallina embeds
+        }
 
         try {
           if (vxapiResp.data.media_extended[0].type != 'image') {
@@ -155,8 +160,11 @@ export async function handleTwitterRegex( result, message ) {
 
         const tweetinfo = '💬' + result.legacy.reply_count.toString() + ' 🔁' + result.legacy.retweet_count.toString() + ' ❤️' + result.legacy.favorite_count.toString();
 
-        embedSuppresser(message);
-        messageSender(message.channel, twitterEmbed, tweetinfo);
+        if (!message.embeds[0]) {
+          messageSender(message.channel, twitterEmbed, tweetinfo);
+        } else {
+          // use vallina embeds
+        }
 
         try {
           if (result.legacy.extended_entities?.media[0].type == 'video' || 'animated_gif') {
