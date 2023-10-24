@@ -16,6 +16,7 @@ export async function handleTwitterRegex( result, message ) {
     const fxapiResp = await axios.request({
       method: 'get',
       url: 'https://api.fxtwitter.com/i/status/' + tid,
+      timeout: 2000,
     });
 
     if (fxapiResp.status === 200) {
@@ -39,6 +40,7 @@ export async function handleTwitterRegex( result, message ) {
       const fxapitweetinfo = '💬' + fxapiResp.data.tweet.replies.toString() + ' 🔁' + fxapiResp.data.tweet.retweets.toString() + ' ❤️' + fxapiResp.data.tweet.likes.toString();
 
       if (!message.embeds[0]) {
+        // TODO: if mosaic > use embedSuppresser & messageSender
         messageSender(message.channel, fxapitwitterEmbed, fxapitweetinfo);
       } else {
         // use vallina embeds
@@ -56,6 +58,7 @@ export async function handleTwitterRegex( result, message ) {
       const vxapiResp = await axios.request({
         method: 'get',
         url: 'https://api.vxtwitter.com/i/status/' + tid,
+        timeout: 2000,
       });
 
       if (vxapiResp.status === 200) {
@@ -131,6 +134,7 @@ export async function handleTwitterRegex( result, message ) {
           method: 'get',
           url: url,
           headers: headers,
+          timeout: 2000,
         });
 
         let result = resp.data.data.threaded_conversation_with_injections_v2.instructions[0].entries[0].content.itemContent?.tweet_results.result;
