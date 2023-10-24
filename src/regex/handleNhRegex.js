@@ -104,5 +104,6 @@ export async function handleNhRegex( result, message ) {
     }
   } catch {
     console.log('nh error');
+    await reloadNhTK();
   }
 };
