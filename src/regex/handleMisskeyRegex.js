@@ -1,4 +1,3 @@
-/* eslint-disable guard-for-in */
 import { EmbedBuilder } from 'discord.js';
 import axios from 'axios';
 import { messageSender } from '../common/messageSender.js';
@@ -7,7 +6,7 @@ import { embedSuppresser } from '../common/embedSuppresser.js';
 export async function handleMisskeyRegex(result, message) {
   try {
     await message.channel.sendTyping();
-  } catch { }
+  } catch {}
   try {
     const resp = await axios.request({
       method: 'post',
@@ -26,18 +25,20 @@ export async function handleMisskeyRegex(result, message) {
 
       try {
         misskeyEmbed.setDescription(resp.data.text);
-      } catch { }
+      } catch {}
 
       try {
         if (resp.data.files[0]?.type == 'image/webp' || 'image/png' || 'image/jpg') {
           misskeyEmbed.setImage(resp.data.files[0].url);
         }
-      } catch { }
+      } catch {}
 
       function sumReactions(reactions) {
         let total = 0;
         for (const key in reactions) {
-          total += reactions[key];
+          if (reactions.hasOwnProperty(key)) {
+            total += reactions[key];
+          }
         }
         return total;
       }
@@ -56,7 +57,7 @@ export async function handleMisskeyRegex(result, message) {
             message.channel.send(othersiteUrl);
           }
         }
-      } catch { }
+      } catch {}
     } else {
       console.error('Request failed');
     }
