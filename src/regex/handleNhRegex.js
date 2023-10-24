@@ -17,12 +17,14 @@ export async function handleNhRegex( result, message ) {
     if (!ermianaNh.get('NhHeaderCookie')) {
       await reloadNhTK();
     }
-
     const NhHeaderCookie = ermianaNh.get('NhHeaderCookie');
 
     const headers = {
+      'Accept': 'application/json',
+      'Accept-Encoding': 'gzip, deflate, br',
+      'Connection': 'keep-alive',
       'Host': 'nhentai.net',
-      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/118.0',
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36',
       'Cookie': NhHeaderCookie,
     };
 
