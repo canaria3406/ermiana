@@ -12,16 +12,16 @@ export const regexs = [
     regex: /https:\/\/e(?:x|-)hentai\.org\/g\/([0-9]+)\/([0-9a-z]+)\//,
     handler: handleEhRegex },
   {
-    regex: /https:\/\/nhentai\.net\/g\/([0-9]+)\//,
+    regex: /https:\/\/nhentai\.net\/g\/([0-9]+)/,
     handler: handleNhRegex },
   {
     regex: /https?:\/\/www\.ptt\.cc\/bbs\/((?:G|g)ossiping|AC_In)\/(M\.[0-9]+\.A\.[0-9A-Z]+)\.html/,
     handler: handlePttRegex },
   {
-    regex: /https?:\/\/m\.gamer\.com\.tw\/forum\/C\.php\?bsn=60076&snA=[0-9]+/,
+    regex: /https?:\/\/m\.gamer\.com\.tw\/forum\/C\.php\?bsn=60076&snA=([0-9]+)/,
     handler: handleBahaRegex },
   {
-    regex: /https?:\/\/forum\.gamer\.com\.tw\/C\.php\?bsn=60076&snA=[0-9]+/,
+    regex: /https?:\/\/forum\.gamer\.com\.tw\/C\.php\?bsn=60076&snA=([0-9]+)/,
     handler: handleBahaRegex },
   {
     regex: /https:\/\/www\.pixiv\.net\/artworks\/([0-9]+)/,

@@ -19,7 +19,7 @@ export async function handleBahaRegex(result, message) {
     const BAHARUNE = ermianaBH.get('BAHARUNE');
 
     const pageHTML = await axios.request({
-      url: result[0],
+      url: 'https://forum.gamer.com.tw/C.php?bsn=60076&snA=' + result[1],
       method: 'get',
       headers: { Cookie: 'BAHAENUR=' + BAHAENUR + '; BAHARUNE=' + BAHARUNE + ';' },
     });
@@ -29,7 +29,7 @@ export async function handleBahaRegex(result, message) {
     const bahaEmbed = new EmbedBuilder();
     bahaEmbed.setColor(1559500);
     bahaEmbed.setTitle($('meta[property=og:title]').attr('content'));
-    bahaEmbed.setURL(result[0]);
+    bahaEmbed.setURL('https://forum.gamer.com.tw/C.php?bsn=60076&snA=' + result[1]);
     try {
       bahaEmbed.setDescription($('meta[property=og:description]').attr('content'));
     } catch {}
@@ -48,7 +48,7 @@ export async function handleBahaRegex(result, message) {
       const BAHARUNE2 = ermianaBH2.get('BAHARUNE');
 
       const pageHTML2 = await axios.request({
-        url: result[0],
+        url: 'https://forum.gamer.com.tw/C.php?bsn=60076&snA=' + result[1],
         method: 'get',
         headers: { Cookie: 'BAHAENUR=' + BAHAENUR2 + '; BAHARUNE=' + BAHARUNE2 + ';' },
       });
@@ -58,7 +58,7 @@ export async function handleBahaRegex(result, message) {
       const bahaEmbed2 = new EmbedBuilder();
       bahaEmbed2.setColor(1559500);
       bahaEmbed2.setTitle($('meta[property=og:title]').attr('content'));
-      bahaEmbed2.setURL(result[0]);
+      bahaEmbed2.setURL('https://forum.gamer.com.tw/C.php?bsn=60076&snA=' + result[1]);
       try {
         bahaEmbed2.setDescription($('meta[property=og:description]').attr('content'));
       } catch {}
