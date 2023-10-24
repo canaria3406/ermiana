@@ -9,7 +9,7 @@ import { embedSuppresser } from '../common/embedSuppresser.js';
 export async function handleBahaRegex(result, message) {
   try {
     await message.channel.sendTyping();
-  } catch { }
+  } catch {}
   try {
     const ermianaBH = new Conf({ projectName: 'ermianaJS' });
     if (!ermianaBH.get('BAHAENUR') || !ermianaBH.get('BAHARUNE')) {
@@ -32,10 +32,10 @@ export async function handleBahaRegex(result, message) {
     bahaEmbed.setURL(result[0]);
     try {
       bahaEmbed.setDescription($('meta[property=og:description]').attr('content'));
-    } catch { }
+    } catch {}
     try {
       bahaEmbed.setImage($('meta[property=og:image]').attr('content'));
-    } catch { }
+    } catch {}
 
     embedSuppresser(message);
     messageSender(message.channel, bahaEmbed, 'canaria3406');
@@ -61,10 +61,10 @@ export async function handleBahaRegex(result, message) {
       bahaEmbed2.setURL(result[0]);
       try {
         bahaEmbed2.setDescription($('meta[property=og:description]').attr('content'));
-      } catch { }
+      } catch {}
       try {
         bahaEmbed2.setImage($('meta[property=og:image]').attr('content'));
-      } catch { }
+      } catch {}
 
       embedSuppresser(message);
       messageSender(message.channel, bahaEmbed2, 'canaria3406');

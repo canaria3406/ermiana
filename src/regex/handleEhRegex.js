@@ -6,7 +6,7 @@ import { embedSuppresser } from '../common/embedSuppresser.js';
 export async function handleEhRegex(result, message) {
   try {
     await message.channel.sendTyping();
-  } catch { }
+  } catch {}
   const galleryId = parseInt(result[1]);
   const galleryToken = result[2];
   try {
@@ -68,10 +68,10 @@ export async function handleEhRegex(result, message) {
     );
     try {
       ehEmbed.addFields({ name: '標籤', value: translateTags.join('\n') });
-    } catch { }
+    } catch {}
     try {
       ehEmbed.setImage(resp.data.gmetadata[0].thumb);
-    } catch { }
+    } catch {}
 
     messageSender(message.channel, ehEmbed, 'canaria3406');
     embedSuppresser(message);
