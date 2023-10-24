@@ -1,15 +1,15 @@
 {
-  "name": "ermianajs",
-  "description": "A discord bot that shows hidden description",
+  "name": "ermiana",
+  "version": "1.0.0",
+  "description": "A discord bot that shows hidden description.",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "lint": "eslint --fix src/*.js"
   },
-  "pre-commit": ["lint"],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/canaria3406/ermiana.git"
+    "url": "https://github.com/canaria3406/ermiana.git"
   },
   "type": "module",
   "author": "canaria3406",
