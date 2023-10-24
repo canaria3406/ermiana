@@ -31,11 +31,11 @@ export async function handlePlurkRegex( result, message ) {
       plurkEmbed.setImage($('script').text().match(/https:\/\/images\.plurk\.com\/[^"]+\.(jpg|png)/)[0]);
     } catch {}
 
-    const plurkInfo = ' • 💬' + respPlurk + ' 🔁' + rePlurk + ' ❤️' + favPlurk;
+    const plurkInfo = '💬' + respPlurk + ' 🔁' + rePlurk + ' ❤️' + favPlurk;
 
     embedSuppresser(message);
 
-    messageSender(message.channel, plurkEmbed, 'canaria3406' + plurkInfo);
+    messageSender(message.channel, plurkEmbed, plurkInfo);
   } catch {
     console.log('plurk error');
   }

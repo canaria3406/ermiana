@@ -43,10 +43,10 @@ export async function handleMisskeyRegex(result, message) {
         return total;
       }
 
-      const noteinfo = ' • 💬' + resp.data.repliesCount.toString() + ' 🔁' + resp.data.renoteCount.toString() + ' ❤️' + sumReactions(resp.data.reactions).toString();
+      const noteinfo = '💬' + resp.data.repliesCount.toString() + ' 🔁' + resp.data.renoteCount.toString() + ' ❤️' + sumReactions(resp.data.reactions).toString();
 
       embedSuppresser(message);
-      messageSender(message.channel, misskeyEmbed, 'canaria3406' + noteinfo);
+      messageSender(message.channel, misskeyEmbed, noteinfo);
 
       try {
         if (resp.data.files[0]?.type == 'video/mp4') {

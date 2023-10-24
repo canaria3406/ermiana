@@ -37,10 +37,10 @@ export async function handleTwitterRegex( result, message ) {
         }
       } catch {}
 
-      const fxapitweetinfo = ' • 💬' + fxapiResp.data.tweet.replies.toString() + ' 🔁' + fxapiResp.data.tweet.retweets.toString() + ' ❤️' + fxapiResp.data.tweet.likes.toString();
+      const fxapitweetinfo = '💬' + fxapiResp.data.tweet.replies.toString() + ' 🔁' + fxapiResp.data.tweet.retweets.toString() + ' ❤️' + fxapiResp.data.tweet.likes.toString();
 
       embedSuppresser(message);
-      messageSender(message.channel, fxapitwitterEmbed, 'canaria3406' + fxapitweetinfo);
+      messageSender(message.channel, fxapitwitterEmbed, fxapitweetinfo);
 
       try {
         if (fxapiResp.data.tweet.media.all[0].type != 'photo') {
@@ -75,10 +75,10 @@ export async function handleTwitterRegex( result, message ) {
           }
         } catch {}
 
-        const vxapitweetinfo = ' • 💬' + vxapiResp.data.replies.toString() + ' 🔁' + vxapiResp.data.retweets.toString() + ' ❤️' + vxapiResp.data.likes.toString();
+        const vxapitweetinfo = '💬' + vxapiResp.data.replies.toString() + ' 🔁' + vxapiResp.data.retweets.toString() + ' ❤️' + vxapiResp.data.likes.toString();
 
         embedSuppresser(message);
-        messageSender(message.channel, vxapitwitterEmbed, 'canaria3406' + vxapitweetinfo);
+        messageSender(message.channel, vxapitwitterEmbed, vxapitweetinfo);
 
         try {
           if (vxapiResp.data.media_extended[0].type != 'image') {
@@ -153,10 +153,10 @@ export async function handleTwitterRegex( result, message ) {
           }
         } catch {}
 
-        const tweetinfo = ' • 💬' + result.legacy.reply_count.toString() + ' 🔁' + result.legacy.retweet_count.toString() + ' ❤️' + result.legacy.favorite_count.toString();
+        const tweetinfo = '💬' + result.legacy.reply_count.toString() + ' 🔁' + result.legacy.retweet_count.toString() + ' ❤️' + result.legacy.favorite_count.toString();
 
         embedSuppresser(message);
-        messageSender(message.channel, twitterEmbed, 'canaria3406' + tweetinfo);
+        messageSender(message.channel, twitterEmbed, tweetinfo);
 
         try {
           if (result.legacy.extended_entities?.media[0].type == 'video' || 'animated_gif') {
