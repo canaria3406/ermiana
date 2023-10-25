@@ -85,14 +85,8 @@ export async function handleTwitterRegex( result, message ) {
 
         const vxapitweetinfo = '💬' + vxapiResp.data.replies.toString() + ' 🔁' + vxapiResp.data.retweets.toString() + ' ❤️' + vxapiResp.data.likes.toString();
 
-        try {
-          if (!message.embeds[0]) {
-            messageSender(message.channel, vxapitwitterEmbed, vxapitweetinfo);
-          } else if (vxapiResp.data.media_extended[0] && vxapiResp.data.media_extended[0].type === 'image' && vxapiResp.data.mediaURLs.length >= 2) {
-            embedSuppresser(message);
-            messageSender(message.channel, vxapitwitterEmbed, vxapitweetinfo);
-          }
-        } catch {}
+        embedSuppresser(message);
+        messageSender(message.channel, vxapitwitterEmbed, vxapitweetinfo);
 
         try {
           if (vxapiResp.data.media_extended[0].type != 'image') {
