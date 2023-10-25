@@ -3,6 +3,7 @@ import axios from 'axios';
 import Conf from 'conf';
 import { messageSender } from '../common/messageSender.js';
 import { reloadTwitterTK } from '../common/reloadTwitterTK.js';
+import { embedSuppresser } from '../common/embedSuppresser.js';
 
 export async function handleTwitterRegex( result, message ) {
   try {
@@ -39,12 +40,14 @@ export async function handleTwitterRegex( result, message ) {
 
       const fxapitweetinfo = '💬' + fxapiResp.data.tweet.replies.toString() + ' 🔁' + fxapiResp.data.tweet.retweets.toString() + ' ❤️' + fxapiResp.data.tweet.likes.toString();
 
-      if (!message.embeds[0]) {
-        // TODO: if mosaic > use embedSuppresser & messageSender
-        messageSender(message.channel, fxapitwitterEmbed, fxapitweetinfo);
-      } else {
-        // use vallina embeds
-      }
+      try {
+        if (!message.embeds[0]) {
+          messageSender(message.channel, fxapitwitterEmbed, fxapitweetinfo);
+        } else if (fxapiResp.data.tweet.media.mosaic && fxapiResp.data.tweet.media.mosaic.type === 'mosaic_photo') {
+          embedSuppresser(message);
+          messageSender(message.channel, fxapitwitterEmbed, fxapitweetinfo);
+        }
+      } catch {}
 
       try {
         if (fxapiResp.data.tweet.media.all[0].type != 'photo') {
@@ -82,11 +85,14 @@ export async function handleTwitterRegex( result, message ) {
 
         const vxapitweetinfo = '💬' + vxapiResp.data.replies.toString() + ' 🔁' + vxapiResp.data.retweets.toString() + ' ❤️' + vxapiResp.data.likes.toString();
 
-        if (!message.embeds[0]) {
-          messageSender(message.channel, vxapitwitterEmbed, vxapitweetinfo);
-        } else {
-          // use vallina embeds
-        }
+        try {
+          if (!message.embeds[0]) {
+            messageSender(message.channel, vxapitwitterEmbed, vxapitweetinfo);
+          } else if (vxapiResp.data.media_extended[0] && vxapiResp.data.media_extended[0].type === 'image' && vxapiResp.data.mediaURLs.length >= 2) {
+            embedSuppresser(message);
+            messageSender(message.channel, vxapitwitterEmbed, vxapitweetinfo);
+          }
+        } catch {}
 
         try {
           if (vxapiResp.data.media_extended[0].type != 'image') {
