@@ -27,6 +27,9 @@ export const regexs = [
     regex: /https:\/\/www\.pixiv\.net\/artworks\/([0-9]+)/,
     handler: handlePixivRegex },
   {
+    regex: /https:\/\/www\.pixiv\.net\/en\/artworks\/([0-9]+)/,
+    handler: handlePixivRegex },
+  {
     regex: /https:\/\/www\.plurk\.com\/m\/p\/([a-zA-Z0-9]{3,10})/,
     handler: handlePlurkRegex },
   {
