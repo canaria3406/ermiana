@@ -12,6 +12,7 @@ export async function handlePixivRegex( result, message ) {
     const resp = await axios.request({
       method: 'get',
       url: 'https://www.pixiv.net/ajax/illust/' + pid,
+      timeout: 2500,
     });
 
     const tagString = resp.data.body.tags.tags.map((element) => `[${element.tag}](https://www.pixiv.net/tags/${element.tag}/artworks)`).join(', ');
@@ -45,6 +46,7 @@ export async function handlePixivRegex( result, message ) {
             data: {
               p: result[0],
             },
+            timeout: 2500,
           });
           if (resp2.data?.original_url) {
             message.channel.send(resp2.data.original_url.replace('i.pximg.net', 'pixiv.canaria.cc'));

@@ -32,6 +32,7 @@ export async function handleNhRegex( result, message ) {
       method: 'get',
       url: 'https://nhentai.net/api/gallery/' + nid,
       headers: headers,
+      timeout: 2000,
     });
 
     if (resp.status === 200) {

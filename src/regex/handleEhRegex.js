@@ -18,6 +18,7 @@ export async function handleEhRegex(result, message) {
         gidlist: [[galleryId, galleryToken]],
         namespace: 1,
       },
+      timeout: 2000,
     });
 
     // merge the tag with same keys

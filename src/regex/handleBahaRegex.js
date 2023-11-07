@@ -22,6 +22,7 @@ export async function handleBahaRegex(result, message) {
       url: 'https://forum.gamer.com.tw/C.php?bsn=60076&snA=' + result[1],
       method: 'get',
       headers: { Cookie: 'BAHAENUR=' + BAHAENUR + '; BAHARUNE=' + BAHARUNE + ';' },
+      timeout: 2500,
     });
 
     const $ = cheerio.load(pageHTML.data);
@@ -51,6 +52,7 @@ export async function handleBahaRegex(result, message) {
         url: 'https://forum.gamer.com.tw/C.php?bsn=60076&snA=' + result[1],
         method: 'get',
         headers: { Cookie: 'BAHAENUR=' + BAHAENUR2 + '; BAHARUNE=' + BAHARUNE2 + ';' },
+        timeout: 2500,
       });
 
       const $ = cheerio.load(pageHTML2.data);

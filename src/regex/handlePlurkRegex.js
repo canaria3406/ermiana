@@ -12,6 +12,7 @@ export async function handlePlurkRegex( result, message ) {
     const pageHTML = await axios.request({
       url: 'https://www.plurk.com/p/' + result[1],
       method: 'get',
+      timeout: 2000,
     });
 
     const $ = cheerio.load(pageHTML.data);

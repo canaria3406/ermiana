@@ -14,6 +14,7 @@ export async function handleMisskeyRegex(result, message) {
       data: {
         noteId: result[1],
       },
+      timeout: 2000,
     });
 
     if (resp.status === 200) {
