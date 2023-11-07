@@ -4,7 +4,7 @@ Last Updated: November 7, 2023
 
 ## What You Can Expect from Us
 Ermiana is a Discord bot designed to enhance webpage previews by providing more detailed images and webpage content. It supports various websites, including ptt.cc, gamer.com.tw, e-hentai, Plurk, Pixiv, and Twitter.  
-Ermiana will NEVER STORE any of your data, which includes but is not limited to your avatar, description, messages, and pictures sent. Rest assured that your personal data will always be kept safe and protected by Discord's high-quality service.
+Ermiana will NEVER STORE any of your user data, which includes but is not limited to your avatar, description, messages, and pictures sent. Rest assured that your personal data will always be kept safe and protected by Discord's high-quality service.
 
 ## Software
 Ermiana is an open-source project released on GitHub under the MIT license. You can view the source code at https://github.com/canaria3406/ermiana. You can reproduce this code in any form, but you need to include the GitHub URL of ermiana's source code in the bot's description when publishing the bot on Discord.
