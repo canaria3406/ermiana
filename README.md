@@ -9,8 +9,8 @@
     <a href="https://github.com/canaria3406/ermiana/discussions"><img src="https://img.shields.io/github/discussions/canaria3406/ermiana?style=flat-square"></a>
 </p>
 
-ermiana is a discord bot that converts unuseful webpage previews to more detailed image and webpage previews.  
-Supports multiple websites such as ptt.cc, 巴哈姆特電玩資訊站, e-hentai, Plurk, Pixiv, and Twitter.
+Ermiana is a Discord bot designed to enhance webpage previews by providing more detailed images and webpage content.  
+It supports various websites, including ptt.cc, gamer.com.tw, e-hentai, Plurk, Pixiv, and Twitter.  
 
 ![demo](pic/demo1.png)
 
