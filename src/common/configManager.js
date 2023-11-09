@@ -4,6 +4,7 @@ export async function configManager() {
   dotenv.config();
   const config = {
     DCTK: process.env.DCTK,
+    DCID: process.env.DCID,
     BHUD: process.env.BHUD,
     BHPD: process.env.BHPD,
     TWPT: process.env.TWPT,
