@@ -20,7 +20,7 @@
     "cheerio": "^1.0.0-rc.12",
     "conf": "^11.0.1",
     "cron": "^2.2.0",
-    "discord.js": "^14.7.1",
+    "discord.js": "^14.12.1",
     "dotenv": "^16.0.3"
   },
   "devDependencies": {
