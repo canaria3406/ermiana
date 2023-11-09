@@ -14,7 +14,7 @@ All comments made by Ermiana are quotes from messages sent by users. When you us
 
 ## Settling Disputes
 Most disputes can be resolved informally, so if you have an issue with the services, you agree to reach out to us before initiating a lawsuit or arbitration. This requires sending @canaria3406 a written description of the dispute, including your name, the nature of your complaint, and how you'd like to resolve it, along with your Discord account ID, to admin#canaria.cc (replace # with @).  
-If there are unresolved issues necessitating litigation, both parties agree that the governing law shall be the laws of Taiwan (ROC), and Taiwan Taipei District Court shall serve as the court of first instance.
+If there are unresolved issues necessitating litigation, both parties agree that the governing law shall be the laws of Taiwan, and Taiwan Taipei District Court shall serve as the court of first instance.
 
 ## Bug Reporting
 We support the reporting of vulnerabilities. To report any issue, please visit https://github.com/canaria3406/ermiana/discussions.
