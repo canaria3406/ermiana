@@ -1,8 +1,7 @@
-import { Client, GatewayIntentBits, ActivityType } from 'discord.js';
+import { Client, GatewayIntentBits } from 'discord.js';
 import { currentTime } from './common/currentTime.js';
 import { configManager } from './common/configManager.js';
 import { runBahaCron } from './common/runBahaCron.js';
-import { runPresenceCron } from './common/runPresenceCron.js';
 import { regexs } from './regex/regexManager.js';
 import { refreshContextMenus } from './common/refreshContextMenus.js';
 
@@ -16,7 +15,7 @@ const client = new Client({
 
 client.on('ready', () =>{
   console.log(`Ready! 以 ${client.user.tag} 身分登入`);
-  client.user.setPresence({ status: 'dnd' });
+  // client.user.setPresence({ status: 'dnd' });
   currentTime();
   let totalUserCount = 0;
   client.guilds.cache.forEach( (guild) => {
@@ -27,11 +26,11 @@ client.on('ready', () =>{
   });
   console.log(`正在 ${client.guilds.cache.size} 個伺服器上運作中`);
   console.log(`正在服務 ${totalUserCount} 位使用者`);
-  client.user.setPresence({
-    activities: [{ name: `${client.guilds.cache.size} 個伺服器的魔法詠唱`, type: ActivityType.Listening }],
-    status: 'online',
-  });
-  runPresenceCron(client);
+  // client.user.setPresence({
+  //   activities: [{ name: `${client.guilds.cache.size} 個伺服器的魔法詠唱`, type: ActivityType.Listening }],
+  //   status: 'online',
+  // });
+  // runPresenceCron(client);
 });
 
 client.on('messageCreate', async (message) => {
