@@ -34,6 +34,8 @@ git clone https://github.com/canaria3406/ermiana.git
 
 ![demo](pic/demo2.png)
 
+![demo](pic/demo6.png)
+
 ![demo](pic/demo3.png)
 
 ![demo](pic/demo5.png)
