@@ -5,8 +5,8 @@
 
 <p align="center">
     <a href="https://github.com/canaria3406/ermiana/blob/master/LICENSE"><img src="https://img.shields.io/github/license/canaria3406/ermiana?style=flat-square"></a>
-    <a href="https://discord.com/api/oauth2/authorize?client_id=1078919650764652594&permissions=274878000128&scope=bot%20applications.commands"><img src="https://img.shields.io/badge/invite-%40ermiana-7289da?style=flat-square"></a>
-    <a href="https://discord.com/api/oauth2/authorize?client_id=1078919650764652594&permissions=274878000128&scope=bot%20applications.commands"><img src="https://img.shields.io/badge/verified-%E2%9C%94%20BOT-7289da?style=flat-square"></a>
+    <a href="https://discord.com/api/oauth2/authorize?client_id=1078919650764652594&permissions=274878000128&scope=bot%20applications.commands"><img src="https://img.shields.io/badge/invite-%E2%9C%94%20BOT-7289da?style=flat-square&logo=discord&logoColor=white"></a>
+    <a href="https://discord.gg/QBwjpHcMyw"><img src="https://img.shields.io/discord/1172363356406042684?style=flat-square&label=support&color=yellow"></a>
 </p>
 
 Ermiana is a Discord bot designed to enhance webpage previews by providing more detailed images and webpage content.  
