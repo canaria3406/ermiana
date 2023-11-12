@@ -14,9 +14,9 @@ It supports various websites, including ptt.cc, gamer.com.tw, e-hentai, Plurk, P
 
 ![demo](pic/demo1.png)
 
-## Live Demo
+## Invite BOT
 
-[url.canaria.cc/ermiana](https://url.canaria.cc/ermiana)
+[discord.com/application-directory/1078919650764652594](https://discord.com/application-directory/1078919650764652594)
 
 ## Getting Started
 
