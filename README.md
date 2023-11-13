@@ -18,17 +18,10 @@ It supports various websites, including ptt.cc, gamer.com.tw, e-hentai, Plurk, P
 
 [discord.com/application-directory/1078919650764652594](https://discord.com/application-directory/1078919650764652594)
 
-## Getting Started
+## Policies
 
-### Clone
-
-```shell
-git clone https://github.com/canaria3406/ermiana.git
-```
-
-### Settings
-
-`.env`
+- [Privacy Policy](doc/privacy-policy.md)
+- [Terms of Service](doc/terms-of-service.md)
 
 ## Screenshot
 
