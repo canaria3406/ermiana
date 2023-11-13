@@ -30,7 +30,7 @@ export async function handlePixivRegex( result, message ) {
       pixivEmbed.addFields({ name: '標籤', value: tagString });
     } catch {}
 
-    messageSender(message.channel, pixivEmbed, 'canaria3406');
+    messageSender(message.channel, pixivEmbed, 'ermiana');
 
     try {
       if (resp.data.body.urls.original != null) {

@@ -47,7 +47,7 @@ export async function handlePttRegex( result, message ) {
         }
       } catch {}
 
-      messageSender(message.channel, mopttEmbed, 'canaria3406');
+      messageSender(message.channel, mopttEmbed, 'ermiana');
     }
   } catch {
     console.log('moptt api error');
@@ -72,7 +72,7 @@ export async function handlePttRegex( result, message ) {
         }
       } catch {}
 
-      messageSender(message.channel, pttEmbed, 'canaria3406');
+      messageSender(message.channel, pttEmbed, 'ermiana');
     } catch {
       console.log('ptt error');
     }

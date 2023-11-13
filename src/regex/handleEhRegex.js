@@ -74,7 +74,7 @@ export async function handleEhRegex(result, message) {
       ehEmbed.setImage(resp.data.gmetadata[0].thumb);
     } catch {}
 
-    messageSender(message.channel, ehEmbed, 'canaria3406');
+    messageSender(message.channel, ehEmbed, 'ermiana');
     embedSuppresser(message);
   } catch {
     console.log('eh error');

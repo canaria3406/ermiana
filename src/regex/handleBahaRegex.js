@@ -39,7 +39,7 @@ export async function handleBahaRegex(result, message) {
     } catch {}
 
     embedSuppresser(message);
-    messageSender(message.channel, bahaEmbed, 'canaria3406');
+    messageSender(message.channel, bahaEmbed, 'ermiana');
   } catch {
     console.log('baha error');
     await reloadBahaTK();
@@ -69,7 +69,7 @@ export async function handleBahaRegex(result, message) {
       } catch {}
 
       embedSuppresser(message);
-      messageSender(message.channel, bahaEmbed2, 'canaria3406');
+      messageSender(message.channel, bahaEmbed2, 'ermiana');
     } catch {
       console.log('baha second try error');
     }
