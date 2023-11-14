@@ -27,6 +27,8 @@ It supports various websites, including ptt.cc, gamer.com.tw, e-hentai, Plurk, P
 
 ![demo](pic/demo2.png)
 
+![demo](pic/demo7.png)
+
 ![demo](pic/demo6.png)
 
 ![demo](pic/demo3.png)
