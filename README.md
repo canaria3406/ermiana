@@ -52,4 +52,4 @@ It supports various websites, including ptt.cc, gamer.com.tw, e-hentai, Plurk, P
   - [x] Pixiv
   - [x] e-hentai
   - [x] exhentai
-  - [x] nhentai
+  - [ ] nhentai
