@@ -5,6 +5,7 @@
 
 <p align="center">
     <a href="https://github.com/canaria3406/ermiana/blob/master/LICENSE"><img src="https://img.shields.io/github/license/canaria3406/ermiana?style=flat-square"></a>
+    <a href="https://github.com/canaria3406/ermiana"><img src="https://img.shields.io/github/stars/canaria3406/ermiana?style=flat-square"></a>
     <a href="https://discord.com/api/oauth2/authorize?client_id=1078919650764652594&permissions=274878000128&scope=bot%20applications.commands"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fermiana-count.canaria.cc%2F&style=flat-square&logo=Discord&logoColor=white&cacheSeconds=21600"></a>
     <a href="https://discord.com/api/oauth2/authorize?client_id=1078919650764652594&permissions=274878000128&scope=bot%20applications.commands"><img src="https://img.shields.io/badge/invite-%E2%9C%94%20BOT-7289da?style=flat-square&logo=discord&logoColor=white"></a>
     <a href="https://discord.gg/QBwjpHcMyw"><img src="https://img.shields.io/discord/1172363356406042684?style=flat-square&logo=Discord&logoColor=white&label=support&color=yellow"></a>
