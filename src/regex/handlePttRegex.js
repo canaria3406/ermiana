@@ -5,13 +5,29 @@ import { messageSender } from '../common/messageSender.js';
 
 export async function handlePttRegex( result, message ) {
   try {
-    await message.channel.sendTyping();
+    if (!message.embeds[0]) {
+      await message.channel.sendTyping();
+    }
   } catch {}
   try {
+    function boardNameStandardization(boardName) {
+      const boardNameStandardized = boardName.toLowerCase();
+      if (boardNameStandardized === 'gossiping') {
+        return 'Gossiping';
+      } else if (boardNameStandardized === 'ac_in') {
+        return 'AC_In';
+      } else if (boardNameStandardized === 'h-game') {
+        return 'H-GAME';
+      } else if (boardNameStandardized === 'sex') {
+        return 'sex';
+      } else {
+        return boardName;
+      }
+    }
     // use moptt api
     const pttResp = await axios.request({
       method: 'get',
-      url: 'https://moptt.tw/ptt/' + result[1] + '.' + result[2],
+      url: 'https://moptt.tw/ptt/' + boardNameStandardization(result[1]) + '.' + result[2],
       timeout: 2000,
     });
     if (pttResp.status === 200) {
@@ -46,21 +62,22 @@ export async function handlePttRegex( result, message ) {
           mopttEmbed.setImage(pttResp.data.imageSource);
         }
       } catch {}
-
-      messageSender(message.channel, mopttEmbed, 'ermiana');
+      if (!message.embeds[0]) {
+        messageSender(message.channel, mopttEmbed, 'ermiana');
+      }
     }
   } catch {
     console.log('moptt api error');
     // use vanilla ptt as backup
     try {
-      const pageHTML = await axios.request({
+      const pttHTML = await axios.request({
         url: result[0],
         method: 'get',
         headers: { Cookie: 'over18=1;' },
         timeout: 2000,
       });
 
-      const $ = cheerio.load(pageHTML.data);
+      const $ = cheerio.load(pttHTML.data);
 
       const pttEmbed = new EmbedBuilder();
       pttEmbed.setColor(2894892);
@@ -72,7 +89,9 @@ export async function handlePttRegex( result, message ) {
         }
       } catch {}
 
-      messageSender(message.channel, pttEmbed, 'ermiana');
+      if (!message.embeds[0]) {
+        messageSender(message.channel, pttEmbed, 'ermiana');
+      }
     } catch {
       console.log('ptt error');
     }
