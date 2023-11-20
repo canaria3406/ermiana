@@ -45,6 +45,7 @@ It supports various websites, including ptt.cc, gamer.com.tw, e-hentai, Plurk, P
   - [x] PTT.cc
     - [x] Gossiping
     - [x] AC_IN
+    - [x] 其他設有閱覽限制的看板
   - [x] 巴哈姆特電玩資訊站
     - [x] 場外休憩區
   - [ ] Dcard
