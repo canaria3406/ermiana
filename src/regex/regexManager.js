@@ -9,11 +9,14 @@ import { handleMisskeyRegex } from './handleMisskeyRegex.js';
 
 export const regexs = [
   {
-    regex: /https:\/\/e(?:x|-)hentai\.org\/g\/([0-9]+)\/([0-9a-z]+)\//,
+    regex: /https:\/\/twitter\.com\/[A-Za-z0-9_]{1,15}\/status\/([0-9]+)/,
+    handler: handleTwitterRegex },
+  {
+    regex: /https:\/\/x\.com\/[A-Za-z0-9_]{1,15}\/status\/([0-9]+)/,
+    handler: handleTwitterRegex },
+  {
+    regex: /https:\/\/e(?:x|-)hentai\.org\/g\/([0-9]+)\/([0-9a-z]+)/,
     handler: handleEhRegex },
-  // {
-  //  regex: /https:\/\/nhentai\.net\/g\/([0-9]+)/,
-  //  handler: handleNhRegex },
   {
     regex: /https?:\/\/www\.ptt\.cc\/bbs\/([a-zA-Z-_]+)\/(M\.[0-9]+\.A\.[0-9A-Z]+)\.html/,
     handler: handlePttRegex },
@@ -36,12 +39,9 @@ export const regexs = [
     regex: /https:\/\/www\.plurk\.com\/p\/([a-zA-Z0-9]{3,10})/,
     handler: handlePlurkRegex },
   {
-    regex: /https:\/\/twitter\.com\/[A-Za-z0-9_]{1,15}\/status\/([0-9]+)/,
-    handler: handleTwitterRegex },
-  {
-    regex: /https:\/\/x\.com\/[A-Za-z0-9_]{1,15}\/status\/([0-9]+)/,
-    handler: handleTwitterRegex },
-  {
     regex: /https:\/\/misskey\.io\/notes\/([a-zA-Z0-9]{10})/,
     handler: handleMisskeyRegex },
+  // {
+  //  regex: /https:\/\/nhentai\.net\/g\/([0-9]+)/,
+  //  handler: handleNhRegex },
 ];
