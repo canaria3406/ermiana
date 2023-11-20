@@ -18,14 +18,14 @@ export async function handleBahaRegex(result, message) {
     const BAHAENUR = ermianaBH.get('BAHAENUR');
     const BAHARUNE = ermianaBH.get('BAHARUNE');
 
-    const pageHTML = await axios.request({
+    const bahaHTML = await axios.request({
       url: 'https://forum.gamer.com.tw/C.php?bsn=60076&snA=' + result[1],
       method: 'get',
       headers: { Cookie: 'BAHAENUR=' + BAHAENUR + '; BAHARUNE=' + BAHARUNE + ';' },
       timeout: 2500,
     });
 
-    const $ = cheerio.load(pageHTML.data);
+    const $ = cheerio.load(bahaHTML.data);
 
     const bahaEmbed = new EmbedBuilder();
     bahaEmbed.setColor(1559500);
@@ -41,21 +41,21 @@ export async function handleBahaRegex(result, message) {
     embedSuppresser(message);
     messageSender(message.channel, bahaEmbed, 'ermiana');
   } catch {
-    console.log('baha error');
+    // console.log('baha error');
     await reloadBahaTK();
     try {
       const ermianaBH2 = new Conf({ projectName: 'ermianaJS' });
       const BAHAENUR2 = ermianaBH2.get('BAHAENUR');
       const BAHARUNE2 = ermianaBH2.get('BAHARUNE');
 
-      const pageHTML2 = await axios.request({
+      const bahaHTML2 = await axios.request({
         url: 'https://forum.gamer.com.tw/C.php?bsn=60076&snA=' + result[1],
         method: 'get',
         headers: { Cookie: 'BAHAENUR=' + BAHAENUR2 + '; BAHARUNE=' + BAHARUNE2 + ';' },
         timeout: 2500,
       });
 
-      const $ = cheerio.load(pageHTML2.data);
+      const $ = cheerio.load(bahaHTML2.data);
 
       const bahaEmbed2 = new EmbedBuilder();
       bahaEmbed2.setColor(1559500);
@@ -71,7 +71,7 @@ export async function handleBahaRegex(result, message) {
       embedSuppresser(message);
       messageSender(message.channel, bahaEmbed2, 'ermiana');
     } catch {
-      console.log('baha second try error');
+      // console.log('baha second try error');
     }
   }
 };

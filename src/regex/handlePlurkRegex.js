@@ -9,13 +9,13 @@ export async function handlePlurkRegex( result, message ) {
     await message.channel.sendTyping();
   } catch {}
   try {
-    const pageHTML = await axios.request({
+    const plurkHTML = await axios.request({
       url: 'https://www.plurk.com/p/' + result[1],
       method: 'get',
-      timeout: 2000,
+      timeout: 2500,
     });
 
-    const $ = cheerio.load(pageHTML.data);
+    const $ = cheerio.load(plurkHTML.data);
 
     const rePlurk = $('script').text().match(/"replurkers_count": (\d+),/)[1] || '0';
     const favPlurk = $('script').text().match(/"favorite_count": (\d+),/)[1] || '0';
@@ -38,6 +38,6 @@ export async function handlePlurkRegex( result, message ) {
 
     messageSender(message.channel, plurkEmbed, plurkInfo);
   } catch {
-    console.log('plurk error');
+    // console.log('plurk error');
   }
 };

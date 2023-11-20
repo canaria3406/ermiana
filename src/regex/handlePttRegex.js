@@ -39,13 +39,13 @@ export async function handlePttRegex( result, message ) {
       let pttDescription = '';
       try {
         // use vanilla ptt description
-        const pageDATA = await axios.request({
+        const pttDATA = await axios.request({
           url: result[0],
           method: 'get',
           headers: { Cookie: 'over18=1;' },
-          timeout: 2000,
+          timeout: 2500,
         });
-        const $ = cheerio.load(pageDATA.data);
+        const $ = cheerio.load(pttDATA.data);
         if ($('meta[property=og:description]').attr('content')) {
           pttDescription = $('meta[property=og:description]').attr('content');
         }
@@ -67,7 +67,7 @@ export async function handlePttRegex( result, message ) {
       }
     }
   } catch {
-    console.log('moptt api error');
+    // console.log('moptt api error');
     // use vanilla ptt as backup
     try {
       const pttHTML = await axios.request({
@@ -93,7 +93,7 @@ export async function handlePttRegex( result, message ) {
         messageSender(message.channel, pttEmbed, 'ermiana');
       }
     } catch {
-      console.log('ptt error');
+      // console.log('ptt error');
     }
   }
 };
