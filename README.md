@@ -12,7 +12,7 @@
 </p>
 
 Ermiana is a Discord bot designed to enhance webpage previews by providing more detailed images and webpage content.  
-It supports various websites, including ptt.cc, gamer.com.tw, e-hentai, Plurk, Pixiv, and Twitter.  
+It supports various websites, including ptt.cc, gamer.com.tw, ehentai, Plurk, Pixiv, and Twitter.  
 
 ![demo](pic/demo1.png)
 
@@ -55,6 +55,6 @@ It supports various websites, including ptt.cc, gamer.com.tw, e-hentai, Plurk, P
   - [x] Misskey
 - [x] Image sharing service
   - [x] Pixiv
-  - [x] e-hentai
+  - [x] ehentai
   - [x] exhentai
   - [ ] nhentai
