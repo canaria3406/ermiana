@@ -21,10 +21,10 @@ export const regexs = [
     regex: /https:\/\/www\.plurk\.com\/p\/([a-zA-Z0-9]{3,10})/,
     handler: handlePlurkRegex },
   {
-    regex: /https?:\/\/m\.gamer\.com\.tw\/forum\/C\.php\?bsn=60076&snA=([0-9]+)/,
+    regex: /https?:\/\/m\.gamer\.com\.tw\/forum\/((?:C|Co)\.php\?bsn=60076&(?:snA|sn)=[0-9]+)/,
     handler: handleBahaRegex },
   {
-    regex: /https?:\/\/forum\.gamer\.com\.tw\/C\.php\?bsn=60076&snA=([0-9]+)/,
+    regex: /https?:\/\/forum\.gamer\.com\.tw\/((?:C|Co)\.php\?bsn=60076&(?:snA|sn)=[0-9]+)/,
     handler: handleBahaRegex },
   {
     regex: /https:\/\/e(?:x|-)hentai\.org\/g\/([0-9]+)\/([0-9a-z]+)/,
