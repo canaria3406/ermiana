@@ -31,7 +31,9 @@ client.on('messageCreate', async (message) => {
   regexs.forEach(({ regex, handler }) => {
     if (regex.test(message.content)) {
       const result = message.content.match(regex);
-      handler(result, message);
+      if (!(/\|\|[\s\S]*http[\s\S]*\|\|/).test(message.content)) {
+        handler(result, message);
+      }
     }
   });
 });
