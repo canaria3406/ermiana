@@ -58,3 +58,5 @@ It supports various websites, including ptt.cc, gamer.com.tw, ehentai, Plurk, Pi
   - [x] ehentai
   - [x] exhentai
   - [ ] nhentai
+- [x] E-commerce site
+  - [x] PChome24h

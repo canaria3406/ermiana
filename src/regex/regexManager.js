@@ -6,6 +6,7 @@ import { handlePixivRegex } from './handlePixivRegex.js';
 import { handlePlurkRegex } from './handlePlurkRegex.js';
 import { handleTwitterRegex } from './handleTwitterRegex.js';
 import { handleMisskeyRegex } from './handleMisskeyRegex.js';
+import { handlePchomeRegex } from './handlePchomeRegex.js';
 
 export const regexs = [
   // {
@@ -44,4 +45,7 @@ export const regexs = [
   {
     regex: /https?:\/\/www\.ptt\.cc\/bbs\/([a-zA-Z-_]+)\/(M\.[0-9]+\.A\.[0-9A-Z]+)\.html/,
     handler: handlePttRegex },
+  {
+    regex: /https:\/\/24h\.pchome\.com\.tw\/prod\/([^?]+)/,
+    handler: handlePchomeRegex },
 ];
