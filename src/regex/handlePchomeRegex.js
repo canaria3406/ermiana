@@ -41,6 +41,10 @@ export async function handlePchomeRegex( result, message ) {
     try {
       pchomeEmbed.addFields(
           { name: '品牌', value: brandstr, inline: true },
+      );
+    } catch {}
+    try {
+      pchomeEmbed.addFields(
           { name: '價格', value: pricestr, inline: true },
       );
     } catch {}
