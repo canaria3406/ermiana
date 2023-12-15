@@ -51,7 +51,7 @@ export async function handleTwitterRegex( result, message ) {
 
       try {
         if (fxapiResp.data.tweet.media.all[0].type != 'photo') {
-          message.channel.send(fxapiResp.data.tweet.media.all[0].url);
+          message.channel.send('[連結](' + fxapiResp.data.tweet.media.all[0].url +')');
         }
       } catch {}
     }
@@ -90,7 +90,7 @@ export async function handleTwitterRegex( result, message ) {
 
         try {
           if (vxapiResp.data.media_extended[0].type != 'image') {
-            message.channel.send(vxapiResp.data.media_extended[0].url);
+            message.channel.send('[連結](' + vxapiResp.data.media_extended[0].url + ')');
           }
         } catch {}
       }
@@ -180,7 +180,7 @@ export async function handleTwitterRegex( result, message ) {
                 maxBitrateUrl = variant.url;
               }
             });
-            message.channel.send(maxBitrateUrl);
+            message.channel.send('[連結](' + maxBitrateUrl + ')');
           }
         } catch {}
       } catch {
