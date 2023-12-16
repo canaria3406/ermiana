@@ -14,6 +14,7 @@ export async function handlePchomeRegex( result, message ) {
     const resp1 = await axios.request({
       method: 'get',
       url: url1,
+      timeout: 2500,
     });
 
     if (resp1.status === 200) {
@@ -27,6 +28,7 @@ export async function handlePchomeRegex( result, message ) {
       const resp2 = await axios.request({
         method: 'get',
         url: url2,
+        timeout: 2500,
       });
 
       const brandstr = unescape(resp2.data.match(/BrandNames":\[(.*?)\]/)[1].replace(/\\u/g, '%u')).replace(/","/g, '_').replace(/^"|"$/g, '');
