@@ -5,11 +5,6 @@ import { messageSender } from '../common/messageSender.js';
 
 export async function handlePttRegex( result, message ) {
   try {
-    if (!message.embeds[0]) {
-      await message.channel.sendTyping();
-    }
-  } catch {}
-  try {
     function boardNameStandardization(boardName) {
       const boardNameStandardized = boardName.toLowerCase();
       if (boardNameStandardized === 'gossiping') {
@@ -28,7 +23,7 @@ export async function handlePttRegex( result, message ) {
     const pttResp = await axios.request({
       method: 'get',
       url: 'https://moptt.tw/ptt/' + boardNameStandardization(result[1]) + '.' + result[2],
-      timeout: 2000,
+      timeout: 2500,
     });
     if (pttResp.status === 200) {
       const mopttEmbed = new EmbedBuilder();
@@ -63,6 +58,9 @@ export async function handlePttRegex( result, message ) {
         }
       } catch {}
       if (!message.embeds[0]) {
+        try {
+          await message.channel.sendTyping();
+        } catch {}
         messageSender(message.channel, mopttEmbed, 'ermiana');
       }
     }
@@ -90,6 +88,9 @@ export async function handlePttRegex( result, message ) {
       } catch {}
 
       if (!message.embeds[0]) {
+        try {
+          await message.channel.sendTyping();
+        } catch {}
         messageSender(message.channel, pttEmbed, 'ermiana');
       }
     } catch {
