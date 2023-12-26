@@ -35,7 +35,7 @@ export async function handlePixivRegex( result, message ) {
     try {
       if (resp.data.body.urls.original != null) {
         const originalPicUrl = resp.data.body.urls.original.replace('i.pximg.net', 'pixiv.canaria.cc');
-        for (let i = 0; i < Math.min(resp.data.body.pageCount, 4); i++) {
+        for (let i = 0; i < Math.min(resp.data.body.pageCount, 5); i++) {
           message.channel.send(originalPicUrl.replace('_p0', '_p' + i ));
         }
       } else {
@@ -52,7 +52,7 @@ export async function handlePixivRegex( result, message ) {
             message.channel.send(resp2.data.original_url.replace('i.pximg.net', 'pixiv.canaria.cc'));
           }
           if (resp2.data?.original_urls) {
-            for (let i = 0; i < Math.min(resp2.data.original_urls.length, 4); i++) {
+            for (let i = 0; i < Math.min(resp2.data.original_urls.length, 5); i++) {
               message.channel.send(resp2.data.original_urls[i].replace('i.pximg.net', 'pixiv.canaria.cc'));
             }
           }
