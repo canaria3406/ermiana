@@ -33,7 +33,7 @@ export async function handlePixivRegex( result, message ) {
     messageSender(message.channel, pixivEmbed, 'ermiana');
 
     try {
-      if (resp.data.body.urls.original != null) {
+      if (resp.data.body.urls.original != null && !(/s\.pximg\.net/).test(resp.data.body.urls.original)) {
         const originalPicUrl = resp.data.body.urls.original.replace('i.pximg.net', 'pixiv.canaria.cc');
         for (let i = 0; i < Math.min(resp.data.body.pageCount, 5); i++) {
           message.channel.send(originalPicUrl.replace('_p0', '_p' + i ));
