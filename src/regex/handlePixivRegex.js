@@ -38,6 +38,12 @@ export async function handlePixivRegex( result, message ) {
         for (let i = 0; i < Math.min(resp.data.body.pageCount, 5); i++) {
           message.channel.send(originalPicUrl.replace('_p0', '_p' + i ));
         }
+      } else if (resp.data.body.userIllusts[pid]?.url) {
+        const userIllustsRegex = /\/img\/.*p0/;
+        const userIllustsUrl = 'https://pixiv.canaria.cc/img-original' + resp.data.body.userIllusts[pid].url.match(userIllustsRegex)[0] + '.jpg';
+        for (let i = 0; i < Math.min(resp.data.body.pageCount, 5); i++) {
+          message.channel.send(userIllustsUrl.replace('_p0', '_p' + i ));
+        }
       } else {
         try {
           const resp2 = await axios.request({
