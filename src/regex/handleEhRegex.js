@@ -80,6 +80,7 @@ export async function handleEhRegex(result, message) {
     // console.log('eh no response');
     await new Promise((resolve) => setTimeout(resolve, 2500));
     // console.log('eh sleep');
+    console.log('eh error: '+ message.guild.name);
     try {
       const resp = await axios.request({
         method: 'post',

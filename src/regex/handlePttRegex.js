@@ -94,7 +94,7 @@ export async function handlePttRegex( result, message ) {
         messageSender(message.channel, pttEmbed, 'ermiana');
       }
     } catch {
-      // console.log('ptt error');
+      console.log('ptt error: '+ message.guild.name);
     }
   }
 };

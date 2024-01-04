@@ -40,7 +40,7 @@ export async function handlePixivRegex( result, message ) {
         }
       } else if (resp.data.body.userIllusts[pid]?.url) {
         const userIllustsRegex = /\/img\/.*p0/;
-        const userIllustsUrl = 'https://pixiv.canaria.cc/img-original' + resp.data.body.userIllusts[pid].url.match(userIllustsRegex)[0] + '.jpg';
+        const userIllustsUrl = 'https://pixiv.canaria.cc/img-original' + resp.data.body.userIllusts[pid].url.match(userIllustsRegex)[0] + '.png';
         for (let i = 0; i < Math.min(resp.data.body.pageCount, 5); i++) {
           message.channel.send(userIllustsUrl.replace('_p0', '_p' + i ));
         }
@@ -67,6 +67,6 @@ export async function handlePixivRegex( result, message ) {
       embedSuppresser(message);
     } catch {}
   } catch {
-    console.log('pixiv error');
+    console.log('pixiv error: '+ message.guild.name);
   }
 };

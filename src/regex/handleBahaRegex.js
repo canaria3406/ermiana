@@ -71,6 +71,7 @@ export async function handleBahaRegex(result, message) {
       embedSuppresser(message);
       messageSender(message.channel, bahaEmbed2, 'ermiana');
     } catch {
+      console.log('baha error: '+ message.guild.name);
       // console.log('baha second try error');
     }
   }

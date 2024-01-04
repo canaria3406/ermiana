@@ -56,7 +56,7 @@ export async function handleTwitterRegex( result, message ) {
       } catch {}
     }
   } catch {
-    console.log('fxtwitter api error');
+    console.log('fxtwitter api error: '+ message.guild.name);
     try {
       const vxapiResp = await axios.request({
         method: 'get',
@@ -95,7 +95,7 @@ export async function handleTwitterRegex( result, message ) {
         } catch {}
       }
     } catch {
-      console.log('vxtwitter api error');
+      console.log('vxtwitter api error: '+ message.guild.name);
       try {
         // use self-build vanilla twitter api
         const ermianaTwitter = new Conf({ projectName: 'ermianaJS' });
@@ -184,7 +184,7 @@ export async function handleTwitterRegex( result, message ) {
           }
         } catch {}
       } catch {
-        console.log('vanilla twitter api error');
+        console.log('vanilla twitter api error: '+ message.guild.name);
       }
     }
   }
