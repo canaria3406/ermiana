@@ -33,14 +33,14 @@ export async function handlePixivRegex( result, message ) {
     messageSender(message.channel, pixivEmbed, 'ermiana');
 
     try {
-      if (resp.data.body.urls.original != null && !(/s\.pximg\.net/).test(resp.data.body.urls.original)) {
-        const originalPicUrl = resp.data.body.urls.original.replace('i.pximg.net', 'pixiv.canaria.cc');
+      if (resp.data.body.urls.regular != null && (/i\.pximg\.net/).test(resp.data.body.urls.regular)) {
+        const regularPicUrl = resp.data.body.urls.regular.replace('i.pximg.net', 'pixiv.canaria.cc');
         for (let i = 0; i < Math.min(resp.data.body.pageCount, 5); i++) {
-          message.channel.send(originalPicUrl.replace('_p0', '_p' + i ));
+          message.channel.send(regularPicUrl.replace('_p0', '_p' + i ));
         }
       } else if (resp.data.body.userIllusts[pid]?.url) {
         const userIllustsRegex = /\/img\/.*p0/;
-        const userIllustsUrl = 'https://pixiv.canaria.cc/img-original' + resp.data.body.userIllusts[pid].url.match(userIllustsRegex)[0] + '.png';
+        const userIllustsUrl = 'https://pixiv.canaria.cc/img-master' + resp.data.body.userIllusts[pid].url.match(userIllustsRegex)[0] + '_master1200.jpg';
         for (let i = 0; i < Math.min(resp.data.body.pageCount, 5); i++) {
           message.channel.send(userIllustsUrl.replace('_p0', '_p' + i ));
         }
