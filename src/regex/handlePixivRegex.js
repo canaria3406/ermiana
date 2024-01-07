@@ -39,7 +39,7 @@ export async function handlePixivRegex( result, message ) {
         for (const i of Array(pageCount).keys()) {
           message.channel.send(regularPicUrl.replace('_p0', `_p${i}` ));
         }
-      } else if (resp.data.body.userIllusts[pid]?.url) {
+      } else if (resp.data.body.userIllusts[pid]?.url && (/p0/).test(resp.data.body.userIllusts[pid]?.url)) {
         const userIllustsRegex = /\/img\/.*p0/;
         const userIllustsUrl = 'https://pixiv.canaria.cc/img-master' + resp.data.body.userIllusts[pid].url.match(userIllustsRegex)[0] + '_master1200.jpg';
         for (const i of Array(pageCount).keys()) {
@@ -55,12 +55,11 @@ export async function handlePixivRegex( result, message ) {
             },
             timeout: 2500,
           });
-          const pageCount2 = Math.min(resp2.data.original_urls.length, 5);
-
           if (resp2.data?.original_url) {
             message.channel.send(resp2.data.original_url.replace('i.pximg.net', 'pixiv.canaria.cc'));
           }
           if (resp2.data?.original_urls) {
+            const pageCount2 = Math.min(resp2.data.original_urls.length, 5);
             for (const i of Array(pageCount2).keys()) {
               message.channel.send(resp2.data.original_urls[i].replace('i.pximg.net', 'pixiv.canaria.cc'));
             }
