@@ -16,6 +16,7 @@ export async function handlePixivRegex( result, message ) {
     });
 
     const tagString = resp.data.body.tags.tags.map((element) => `[${element.tag}](https://www.pixiv.net/tags/${element.tag}/artworks)`).join(', ');
+    const pageCount = Math.min(resp.data.body.pageCount, 5);
 
     const pixivEmbed = new EmbedBuilder();
     pixivEmbed.setColor(2210780);
@@ -35,14 +36,14 @@ export async function handlePixivRegex( result, message ) {
     try {
       if (resp.data.body.urls.regular != null && (/i\.pximg\.net/).test(resp.data.body.urls.regular)) {
         const regularPicUrl = resp.data.body.urls.regular.replace('i.pximg.net', 'pixiv.canaria.cc');
-        for (let i = 0; i < Math.min(resp.data.body.pageCount, 5); i++) {
-          message.channel.send(regularPicUrl.replace('_p0', '_p' + i ));
+        for (const i of Array(pageCount).keys()) {
+          message.channel.send(regularPicUrl.replace('_p0', `_p${i}` ));
         }
       } else if (resp.data.body.userIllusts[pid]?.url) {
         const userIllustsRegex = /\/img\/.*p0/;
         const userIllustsUrl = 'https://pixiv.canaria.cc/img-master' + resp.data.body.userIllusts[pid].url.match(userIllustsRegex)[0] + '_master1200.jpg';
-        for (let i = 0; i < Math.min(resp.data.body.pageCount, 5); i++) {
-          message.channel.send(userIllustsUrl.replace('_p0', '_p' + i ));
+        for (const i of Array(pageCount).keys()) {
+          message.channel.send(userIllustsUrl.replace('_p0', `_p${i}` ));
         }
       } else {
         try {
@@ -54,11 +55,13 @@ export async function handlePixivRegex( result, message ) {
             },
             timeout: 2500,
           });
+          const pageCount2 = Math.min(resp2.data.original_urls.length, 5);
+
           if (resp2.data?.original_url) {
             message.channel.send(resp2.data.original_url.replace('i.pximg.net', 'pixiv.canaria.cc'));
           }
           if (resp2.data?.original_urls) {
-            for (let i = 0; i < Math.min(resp2.data.original_urls.length, 5); i++) {
+            for (const i of Array(pageCount2).keys()) {
               message.channel.send(resp2.data.original_urls[i].replace('i.pximg.net', 'pixiv.canaria.cc'));
             }
           }
