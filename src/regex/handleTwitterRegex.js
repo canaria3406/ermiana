@@ -1,8 +1,8 @@
 import { EmbedBuilder } from 'discord.js';
 import axios from 'axios';
 // import Conf from 'conf';
-import { messageSender } from '../common/messageSender.js';
 // import { reloadTwitterTK } from '../common/reloadTwitterTK.js';
+import { messageSender } from '../common/messageSender.js';
 import { embedSuppresser } from '../common/embedSuppresser.js';
 
 export async function handleTwitterRegex( result, message ) {
