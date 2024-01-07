@@ -57,6 +57,6 @@ export async function handleMisskeyRegex(result, message) {
       console.error('Request failed');
     }
   } catch {
-    console.log('misskey error');
+    console.log('misskey error: '+ message.guild.name);
   }
 };
