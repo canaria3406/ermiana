@@ -1,8 +1,8 @@
 import { EmbedBuilder } from 'discord.js';
 import axios from 'axios';
-import Conf from 'conf';
+// import Conf from 'conf';
 import { messageSender } from '../common/messageSender.js';
-import { reloadTwitterTK } from '../common/reloadTwitterTK.js';
+// import { reloadTwitterTK } from '../common/reloadTwitterTK.js';
 import { embedSuppresser } from '../common/embedSuppresser.js';
 
 export async function handleTwitterRegex( result, message ) {
@@ -96,6 +96,7 @@ export async function handleTwitterRegex( result, message ) {
       }
     } catch {
       console.log('vxtwitter api error: '+ message.guild.name);
+      /*
       try {
         // use self-build vanilla twitter api
         const ermianaTwitter = new Conf({ projectName: 'ermianaJS' });
@@ -111,8 +112,9 @@ export async function handleTwitterRegex( result, message ) {
           'Content-Type': 'application/x-www-form-urlencoded',
           'Host': 'twitter.com',
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/114.0',
-          'Accept': '*/*',
-          'Accept-Language': 'zh-TW,zh;q=0.8,en-US;q=0.5,en;q=0.3',
+      */
+      //    'Accept': '*/*',
+      /*    'Accept-Language': 'zh-TW,zh;q=0.8,en-US;q=0.5,en;q=0.3',
           'Accept-Encoding': 'gzip, deflate, br',
           'content-type': 'application/json',
           'x-twitter-auth-type': 'OAuth2Session',
@@ -186,6 +188,7 @@ export async function handleTwitterRegex( result, message ) {
       } catch {
         console.log('vanilla twitter api error: '+ message.guild.name);
       }
+      */
     }
   }
 };
