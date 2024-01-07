@@ -35,13 +35,7 @@ export async function handleMisskeyRegex(result, message) {
       } catch {}
 
       function sumReactions(reactions) {
-        let total = 0;
-        for (const key in reactions) {
-          if (reactions.hasOwnProperty(key)) {
-            total += reactions[key];
-          }
-        }
-        return total;
+        return Object.values(reactions).reduce((total, count) => total + count, 0);
       }
 
       const noteinfo = '💬' + resp.data.repliesCount.toString() + ' 🔁' + resp.data.renoteCount.toString() + ' ❤️' + sumReactions(resp.data.reactions).toString();

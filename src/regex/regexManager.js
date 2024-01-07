@@ -13,7 +13,7 @@ export const regexs = [
   //  regex: /https:\/\/nhentai\.net\/g\/([0-9]+)/,
   //  handler: handleNhRegex },
   {
-    regex: /https:\/\/misskey\.io\/notes\/([a-zA-Z0-9]{10})/,
+    regex: /https:\/\/misskey\.io\/notes\/([a-zA-Z0-9]{10,16})/,
     handler: handleMisskeyRegex },
   {
     regex: /https:\/\/www\.plurk\.com\/m\/p\/([a-zA-Z0-9]{3,10})/,
