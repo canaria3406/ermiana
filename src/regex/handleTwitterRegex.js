@@ -17,7 +17,7 @@ export async function handleTwitterRegex( result, message ) {
     const fxapiResp = await axios.request({
       method: 'get',
       url: 'https://api.fxtwitter.com/i/status/' + tid,
-      timeout: 2000,
+      timeout: 2500,
     });
 
     if (fxapiResp.status === 200) {
@@ -61,7 +61,7 @@ export async function handleTwitterRegex( result, message ) {
       const vxapiResp = await axios.request({
         method: 'get',
         url: 'https://api.vxtwitter.com/i/status/' + tid,
-        timeout: 2000,
+        timeout: 2500,
       });
 
       if (vxapiResp.status === 200) {
