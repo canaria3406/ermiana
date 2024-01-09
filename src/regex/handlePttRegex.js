@@ -78,7 +78,7 @@ export async function handlePttRegex( result, message ) {
             try {
               await message.channel.sendTyping();
             } catch {}
-            messageSender(message.channel, pttEmbed, 'pttermiana');
+            messageSender(message.channel, pttEmbed, 'ermiana');
           }
         } catch {}
       }
