@@ -24,7 +24,7 @@ export async function handlePttRegex( result, message ) {
       url: result[0],
       method: 'get',
       headers: { Cookie: 'over18=1;' },
-      timeout: 2000,
+      timeout: 2500,
     });
 
     if (pttHTML.status === 200) {
