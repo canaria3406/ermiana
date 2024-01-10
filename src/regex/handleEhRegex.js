@@ -10,6 +10,9 @@ export async function handleEhRegex(result, message) {
   const galleryId = parseInt(result[1]);
   const galleryToken = result[2];
   try {
+    const waitingtime = ((5 - (Math.ceil(new Date().getTime() / 1000) % 5)) % 5) * 1000;
+    await new Promise((resolve) => setTimeout(resolve, waitingtime));
+
     const resp = await axios.request({
       method: 'post',
       url: 'https://api.e-hentai.org/api.php',
@@ -78,7 +81,8 @@ export async function handleEhRegex(result, message) {
     embedSuppresser(message);
   } catch {
     // console.log('eh no response');
-    await new Promise((resolve) => setTimeout(resolve, 2500));
+    const waitingtime2 = ((5 - (Math.ceil(new Date().getTime() / 1000) % 5)) % 5) * 1000;
+    await new Promise((resolve) => setTimeout(resolve, waitingtime2));
     // console.log('eh sleep');
     console.log('eh error: '+ message.guild.name);
     try {
