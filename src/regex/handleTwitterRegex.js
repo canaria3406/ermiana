@@ -6,10 +6,6 @@ import { messageSender } from '../common/messageSender.js';
 import { embedSuppresser } from '../common/embedSuppresser.js';
 
 export async function handleTwitterRegex( result, message ) {
-  try {
-    await message.channel.sendTyping();
-  } catch {}
-
   const tid = result[1];
 
   try {
@@ -42,8 +38,14 @@ export async function handleTwitterRegex( result, message ) {
 
       try {
         if (!message.embeds[0]) {
+          try {
+            await message.channel.sendTyping();
+          } catch {}
           messageSender(message.channel, fxapitwitterEmbed, fxapitweetinfo);
         } else if (fxapiResp.data.tweet.media.mosaic && fxapiResp.data.tweet.media.mosaic.type === 'mosaic_photo') {
+          try {
+            await message.channel.sendTyping();
+          } catch {}
           embedSuppresser(message);
           messageSender(message.channel, fxapitwitterEmbed, fxapitweetinfo);
         }
