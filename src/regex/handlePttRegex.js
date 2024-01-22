@@ -2,6 +2,7 @@ import { EmbedBuilder } from 'discord.js';
 import axios from 'axios';
 import cheerio from 'cheerio';
 import { messageSender } from '../common/messageSender.js';
+import { embedSuppresser } from '../common/embedSuppresser.js';
 
 export async function handlePttRegex( result, message ) {
   try {
@@ -64,6 +65,7 @@ export async function handlePttRegex( result, message ) {
             await message.channel.sendTyping();
           } catch {}
           messageSender(message.channel, mopttEmbed, 'ermiana');
+          embedSuppresser(message);
         }
       } catch {
         try {
@@ -79,6 +81,7 @@ export async function handlePttRegex( result, message ) {
               await message.channel.sendTyping();
             } catch {}
             messageSender(message.channel, pttEmbed, 'ermiana');
+            embedSuppresser(message);
           }
         } catch {}
       }

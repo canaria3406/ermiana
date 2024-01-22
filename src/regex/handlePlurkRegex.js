@@ -34,9 +34,8 @@ export async function handlePlurkRegex( result, message ) {
 
     const plurkInfo = '💬' + respPlurk + ' 🔁' + rePlurk + ' ❤️' + favPlurk;
 
-    embedSuppresser(message);
-
     messageSender(message.channel, plurkEmbed, plurkInfo);
+    embedSuppresser(message);
   } catch {
     // console.log('plurk error');
   }

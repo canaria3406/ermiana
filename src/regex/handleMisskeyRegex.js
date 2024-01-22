@@ -40,8 +40,8 @@ export async function handleMisskeyRegex(result, message) {
 
       const noteinfo = '💬' + resp.data.repliesCount.toString() + ' 🔁' + resp.data.renoteCount.toString() + ' ❤️' + sumReactions(resp.data.reactions).toString();
 
-      embedSuppresser(message);
       messageSender(message.channel, misskeyEmbed, noteinfo);
+      embedSuppresser(message);
 
       try {
         if (resp.data.files[0]?.type == 'video/mp4') {

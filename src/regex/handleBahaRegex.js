@@ -38,8 +38,8 @@ export async function handleBahaRegex(result, message) {
       bahaEmbed.setImage($('meta[property=og:image]').attr('content'));
     } catch {}
 
-    embedSuppresser(message);
     messageSender(message.channel, bahaEmbed, 'ermiana');
+    embedSuppresser(message);
   } catch {
     // console.log('baha error');
     await reloadBahaTK();
@@ -68,8 +68,8 @@ export async function handleBahaRegex(result, message) {
         bahaEmbed2.setImage($('meta[property=og:image]').attr('content'));
       } catch {}
 
-      embedSuppresser(message);
       messageSender(message.channel, bahaEmbed2, 'ermiana');
+      embedSuppresser(message);
     } catch {
       console.log('baha error: '+ message.guild.name);
       // console.log('baha second try error');
