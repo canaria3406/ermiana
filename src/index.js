@@ -45,16 +45,16 @@ client.on('interactionCreate', async (interaction) => {
         if (targetMessage.deletable) {
           targetMessage.delete()
               .then(() => {
-                interaction.reply('成功刪除訊息。');
+                interaction.reply( { content: '成功刪除訊息。' });
               })
               .catch(() => {
-                interaction.reply('刪除訊息時發生錯誤。');
+                interaction.reply( { content: '刪除訊息時發生錯誤。', ephemeral: true });
               });
         } else {
-          interaction.reply('我沒有權限刪除這個訊息，請聯絡管理員，並給我**管理訊息**權限。');
+          interaction.reply( { content: '我沒有權限刪除這個訊息，請聯絡管理員，並給我**管理訊息**權限。', ephemeral: true });
         }
       } else {
-        interaction.reply('我只能刪除由我自己發送的訊息喔。');
+        interaction.reply( { content: '我只能刪除由我自己發送的訊息喔。', ephemeral: true });
       }
     } catch {}
   }
