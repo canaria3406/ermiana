@@ -52,8 +52,12 @@ export async function handleTwitterRegex( result, message ) {
       } catch {}
 
       try {
-        if (fxapiResp.data.tweet.media.all[0].type != 'photo') {
-          message.channel.send('[連結](' + fxapiResp.data.tweet.media.all[0].url +')');
+        if (fxapiResp.data.tweet.media) {
+          fxapiResp.data.tweet.media.all.forEach((element) => {
+            if (element.type != 'photo') {
+              message.channel.send('[連結](' + element.url +')');
+            }
+          });
         }
       } catch {}
     }
@@ -78,21 +82,47 @@ export async function handleTwitterRegex( result, message ) {
           vxapitwitterEmbed.setDescription(vxapiResp.data.text);
         } catch {}
         try {
-          if (vxapiResp.data.media_extended[0] && vxapiResp.data.media_extended[0].type === 'image' && vxapiResp.data.mediaURLs.length >= 2) {
-            vxapitwitterEmbed.setImage('https://convert.vxtwitter.com/rendercombined.jpg?imgs=' + vxapiResp.data.mediaURLs.join(','));
-          } else if (vxapiResp.data.media_extended[0] && vxapiResp.data.media_extended[0].type === 'image' && vxapiResp.data.mediaURLs.length === 1) {
+          if (vxapiResp.data.media_extended && vxapiResp.data.media_extended[0].type === 'image' && vxapiResp.data.mediaURLs.length === 1) {
             vxapitwitterEmbed.setImage(vxapiResp.data.mediaURLs[0] + '?name=large');
+          } else if (vxapiResp.data.media_extended) {
+            const vxapiRespImage = [];
+            vxapiResp.data.media_extended.forEach((element) => {
+              if (element.type === 'image') {
+                vxapiRespImage.push(element.url);
+              }
+            });
+            if (vxapiRespImage.length === 1) {
+              vxapitwitterEmbed.setImage(vxapiRespImage[0] + '?name=large');
+            } else if (vxapiRespImage.length > 1) {
+              vxapitwitterEmbed.setImage('https://convert.vxtwitter.com/rendercombined.jpg?imgs=' + vxapiRespImage.join(','));
+            }
           }
         } catch {}
 
         const vxapitweetinfo = '💬' + vxapiResp.data.replies.toString() + ' 🔁' + vxapiResp.data.retweets.toString() + ' ❤️' + vxapiResp.data.likes.toString();
 
-        embedSuppresser(message);
-        messageSender(message.channel, vxapitwitterEmbed, vxapitweetinfo);
+        try {
+          if (!message.embeds[0]) {
+            try {
+              await message.channel.sendTyping();
+            } catch {}
+            messageSender(message.channel, vxapitwitterEmbed, vxapitweetinfo);
+          } else if (vxapiResp.data.mediaURLs.length > 1) {
+            try {
+              await message.channel.sendTyping();
+            } catch {}
+            embedSuppresser(message);
+            messageSender(message.channel, vxapitwitterEmbed, vxapitweetinfo);
+          }
+        } catch {}
 
         try {
-          if (vxapiResp.data.media_extended[0].type != 'image') {
-            message.channel.send('[連結](' + vxapiResp.data.media_extended[0].url + ')');
+          if (vxapiResp.data.media_extended) {
+            vxapiResp.data.media_extended.forEach((element) => {
+              if (element.type != 'image') {
+                message.channel.send('[連結](' + element.url +')');
+              }
+            });
           }
         } catch {}
       }
