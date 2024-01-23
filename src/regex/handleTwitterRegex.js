@@ -42,6 +42,7 @@ export async function handleTwitterRegex( result, message ) {
             await message.channel.sendTyping();
           } catch {}
           messageSender(message.channel, fxapitwitterEmbed, fxapitweetinfo);
+          embedSuppresser(message);
         } else if (fxapiResp.data.tweet.media.mosaic && fxapiResp.data.tweet.media.mosaic.type === 'mosaic_photo') {
           try {
             await message.channel.sendTyping();
@@ -107,6 +108,7 @@ export async function handleTwitterRegex( result, message ) {
               await message.channel.sendTyping();
             } catch {}
             messageSender(message.channel, vxapitwitterEmbed, vxapitweetinfo);
+            embedSuppresser(message);
           } else if (vxapiResp.data.mediaURLs.length > 1) {
             try {
               await message.channel.sendTyping();
