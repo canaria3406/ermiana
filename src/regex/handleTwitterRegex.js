@@ -37,6 +37,7 @@ export async function handleTwitterRegex( result, message ) {
       const fxapitweetinfo = '💬' + fxapiResp.data.tweet.replies.toString() + ' 🔁' + fxapiResp.data.tweet.retweets.toString() + ' ❤️' + fxapiResp.data.tweet.likes.toString();
 
       try {
+        /*
         if (!message.embeds[0]) {
           try {
             await message.channel.sendTyping();
@@ -50,6 +51,12 @@ export async function handleTwitterRegex( result, message ) {
           messageSender(message.channel, fxapitwitterEmbed, fxapitweetinfo);
           embedSuppresser(message);
         }
+        */
+        try {
+          await message.channel.sendTyping();
+        } catch {}
+        messageSender(message.channel, fxapitwitterEmbed, fxapitweetinfo);
+        embedSuppresser(message);
       } catch {}
 
       try {
@@ -103,6 +110,7 @@ export async function handleTwitterRegex( result, message ) {
         const vxapitweetinfo = '💬' + vxapiResp.data.replies.toString() + ' 🔁' + vxapiResp.data.retweets.toString() + ' ❤️' + vxapiResp.data.likes.toString();
 
         try {
+          /*
           if (!message.embeds[0]) {
             try {
               await message.channel.sendTyping();
@@ -116,6 +124,12 @@ export async function handleTwitterRegex( result, message ) {
             messageSender(message.channel, vxapitwitterEmbed, vxapitweetinfo);
             embedSuppresser(message);
           }
+          */
+          try {
+            await message.channel.sendTyping();
+          } catch {}
+          messageSender(message.channel, vxapitwitterEmbed, vxapitweetinfo);
+          embedSuppresser(message);
         } catch {}
 
         try {
