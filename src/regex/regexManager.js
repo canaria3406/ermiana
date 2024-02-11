@@ -7,11 +7,15 @@ import { handlePlurkRegex } from './handlePlurkRegex.js';
 import { handleTwitterRegex } from './handleTwitterRegex.js';
 import { handleMisskeyRegex } from './handleMisskeyRegex.js';
 import { handlePchomeRegex } from './handlePchomeRegex.js';
+import { handleBlueskyRegex } from './handleBlueskyRegex.js';
 
 export const regexs = [
   // {
   //  regex: /https:\/\/nhentai\.net\/g\/([0-9]+)/,
   //  handler: handleNhRegex },
+  {
+    regex: /https:\/\/bsky\.app\/profile\/([a-zA-Z0-9-.]+)\/post\/([a-zA-Z0-9]{10,16})/,
+    handler: handleBlueskyRegex },
   {
     regex: /https:\/\/misskey\.io\/notes\/([a-zA-Z0-9]{10,16})/,
     handler: handleMisskeyRegex },

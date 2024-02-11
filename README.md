@@ -53,6 +53,7 @@ It supports various websites, including ptt.cc, gamer.com.tw, ehentai, Plurk, Pi
   - [x] Plurk
   - [x] Twitter
   - [x] Misskey
+  - [x] Bluesky (beta)
 - [x] Image sharing service
   - [x] Pixiv
   - [x] ehentai
