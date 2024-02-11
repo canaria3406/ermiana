@@ -21,7 +21,7 @@ export async function handleBlueskyRegex(result, message) {
     });
     // console.log(threadResp.data.thread);
     const blueskyEmbed = new EmbedBuilder();
-    blueskyEmbed.setColor(0x1DA1F2);
+    blueskyEmbed.setColor(0x53b4ff);
     try {
       if (threadResp.data.thread.post.author?.avatar) {
         blueskyEmbed.setAuthor({ name: '@' + result[1], iconURL: threadResp.data.thread.post.author.avatar });
@@ -34,7 +34,7 @@ export async function handleBlueskyRegex(result, message) {
         blueskyEmbed.setTitle(threadResp.data.thread.post.author.displayName);
         blueskyEmbed.setURL('https://bsky.app/profile/' + result[1] + '/post/' + result[2]);
       } else {
-        blueskyEmbed.setTitle('@' + result[1]);
+        blueskyEmbed.setTitle(result[1]);
         blueskyEmbed.setURL('https://bsky.app/profile/' + result[1] + '/post/' + result[2]);
       }
     } catch {}
@@ -53,6 +53,14 @@ export async function handleBlueskyRegex(result, message) {
 
     messageSender(message.channel, blueskyEmbed, threadinfo);
     embedSuppresser(message);
+
+    try {
+      if (threadResp.data.thread.post.embed?.images.length > 1) {
+        threadResp.data.thread.post.embed.images
+            .filter((_image, index) => index > 0)
+            .forEach((image) => message.channel.send(image.fullsize));
+      }
+    } catch {}
   } catch {
     console.log('bluesky error: '+ message.guild.name);
   }
