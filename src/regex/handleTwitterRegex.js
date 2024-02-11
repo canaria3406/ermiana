@@ -6,6 +6,10 @@ import { messageSender } from '../common/messageSender.js';
 import { embedSuppresser } from '../common/embedSuppresser.js';
 
 export async function handleTwitterRegex( result, message ) {
+  try {
+    await message.channel.sendTyping();
+  } catch {}
+
   const tid = result[1];
 
   try {
@@ -52,9 +56,7 @@ export async function handleTwitterRegex( result, message ) {
           embedSuppresser(message);
         }
         */
-        try {
-          await message.channel.sendTyping();
-        } catch {}
+
         messageSender(message.channel, fxapitwitterEmbed, fxapitweetinfo);
         embedSuppresser(message);
       } catch {}
@@ -125,9 +127,7 @@ export async function handleTwitterRegex( result, message ) {
             embedSuppresser(message);
           }
           */
-          try {
-            await message.channel.sendTyping();
-          } catch {}
+
           messageSender(message.channel, vxapitwitterEmbed, vxapitweetinfo);
           embedSuppresser(message);
         } catch {}
