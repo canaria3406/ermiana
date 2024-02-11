@@ -31,20 +31,30 @@ export async function handlePixivRegex( result, message ) {
       pixivEmbed.addFields({ name: '標籤', value: tagString });
     } catch {}
 
-    messageSender(message.channel, pixivEmbed, 'ermiana');
+    // messageSender(message.channel, pixivEmbed, 'ermiana');
 
     try {
       if (resp.data.body.urls.regular != null && (/i\.pximg\.net/).test(resp.data.body.urls.regular)) {
         const regularPicUrl = resp.data.body.urls.regular.replace('i.pximg.net', 'pixiv.canaria.cc');
-        for (const i of Array(pageCount).keys()) {
-          message.channel.send(regularPicUrl.replace('_p0', `_p${i}` ));
+        pixivEmbed.setImage(regularPicUrl);
+        messageSender(message.channel, pixivEmbed, 'ermiana');
+        if (pageCount > 1) {
+          for (const i of Array(pageCount-1).keys()) {
+            message.channel.send(regularPicUrl.replace('_p0', `_p${i+1}` ));
+          }
         }
+        embedSuppresser(message);
       } else if (resp.data.body.userIllusts[pid]?.url && (/p0/).test(resp.data.body.userIllusts[pid]?.url)) {
         const userIllustsRegex = /\/img\/.*p0/;
         const userIllustsUrl = 'https://pixiv.canaria.cc/img-master' + resp.data.body.userIllusts[pid].url.match(userIllustsRegex)[0] + '_master1200.jpg';
-        for (const i of Array(pageCount).keys()) {
-          message.channel.send(userIllustsUrl.replace('_p0', `_p${i}` ));
+        pixivEmbed.setImage(userIllustsUrl);
+        messageSender(message.channel, pixivEmbed, 'ermiana');
+        if (pageCount > 1) {
+          for (const i of Array(pageCount-1).keys()) {
+            message.channel.send(userIllustsUrl.replace('_p0', `_p${i+1}` ));
+          }
         }
+        embedSuppresser(message);
       } else {
         try {
           const resp2 = await axios.request({
@@ -56,17 +66,22 @@ export async function handlePixivRegex( result, message ) {
             timeout: 2500,
           });
           if (resp2.data?.original_url) {
-            message.channel.send(resp2.data.original_url.replace('i.pximg.net', 'pixiv.canaria.cc'));
+            // message.channel.send(resp2.data.original_url.replace('i.pximg.net', 'pixiv.canaria.cc'));
+            pixivEmbed.setImage(resp2.data.original_url.replace('i.pximg.net', 'pixiv.canaria.cc'));
+            messageSender(message.channel, pixivEmbed, 'ermiana');
+            embedSuppresser(message);
           }
           if (resp2.data?.original_urls) {
             const pageCount2 = Math.min(resp2.data.original_urls.length, 5);
-            for (const i of Array(pageCount2).keys()) {
-              message.channel.send(resp2.data.original_urls[i].replace('i.pximg.net', 'pixiv.canaria.cc'));
+            pixivEmbed.setImage(resp2.data.original_urls[0].replace('i.pximg.net', 'pixiv.canaria.cc'));
+            messageSender(message.channel, pixivEmbed, 'ermiana');
+            for (const i of Array(pageCount2-1).keys()) {
+              message.channel.send(resp2.data.original_urls[i+1].replace('i.pximg.net', 'pixiv.canaria.cc'));
             }
+            embedSuppresser(message);
           }
         } catch {}
       }
-      embedSuppresser(message);
     } catch {}
   } catch {
     console.log('pixiv error: '+ message.guild.name);
