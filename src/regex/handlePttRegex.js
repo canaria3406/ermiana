@@ -12,6 +12,8 @@ export async function handlePttRegex( result, message ) {
         return 'Gossiping';
       } else if (boardNameStandardized === 'ac_in') {
         return 'AC_In';
+      } else if (boardNameStandardized === 'c_chat') {
+        return 'C_Chat';
       } else if (boardNameStandardized === 'h-game') {
         return 'H-GAME';
       } else if (boardNameStandardized === 'sex') {
