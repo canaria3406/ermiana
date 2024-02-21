@@ -16,6 +16,7 @@ export async function reloadBahaTK() {
     url: 'https://api.gamer.com.tw/mobile_app/user/v3/do_login.php',
     headers: headers,
     data: data,
+    timeout: 2500,
   })
       .then((response) => {
         const ermianaBH = new Conf({ projectName: 'ermianaJS' });
