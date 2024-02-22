@@ -8,11 +8,15 @@ import { handleTwitterRegex } from './handleTwitterRegex.js';
 import { handleMisskeyRegex } from './handleMisskeyRegex.js';
 import { handlePchomeRegex } from './handlePchomeRegex.js';
 import { handleBlueskyRegex } from './handleBlueskyRegex.js';
+import { handleWeiboRegex } from './handleWeiboRegex.js';
 
 export const regexs = [
   // {
   //  regex: /https:\/\/nhentai\.net\/g\/([0-9]+)/,
   //  handler: handleNhRegex },
+  {
+    regex: /https:\/\/m\.weibo\.cn\/detail\/([0-9]+)/,
+    handler: handleWeiboRegex },
   {
     regex: /https:\/\/bsky\.app\/profile\/([a-zA-Z0-9-.]+)\/post\/([a-zA-Z0-9]{10,16})/,
     handler: handleBlueskyRegex },
