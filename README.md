@@ -11,8 +11,7 @@
     <a href="https://discord.gg/QBwjpHcMyw"><img src="https://img.shields.io/discord/1172363356406042684?style=flat-square&logo=Discord&logoColor=white&label=support&color=yellow"></a>
 </p>
 
-Ermiana is a Discord bot designed to enhance webpage previews by providing more detailed images and webpage content.  
-It supports various websites, including ptt.cc, gamer.com.tw, ehentai, Plurk, Pixiv, and Twitter.  
+A Discord bot that fixes sites with broken preview by providing more detailed images and webpage content. Supports multiple popular sites in East Asia. 
 
 ![demo](pic/demo1.png)
 
@@ -54,6 +53,7 @@ It supports various websites, including ptt.cc, gamer.com.tw, ehentai, Plurk, Pi
   - [x] Twitter
   - [x] Misskey
   - [x] Bluesky
+  - [x] Weibo (beta)
 - [x] Image sharing service
   - [x] Pixiv
   - [x] ehentai
