@@ -28,7 +28,10 @@ export async function handleWeiboRegex(result, message) {
       } catch {}
       try {
         if (weiboResp.data.data.text) {
-          weiboEmbed.setDescription(weiboResp.data.data.text.replace(/<[^>]*>/g, ''));
+          function removeHtmlTags(str) {
+            return str.replace(/<[^>]*>/g, '');
+          }
+          weiboEmbed.setDescription(removeHtmlTags(weiboResp.data.data.text));
         }
       } catch {}
       try {
