@@ -23,69 +23,70 @@ export async function handlePttRegex( result, message ) {
       }
     }
 
-    const pttHTML = await axios.request({
-      url: result[0],
-      method: 'get',
-      headers: { Cookie: 'over18=1;' },
-      timeout: 2500,
-    });
-
-    if (pttHTML.status === 200) {
-      const $ = cheerio.load(pttHTML.data);
-      const pttHtmlTitle = $('meta[property=og:title]').attr('content') || '';
-      const pttHtmlDescription = $('meta[property=og:description]').attr('content') || '';
+    if (!message.embeds[0]) {
       try {
-        const pttResp = await axios.request({
-          method: 'get',
-          url: 'https://moptt.tw/ptt/' + boardNameStandardization(result[1]) + '.' + result[2],
-          timeout: 2500,
-        });
-        const mopttEmbed = new EmbedBuilder();
-        mopttEmbed.setColor(2894892);
+        await message.channel.sendTyping();
+      } catch {}
+
+      const pttHTML = await axios.request({
+        url: result[0],
+        method: 'get',
+        headers: { Cookie: 'over18=1;' },
+        timeout: 2500,
+      });
+
+      if (pttHTML.status === 200) {
+        const $ = cheerio.load(pttHTML.data);
+        const pttHtmlTitle = $('meta[property=og:title]').attr('content') || '';
+        const pttHtmlDescription = $('meta[property=og:description]').attr('content') || '';
         try {
-          if (pttResp.status === 200) {
-            mopttEmbed.setTitle(pttResp.data.title);
-          } else if (pttHtmlTitle) {
-            mopttEmbed.setTitle(pttHtmlTitle);
-          }
-        } catch {}
-        mopttEmbed.setURL(result[0]);
-        try {
-          if (pttHtmlDescription !== '') {
-            mopttEmbed.setDescription(pttHtmlDescription);
-          } else if (pttResp.data.description) {
-            mopttEmbed.setDescription(pttResp.data.description);
-          }
-        } catch {}
-        try {
-          if (pttResp.data.imageSource) {
-            mopttEmbed.setImage(pttResp.data.imageSource);
-          }
-        } catch {}
-        if (!message.embeds[0]) {
+          const pttResp = await axios.request({
+            method: 'get',
+            url: 'https://moptt.tw/ptt/' + boardNameStandardization(result[1]) + '.' + result[2],
+            timeout: 2500,
+          });
+          const mopttEmbed = new EmbedBuilder();
+          mopttEmbed.setColor(2894892);
           try {
-            await message.channel.sendTyping();
+            if (pttResp.status === 200) {
+              mopttEmbed.setTitle(pttResp.data.title);
+            } else if (pttHtmlTitle) {
+              mopttEmbed.setTitle(pttHtmlTitle);
+            }
           } catch {}
-          messageSender(message.channel, mopttEmbed, 'ermiana');
-          embedSuppresser(message);
-        }
-      } catch {
-        try {
-          const pttEmbed = new EmbedBuilder();
-          pttEmbed.setColor(2894892);
-          pttEmbed.setTitle(pttHtmlTitle);
-          pttEmbed.setURL(result[0]);
+          mopttEmbed.setURL(result[0]);
           try {
-            pttEmbed.setDescription(pttHtmlDescription);
+            if (pttHtmlDescription !== '') {
+              mopttEmbed.setDescription(pttHtmlDescription);
+            } else if (pttResp.data.description) {
+              mopttEmbed.setDescription(pttResp.data.description);
+            }
           } catch {}
+          try {
+            if (pttResp.data.imageSource) {
+              mopttEmbed.setImage(pttResp.data.imageSource);
+            }
+          } catch {}
+
           if (!message.embeds[0]) {
-            try {
-              await message.channel.sendTyping();
-            } catch {}
-            messageSender(message.channel, pttEmbed, 'ermiana');
+            messageSender(message.channel, mopttEmbed, 'ermiana');
             embedSuppresser(message);
           }
-        } catch {}
+        } catch {
+          try {
+            const pttEmbed = new EmbedBuilder();
+            pttEmbed.setColor(2894892);
+            pttEmbed.setTitle(pttHtmlTitle);
+            pttEmbed.setURL(result[0]);
+            try {
+              pttEmbed.setDescription(pttHtmlDescription);
+            } catch {}
+            if (!message.embeds[0]) {
+              messageSender(message.channel, pttEmbed, 'ermiana');
+              embedSuppresser(message);
+            }
+          } catch {}
+        }
       }
     }
   } catch {
