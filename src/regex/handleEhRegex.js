@@ -72,6 +72,7 @@ export async function handleEhRegex(result, message) {
     );
     try {
       ehEmbed.addFields({ name: '標籤', value: translateTags.join('\n') });
+      translateTags = null;
     } catch {}
     try {
       ehEmbed.setImage(resp.data.gmetadata[0].thumb);
@@ -145,6 +146,7 @@ export async function handleEhRegex(result, message) {
       );
       try {
         ehEmbed.addFields({ name: '標籤', value: translateTags.join('\n') });
+        translateTags = null;
       } catch {}
       try {
         ehEmbed.setImage(resp.data.gmetadata[0].thumb);

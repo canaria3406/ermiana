@@ -93,6 +93,7 @@ export async function handleNhRegex( result, message ) {
       // );
       try {
         nhEmbed.addFields({ name: '說明', value: translateTags.reverse().join('\n') });
+        translateTags = null;
       } catch {}
       try {
         nhEmbed.setImage('https://t.nhentai.net/galleries/' + resp.data.media_id + '/thumb.jpg');
