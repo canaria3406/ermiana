@@ -31,8 +31,6 @@ export async function handlePixivRegex( result, message ) {
       pixivEmbed.addFields({ name: '標籤', value: tagString });
     } catch {}
 
-    // messageSender(message.channel, pixivEmbed, 'ermiana');
-
     try {
       if (resp.data.body.urls.regular != null && (/i\.pximg\.net/).test(resp.data.body.urls.regular)) {
         const regularPicUrl = resp.data.body.urls.regular.replace('i.pximg.net', 'pixiv.canaria.cc');
@@ -72,7 +70,6 @@ export async function handlePixivRegex( result, message ) {
             timeout: 2500,
           });
           if (resp2.data?.original_url) {
-            // message.channel.send(resp2.data.original_url.replace('i.pximg.net', 'pixiv.canaria.cc'));
             pixivEmbed.setImage(resp2.data.original_url.replace('i.pximg.net', 'pixiv.canaria.cc'));
             messageSender(message.channel, pixivEmbed, 'ermiana');
             embedSuppresser(message);
