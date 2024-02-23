@@ -1,5 +1,6 @@
 import { EmbedBuilder } from 'discord.js';
 import axios from 'axios';
+import cheerio from 'cheerio';
 import { messageSender } from '../common/messageSender.js';
 import { embedSuppresser } from '../common/embedSuppresser.js';
 
@@ -28,10 +29,9 @@ export async function handleWeiboRegex(result, message) {
       } catch {}
       try {
         if (weiboResp.data.data.text) {
-          function removeHtmlTags(str) {
-            return str.replace(/<[^>]*>/g, '');
-          }
-          weiboEmbed.setDescription(removeHtmlTags(weiboResp.data.data.text));
+          const $ = cheerio.load(weiboResp.data.data.text);
+          const cleanedText = $.text();
+          weiboEmbed.setDescription(cleanedText);
         }
       } catch {}
       try {

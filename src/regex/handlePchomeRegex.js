@@ -1,5 +1,6 @@
 import { EmbedBuilder } from 'discord.js';
 import axios from 'axios';
+import cheerio from 'cheerio';
 import { messageSender } from '../common/messageSender.js';
 
 export async function handlePchomeRegex( result, message ) {
@@ -19,7 +20,8 @@ export async function handlePchomeRegex( result, message ) {
 
     if (resp1.status === 200) {
       // const namestr = unescape(resp1.data.match(/"Name":"([^"]+)"/)[1].replace(/\\u/g, '%u'));
-      const nickstr = unescape(resp1.data.match(/"Nick":"(.*?)",/)[1].replace(/\\u/g, '%u')).replace(/<.*?>/g, '').replace(/\\/g, '');
+      const $ = cheerio.load(unescape(resp1.data.match(/"Nick":"(.*?)",/)[1].replace(/\\u/g, '%u').replace(/\\/g, '')));
+      const nickstr = $.text();
       const pricestr = unescape(resp1.data.match(/"P":(\d+)/)[1].replace(/\\u/g, '%u'));
       const picstr = unescape(resp1.data.match(/"B":"(.*?)",/)[1].replace(/\\u/g, '%u'));
       const picurl = 'https://img.pchome.com.tw/cs' + picstr.replace(/\\/g, '');
