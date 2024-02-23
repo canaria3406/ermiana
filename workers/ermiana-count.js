@@ -4,7 +4,12 @@ addEventListener('fetch', (event) => {
 
 async function handleRequest(request) {
   const botID = '1078919650764652594';
-  const response = await fetch('https://discord.com/api/v9/application-directory-static/applications/' + botID);
+  const response = await fetch('https://discord.com/api/v9/application-directory-static/applications/' + botID, {
+    headers: {
+      'Referer': 'https://discord.com/application-directory/' + botID,
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0',
+    },
+  });
 
   if (!response.ok) {
     const errorResponse = {
