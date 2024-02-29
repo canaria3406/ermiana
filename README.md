@@ -43,6 +43,7 @@ A Discord bot that fixes sites with broken preview by providing more detailed im
 - [x] Community
   - [x] PTT.cc
     - [x] Gossiping
+    - [x] C_Chat
     - [x] AC_IN
     - [x] 其他設有閱覽限制的看板
   - [x] 巴哈姆特電玩資訊站
@@ -53,7 +54,7 @@ A Discord bot that fixes sites with broken preview by providing more detailed im
   - [x] Twitter
   - [x] Misskey
   - [x] Bluesky
-  - [x] Weibo (beta)
+  - [x] Weibo
 - [x] Image sharing service
   - [x] Pixiv
   - [x] ehentai
