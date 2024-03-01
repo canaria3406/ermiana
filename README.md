@@ -26,17 +26,17 @@ A Discord bot that fixes sites with broken preview by providing more detailed im
 
 ## Screenshot
 
-![demo](pic/demo2.png)
+![demo](pic/demo14.png)
 
-![demo](pic/demo7.png)
+![demo](pic/demo13.png)
 
-![demo](pic/demo6.png)
+![demo](pic/demo11.png)
 
 ![demo](pic/demo3.png)
 
-![demo](pic/demo5.png)
+![demo](pic/demo12.png)
 
-![demo](pic/demo4.png)
+![demo](pic/demo10.png)
 
 ## Support
 
