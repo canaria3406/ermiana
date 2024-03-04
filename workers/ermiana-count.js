@@ -14,7 +14,7 @@ async function handleRequest(request) {
   if (!response.ok) {
     const errorResponse = {
       schemaVersion: 1,
-      label: 'error',
+      label: 'API error',
       message: '-1 servers',
       color: '7289DA',
     };
