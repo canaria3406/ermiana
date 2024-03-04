@@ -6,12 +6,12 @@
 <p align="center">
     <a href="https://github.com/canaria3406/ermiana/blob/master/LICENSE"><img src="https://img.shields.io/github/license/canaria3406/ermiana?style=flat-square"></a>
     <a href="https://github.com/canaria3406/ermiana"><img src="https://img.shields.io/github/stars/canaria3406/ermiana?style=flat-square"></a>
-    <a href="https://discord.com/application-directory/1078919650764652594"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fermiana-count.canaria.cc%2F&style=flat-square&logo=Discord&logoColor=white&cacheSeconds=7200"></a>
     <a href="https://discord.com/application-directory/1078919650764652594"><img src="https://img.shields.io/badge/verified-%E2%9C%93%20BOT-7289da?style=flat-square&logo=discord&logoColor=white"></a>
+    <a href="https://discord.com/application-directory/1078919650764652594"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fermiana-count.canaria.cc%2F&style=flat-square&logo=Discord&logoColor=white&cacheSeconds=7200"></a>
     <a href="https://discord.gg/QBwjpHcMyw"><img src="https://img.shields.io/discord/1172363356406042684?style=flat-square&logo=Discord&logoColor=white&label=support&color=yellow"></a>
 </p>
 
-A Discord bot that fixes sites with broken preview by providing more detailed images and webpage content. Supports multiple popular sites in East Asia. 
+A Discord bot that fixes sites with broken preview by providing more detailed images and webpage content. Supports multiple popular sites in Taiwan, East Asia. 
 
 ![demo](pic/demo1.png)
 
