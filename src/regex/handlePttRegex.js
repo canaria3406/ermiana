@@ -6,34 +6,45 @@ import { embedSuppresser } from '../common/embedSuppresser.js';
 
 export async function handlePttRegex( result, message ) {
   try {
+    // 其他看板觀察中 'Gamesale', 'SportLottery'
+    const supportBoard = ['Gossiping', 'C_Chat', 'AC_In', 'H-GAME', 'sex', 'HatePolitics', 'Beauty', 'japanavgirls', 'DMM_GAMES'];
+
     function boardNameStandardization(boardName) {
       const boardNameStandardized = boardName.toLowerCase();
       if (boardNameStandardized === 'gossiping') {
         return 'Gossiping';
-      } else if (boardNameStandardized === 'ac_in') {
-        return 'AC_In';
       } else if (boardNameStandardized === 'c_chat') {
         return 'C_Chat';
+      } else if (boardNameStandardized === 'ac_in') {
+        return 'AC_In';
       } else if (boardNameStandardized === 'h-game') {
         return 'H-GAME';
       } else if (boardNameStandardized === 'sex') {
         return 'sex';
+      } else if (boardNameStandardized === 'hatepolitics') {
+        return 'HatePolitics';
+      } else if (boardNameStandardized === 'beauty') {
+        return 'Beauty';
+      } else if (boardNameStandardized === 'japanavgirls') {
+        return 'japanavgirls';
+      } else if (boardNameStandardized === 'dmm_games') {
+        return 'DMM_GAMES';
       } else {
         return boardName;
       }
     }
 
-    if (!message.embeds[0]) {
-      try {
-        await message.channel.sendTyping();
-      } catch {}
-
+    if (supportBoard.includes(boardNameStandardization(result[1]))) {
       const pttHTML = await axios.request({
         url: result[0],
         method: 'get',
         headers: { Cookie: 'over18=1;' },
-        timeout: 2500,
+        timeout: 3000,
       });
+
+      try {
+        await message.channel.sendTyping();
+      } catch {}
 
       if (pttHTML.status === 200) {
         const $ = cheerio.load(pttHTML.data);
@@ -43,7 +54,7 @@ export async function handlePttRegex( result, message ) {
           const pttResp = await axios.request({
             method: 'get',
             url: 'https://moptt.tw/ptt/' + boardNameStandardization(result[1]) + '.' + result[2],
-            timeout: 2500,
+            timeout: 3000,
           });
           const mopttEmbed = new EmbedBuilder();
           mopttEmbed.setColor(2894892);
@@ -68,23 +79,21 @@ export async function handlePttRegex( result, message ) {
             }
           } catch {}
 
-          if (!message.embeds[0]) {
-            messageSender(message.channel, mopttEmbed, 'ermiana');
-            embedSuppresser(message);
-          }
+          messageSender(message.channel, mopttEmbed, 'ermiana');
+          embedSuppresser(message);
         } catch {
           try {
             const pttEmbed = new EmbedBuilder();
             pttEmbed.setColor(2894892);
             pttEmbed.setTitle(pttHtmlTitle);
             pttEmbed.setURL(result[0]);
+
             try {
               pttEmbed.setDescription(pttHtmlDescription);
             } catch {}
-            if (!message.embeds[0]) {
-              messageSender(message.channel, pttEmbed, 'ermiana');
-              embedSuppresser(message);
-            }
+
+            messageSender(message.channel, pttEmbed, 'ermiana');
+            embedSuppresser(message);
           } catch {}
         }
       }
