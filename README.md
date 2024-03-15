@@ -42,10 +42,15 @@ A Discord bot that fixes sites with broken preview by providing more detailed im
 
 - [x] Community
   - [x] PTT.cc
-    - [x] Gossiping
-    - [x] C_Chat
-    - [x] AC_IN
-    - [x] 其他設有閱覽限制的看板
+    - [x] 八卦板
+    - [x] 希洽板
+    - [x] 裏洽板
+    - [x] 西斯板
+    - [x] 政黑板
+    - [x] 表特板
+    - [x] JAV板
+    - [x] HG板
+    - [x] DMMG板
   - [x] 巴哈姆特電玩資訊站
     - [x] 場外休憩區
   - [ ] Dcard
