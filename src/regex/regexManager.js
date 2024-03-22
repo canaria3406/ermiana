@@ -1,5 +1,4 @@
 import { handleEhRegex } from './handleEhRegex.js';
-// import { handleNhRegex } from './handleNhRegex.js';
 import { handlePttRegex } from './handlePttRegex.js';
 import { handleBahaRegex } from './handleBahaRegex.js';
 import { handlePixivRegex } from './handlePixivRegex.js';
@@ -11,9 +10,6 @@ import { handleBlueskyRegex } from './handleBlueskyRegex.js';
 import { handleWeiboRegex } from './handleWeiboRegex.js';
 
 export const regexs = [
-  // {
-  //  regex: /https:\/\/nhentai\.net\/g\/([0-9]+)/,
-  //  handler: handleNhRegex },
   {
     regex: /https:\/\/m\.weibo\.cn\/detail\/([0-9]+)/,
     handler: handleWeiboRegex },
