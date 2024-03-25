@@ -40,7 +40,6 @@ export async function handlePlurkRegex( result, message ) {
     const plurkInfo = '💬' + respPlurk + ' 🔁' + rePlurk + ' ❤️' + favPlurk;
 
     messageSender(message.channel, plurkEmbed, plurkInfo);
-    console.log(picPlurk);
 
     try {
       if (picPlurk.length > 1) {
@@ -56,6 +55,6 @@ export async function handlePlurkRegex( result, message ) {
 
     embedSuppresser(message);
   } catch {
-    // console.log('plurk error');
+    console.log('plurk error: '+ message.guild.name);
   }
 };
