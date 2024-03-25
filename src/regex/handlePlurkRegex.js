@@ -21,20 +21,39 @@ export async function handlePlurkRegex( result, message ) {
     const favPlurk = $('script').text().match(/"favorite_count": (\d+),/)[1] || '0';
     const respPlurk = $('script').text().match(/"response_count": (\d+),/)[1] || '0';
 
+    const rawPlurkIndex = $('script').text().indexOf('content_raw') || -1;
+    const picPlurk = $('script').text().slice(rawPlurkIndex).match(/https:\/\/images\.plurk\.com\/[^\\"\s]+/g) || [];
+
     const plurkEmbed = new EmbedBuilder();
-    plurkEmbed.setColor(16556594);
+    plurkEmbed.setColor(0xefa54c);
     plurkEmbed.setTitle($('.name').text());
     plurkEmbed.setURL('https://www.plurk.com/p/' + result[1]);
     try {
       plurkEmbed.setDescription($('.text_holder').text());
     } catch {}
     try {
-      plurkEmbed.setImage($('script').text().match(/https:\/\/images\.plurk\.com\/[^"]+\.(jpg|png)/)[0]);
+      if (picPlurk.length > 0) {
+        plurkEmbed.setImage(picPlurk[0]);
+      }
     } catch {}
 
     const plurkInfo = '💬' + respPlurk + ' 🔁' + rePlurk + ' ❤️' + favPlurk;
 
     messageSender(message.channel, plurkEmbed, plurkInfo);
+    console.log(picPlurk);
+
+    try {
+      if (picPlurk.length > 1) {
+        picPlurk.filter((_pic, index) => index > 0 && index < 4)
+            .forEach((pic) => {
+              const picEmbed = new EmbedBuilder();
+              picEmbed.setColor(0xefa54c);
+              picEmbed.setImage(pic);
+              messageSender(message.channel, picEmbed, 'ermiana');
+            });
+      }
+    } catch {}
+
     embedSuppresser(message);
   } catch {
     // console.log('plurk error');
