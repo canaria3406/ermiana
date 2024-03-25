@@ -101,10 +101,8 @@ export async function handleTwitterRegex( result, message ) {
             });
             if (vxapiRespImage.length === 1) {
               vxapitwitterEmbed.setImage(vxapiRespImage[0] + '?name=large');
-              vxapiRespImage = null;
             } else if (vxapiRespImage.length > 1) {
               vxapitwitterEmbed.setImage('https://convert.vxtwitter.com/rendercombined.jpg?imgs=' + vxapiRespImage.join(','));
-              vxapiRespImage = null;
             }
           }
         } catch {}
