@@ -1,4 +1,4 @@
-import { Client, GatewayIntentBits } from 'discord.js';
+import { PermissionsBitField, Client, GatewayIntentBits } from 'discord.js';
 import { currentTime } from './common/currentTime.js';
 import { configManager } from './common/configManager.js';
 import { runBahaCron } from './common/runBahaCron.js';
@@ -26,14 +26,16 @@ client.on('ready', () =>{
 
 client.on('messageCreate', async (message) => {
   if (message.author.bot) return;
-  regexs.forEach(({ regex, handler }) => {
-    if (regex.test(message.content)) {
-      const result = message.content.match(regex);
-      if (!(/\|\|[\s\S]*http[\s\S]*\|\|/).test(message.content) && !(/\<[\s\S]*http[\s\S]*\>/).test(message.content)) {
-        handler(result, message);
+  if (message.channel.permissionsFor(message.client.user).has(PermissionsBitField.Flags.SendMessages) && message.channel.permissionsFor(message.client.user).has(PermissionsBitField.Flags.EmbedLinks)) {
+    regexs.forEach(({ regex, handler }) => {
+      if (regex.test(message.content)) {
+        const result = message.content.match(regex);
+        if (!(/\|\|[\s\S]*http[\s\S]*\|\|/).test(message.content) && !(/\<[\s\S]*http[\s\S]*\>/).test(message.content)) {
+          handler(result, message);
+        }
       }
-    }
-  });
+    });
+  }
 });
 
 client.on('interactionCreate', async (interaction) => {
