@@ -25,6 +25,7 @@ client.on('ready', () =>{
 });
 
 client.on('messageCreate', async (message) => {
+  if (message.author.bot) return;
   regexs.forEach(({ regex, handler }) => {
     if (regex.test(message.content)) {
       const result = message.content.match(regex);
