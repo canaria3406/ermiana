@@ -26,16 +26,16 @@ client.on('ready', () =>{
 
 client.on('messageCreate', async (message) => {
   if (message.author.bot) return;
-  if (message.channel.permissionsFor(message.client.user).has(PermissionsBitField.Flags.SendMessages) && message.channel.permissionsFor(message.client.user).has(PermissionsBitField.Flags.EmbedLinks)) {
-    regexs.forEach(({ regex, handler }) => {
-      if (regex.test(message.content)) {
+  regexs.forEach(({ regex, handler }) => {
+    if (regex.test(message.content)) {
+      if (message.channel.permissionsFor(message.client.user).has(PermissionsBitField.Flags.SendMessages) && message.channel.permissionsFor(message.client.user).has(PermissionsBitField.Flags.EmbedLinks)) {
         const result = message.content.match(regex);
         if (!(/\|\|[\s\S]*http[\s\S]*\|\|/).test(message.content) && !(/\<[\s\S]*http[\s\S]*\>/).test(message.content)) {
           handler(result, message);
         }
       }
-    });
-  }
+    }
+  });
 });
 
 client.on('interactionCreate', async (interaction) => {
