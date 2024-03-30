@@ -8,8 +8,12 @@ import { handleMisskeyRegex } from './handleMisskeyRegex.js';
 import { handlePchomeRegex } from './handlePchomeRegex.js';
 import { handleBlueskyRegex } from './handleBlueskyRegex.js';
 import { handleWeiboRegex } from './handleWeiboRegex.js';
+import { handleInstagramRegex } from './handleInstagramRegex.js';
 
 export const regexs = [
+  {
+    regex: /https:\/\/www\.instagram\.com\/((?:p|reel)\/[a-zA-Z0-9-_]+)/,
+    handler: handleInstagramRegex },
   {
     regex: /https:\/\/m\.weibo\.cn\/detail\/([0-9]+)/,
     handler: handleWeiboRegex },
