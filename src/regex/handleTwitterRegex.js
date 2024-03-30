@@ -21,12 +21,31 @@ export async function handleTwitterRegex( result, message ) {
     if (fxapiResp.status === 200) {
       const fxapitwitterEmbed = new EmbedBuilder();
       fxapitwitterEmbed.setColor(0x1DA1F2);
-      fxapitwitterEmbed.setAuthor({ name: '@' + fxapiResp.data.tweet.author.screen_name, iconURL: fxapiResp.data.tweet.author.avatar_url });
-      fxapitwitterEmbed.setTitle(fxapiResp.data.tweet.author.name);
-      fxapitwitterEmbed.setURL(fxapiResp.data.tweet.url);
-
       try {
-        fxapitwitterEmbed.setDescription(fxapiResp.data.tweet.text);
+        if (fxapiResp.data.tweet.author.screen_name && fxapiResp.data.tweet.author.avatar_url) {
+          fxapitwitterEmbed.setAuthor({ name: '@' + fxapiResp.data.tweet.author.screen_name, iconURL: fxapiResp.data.tweet.author.avatar_url });
+        } else if (fxapiResp.data.tweet.author.screen_name) {
+          fxapitwitterEmbed.setAuthor({ name: '@' + fxapiResp.data.tweet.author.screen_name });
+        }
+      } catch {}
+      try {
+        if (fxapiResp.data.tweet.author.name) {
+          fxapitwitterEmbed.setTitle(fxapiResp.data.tweet.author.name);
+        } else {
+          fxapitwitterEmbed.setTitle('Twitter.com');
+        }
+      } catch {}
+      try {
+        if (fxapiResp.data.tweet.url) {
+          fxapitwitterEmbed.setURL(fxapiResp.data.tweet.url);
+        } else {
+          fxapitwitterEmbed.setURL('https://twitter.com/i/status/' + tid);
+        }
+      } catch {}
+      try {
+        if (fxapiResp.data.tweet.text) {
+          fxapitwitterEmbed.setDescription(fxapiResp.data.tweet.text);
+        }
       } catch {}
       try {
         if (fxapiResp.data.tweet.media.mosaic && fxapiResp.data.tweet.media.mosaic.type === 'mosaic_photo') {
@@ -39,22 +58,6 @@ export async function handleTwitterRegex( result, message ) {
       const fxapitweetinfo = '💬' + fxapiResp.data.tweet.replies.toString() + ' 🔁' + fxapiResp.data.tweet.retweets.toString() + ' ❤️' + fxapiResp.data.tweet.likes.toString();
 
       try {
-        /*
-        if (!message.embeds[0]) {
-          try {
-            await message.channel.sendTyping();
-          } catch {}
-          messageSender(message.channel, fxapitwitterEmbed, fxapitweetinfo);
-          embedSuppresser(message);
-        } else if (fxapiResp.data.tweet.media.mosaic && fxapiResp.data.tweet.media.mosaic.type === 'mosaic_photo') {
-          try {
-            await message.channel.sendTyping();
-          } catch {}
-          messageSender(message.channel, fxapitwitterEmbed, fxapitweetinfo);
-          embedSuppresser(message);
-        }
-        */
-
         messageSender(message.channel, fxapitwitterEmbed, fxapitweetinfo);
         embedSuppresser(message);
       } catch {}
@@ -70,7 +73,7 @@ export async function handleTwitterRegex( result, message ) {
       } catch {}
     }
   } catch {
-    console.log('fxtwitter api error: '+ message.guild.name);
+    console.log('fxtwitter api error: '+ message.guild.name + ' ' + tid);
     try {
       const vxapiResp = await axios.request({
         method: 'get',
@@ -82,12 +85,29 @@ export async function handleTwitterRegex( result, message ) {
         // use vxtwitter api
         const vxapitwitterEmbed = new EmbedBuilder();
         vxapitwitterEmbed.setColor(0x1DA1F2);
-        vxapitwitterEmbed.setAuthor({ name: '@' + vxapiResp.data.user_screen_name });
-        vxapitwitterEmbed.setTitle(vxapiResp.data.user_name);
-        vxapitwitterEmbed.setURL(vxapiResp.data.tweetURL);
-
         try {
-          vxapitwitterEmbed.setDescription(vxapiResp.data.text);
+          if (vxapiResp.data.user_screen_name) {
+            vxapitwitterEmbed.setAuthor({ name: '@' + vxapiResp.data.user_screen_name });
+          }
+        } catch {}
+        try {
+          if (vxapiResp.data.user_name) {
+            vxapitwitterEmbed.setTitle(vxapiResp.data.user_name);
+          } else {
+            vxapitwitterEmbed.setTitle('Twitter.com');
+          }
+        } catch {}
+        try {
+          if (vxapiResp.data.tweetURL) {
+            vxapitwitterEmbed.setURL(vxapiResp.data.tweetURL);
+          } else {
+            vxapitwitterEmbed.setURL('https://twitter.com/i/status/' + tid);
+          }
+        } catch {}
+        try {
+          if (vxapiResp.data.text) {
+            vxapitwitterEmbed.setDescription(vxapiResp.data.text);
+          }
         } catch {}
         try {
           if (vxapiResp.data.media_extended && vxapiResp.data.media_extended[0].type === 'image' && vxapiResp.data.mediaURLs.length === 1) {
@@ -110,22 +130,6 @@ export async function handleTwitterRegex( result, message ) {
         const vxapitweetinfo = '💬' + vxapiResp.data.replies.toString() + ' 🔁' + vxapiResp.data.retweets.toString() + ' ❤️' + vxapiResp.data.likes.toString();
 
         try {
-          /*
-          if (!message.embeds[0]) {
-            try {
-              await message.channel.sendTyping();
-            } catch {}
-            messageSender(message.channel, vxapitwitterEmbed, vxapitweetinfo);
-            embedSuppresser(message);
-          } else if (vxapiResp.data.mediaURLs.length > 1) {
-            try {
-              await message.channel.sendTyping();
-            } catch {}
-            messageSender(message.channel, vxapitwitterEmbed, vxapitweetinfo);
-            embedSuppresser(message);
-          }
-          */
-
           messageSender(message.channel, vxapitwitterEmbed, vxapitweetinfo);
           embedSuppresser(message);
         } catch {}
