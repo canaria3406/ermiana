@@ -6,6 +6,7 @@ export async function handleInstagramRegex(result, message) {
   } catch {}
   try {
     message.channel.send('https://www.ddinstagram.com/' + result[1] + '/');
+    await new Promise((resolve) => setTimeout(resolve, 1500));
     embedSuppresser(message);
   } catch {
     console.log('weibo error: '+ message.guild.name);
