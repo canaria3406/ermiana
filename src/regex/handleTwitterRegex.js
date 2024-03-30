@@ -50,18 +50,15 @@ export async function handleTwitterRegex( result, message ) {
       try {
         if (fxapiResp.data.tweet.media.mosaic && fxapiResp.data.tweet.media.mosaic.type === 'mosaic_photo') {
           fxapitwitterEmbed.setImage(fxapiResp.data.tweet.media.mosaic.formats.jpeg);
-        } else if (fxapiResp.data.tweet.media.all[0].type === 'photo') {
-          fxapitwitterEmbed.setImage(fxapiResp.data.tweet.media.all[0].url + '?name=large');
+        } else if (fxapiResp.data.tweet.media.photos[0].type === 'photo') {
+          fxapitwitterEmbed.setImage(fxapiResp.data.tweet.media.photos[0].url + '?name=large');
         }
       } catch {}
-
-      const fxapitweetinfo = '💬' + fxapiResp.data.tweet.replies.toString() + ' 🔁' + fxapiResp.data.tweet.retweets.toString() + ' ❤️' + fxapiResp.data.tweet.likes.toString();
-
+      const fxapitweetinfo = '💬' + (fxapiResp.data.tweet.replies?.toString() || '0') + ' 🔁' + (fxapiResp.data.tweet.retweets?.toString() || '0') + ' ❤️' + (fxapiResp.data.tweet.likes?.toString() || '0');
       try {
         messageSender(message.channel, fxapitwitterEmbed, fxapitweetinfo);
         embedSuppresser(message);
       } catch {}
-
       try {
         if (fxapiResp.data.tweet.media) {
           fxapiResp.data.tweet.media.all.forEach((element) => {
@@ -71,9 +68,11 @@ export async function handleTwitterRegex( result, message ) {
           });
         }
       } catch {}
+    } else {
+      throw new Error('fxtwitter api error: '+ tid);
     }
   } catch {
-    console.log('fxtwitter api error: '+ message.guild.name + ' ' + tid);
+    console.log('fxtwitter api error: '+ message.guild.name);
     try {
       const vxapiResp = await axios.request({
         method: 'get',
@@ -126,14 +125,11 @@ export async function handleTwitterRegex( result, message ) {
             }
           }
         } catch {}
-
-        const vxapitweetinfo = '💬' + vxapiResp.data.replies.toString() + ' 🔁' + vxapiResp.data.retweets.toString() + ' ❤️' + vxapiResp.data.likes.toString();
-
+        const vxapitweetinfo = '💬' + (vxapiResp.data.replies?.toString() || '0') + ' 🔁' + (vxapiResp.data.retweets?.toString() || '0') + ' ❤️' + (vxapiResp.data.likes?.toString() || '0');
         try {
           messageSender(message.channel, vxapitwitterEmbed, vxapitweetinfo);
           embedSuppresser(message);
         } catch {}
-
         try {
           if (vxapiResp.data.media_extended) {
             vxapiResp.data.media_extended.forEach((element) => {
@@ -143,6 +139,8 @@ export async function handleTwitterRegex( result, message ) {
             });
           }
         } catch {}
+      } else {
+        throw new Error('vxtwitter api error: '+ tid);
       }
     } catch {
       console.log('vxtwitter api error: '+ message.guild.name);
