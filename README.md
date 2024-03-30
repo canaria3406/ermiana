@@ -60,6 +60,7 @@ A Discord bot that fixes sites with broken preview by providing more detailed im
   - [x] Misskey
   - [x] Bluesky
   - [x] Weibo
+  - [x] Instagram
 - [x] Image sharing service
   - [x] Pixiv
   - [x] ehentai
