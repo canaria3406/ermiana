@@ -32,7 +32,7 @@ export async function handleBahaRegex(result, message) {
       if ($('meta[property=og:title]').attr('content')) {
         bahaEmbed.setTitle($('meta[property=og:title]').attr('content'));
       } else {
-        bahaEmbed.setTitle('@場外休憩區 哈啦板 - 巴哈姆特');
+        throw new Error();
       }
     } catch {}
     try {
@@ -77,7 +77,7 @@ export async function handleBahaRegex(result, message) {
         if ($('meta[property=og:title]').attr('content')) {
           bahaEmbed2.setTitle($('meta[property=og:title]').attr('content'));
         } else {
-          bahaEmbed2.setTitle('@場外休憩區 哈啦板 - 巴哈姆特');
+          throw new Error('baha error: '+ message.guild.name);
         }
       } catch {}
       try {
