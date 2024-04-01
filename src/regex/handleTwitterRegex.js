@@ -72,7 +72,7 @@ export async function handleTwitterRegex( result, message ) {
       throw new Error('fxtwitter api error: '+ tid);
     }
   } catch {
-    console.log('fxtwitter api error: '+ message.guild.name);
+    // console.log('fxtwitter api error: '+ message.guild.name);
     try {
       const vxapiResp = await axios.request({
         method: 'get',
@@ -143,7 +143,14 @@ export async function handleTwitterRegex( result, message ) {
         throw new Error('vxtwitter api error: '+ tid);
       }
     } catch {
-      console.log('vxtwitter api error: '+ message.guild.name);
+      // console.log('vxtwitter api error: '+ message.guild.name);
+      try {
+        console.log('fx vx twitter api error: '+ tid);
+        message.channel.send('https://fxtwitter.com/i/status/' + result[1]);
+        embedSuppresser(message);
+      } catch {
+        console.log('twitter api error: '+ message.guild.name);
+      }
     }
   }
 };
