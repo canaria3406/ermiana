@@ -9,8 +9,12 @@ import { handlePchomeRegex } from './handlePchomeRegex.js';
 import { handleBlueskyRegex } from './handleBlueskyRegex.js';
 import { handleWeiboRegex } from './handleWeiboRegex.js';
 import { handleInstagramRegex } from './handleInstagramRegex.js';
+import { handleTiktokRegex } from './handleTiktokRegex.js';
 
 export const regexs = [
+  {
+    regex: /https:\/\/www\.tiktok\.com\/@[a-zA-Z0-9-_]+\/video\/[0-9]+/,
+    handler: handleTiktokRegex },
   {
     regex: /https:\/\/www\.instagram\.com\/(?:p|reel)\/([a-zA-Z0-9-_]+)/,
     handler: handleInstagramRegex },
