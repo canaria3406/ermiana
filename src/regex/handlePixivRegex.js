@@ -90,6 +90,12 @@ export async function handlePixivRegex( result, message ) {
       }
     } catch {}
   } catch {
-    console.log('pixiv error: '+ message.guild.name);
+    try {
+      message.channel.send('https://www.phixiv.net/artworks/' + pid);
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      embedSuppresser(message);
+    } catch {
+      console.log('pixiv error: '+ message.guild.name);
+    }
   }
 };
