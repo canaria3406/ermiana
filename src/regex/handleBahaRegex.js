@@ -26,37 +26,23 @@ export async function handleBahaRegex(result, message) {
     });
 
     const $ = cheerio.load(bahaHTML.data);
+
     const bahaEmbed = new EmbedBuilder();
-    bahaEmbed.setColor(0x5FC9CA);
+    bahaEmbed.setColor(1559500);
+    bahaEmbed.setTitle($('meta[property=og:title]').attr('content'));
+    bahaEmbed.setURL('https://forum.gamer.com.tw/' + result[1]);
     try {
-      if ($('meta[property=og:title]').attr('content')) {
-        bahaEmbed.setTitle($('meta[property=og:title]').attr('content'));
-      } else {
-        throw new Error();
-      }
+      bahaEmbed.setDescription($('meta[property=og:description]').attr('content'));
     } catch {}
     try {
-      if (result[1]) {
-        bahaEmbed.setURL('https://forum.gamer.com.tw/' + result[1]);
-      }
+      bahaEmbed.setImage($('meta[property=og:image]').attr('content'));
     } catch {}
-    try {
-      if ($('meta[property=og:description]').attr('content')) {
-        bahaEmbed.setDescription($('meta[property=og:description]').attr('content'));
-      }
-    } catch {}
-    try {
-      if ($('meta[property=og:image]').attr('content')) {
-        bahaEmbed.setImage($('meta[property=og:image]').attr('content'));
-      }
-    } catch {}
-    try {
-      messageSender(message.channel, bahaEmbed, 'ermiana');
-      embedSuppresser(message);
-    } catch {}
+
+    messageSender(message.channel, bahaEmbed, 'ermiana');
+    embedSuppresser(message);
   } catch {
+    // console.log('baha error');
     await reloadBahaTK();
-    await new Promise((resolve) => setTimeout(resolve, 1000));
     try {
       const ermianaBH2 = new Conf({ projectName: 'ermianaJS' });
       const BAHAENUR2 = ermianaBH2.get('BAHAENUR');
@@ -72,35 +58,21 @@ export async function handleBahaRegex(result, message) {
       const $ = cheerio.load(bahaHTML2.data);
 
       const bahaEmbed2 = new EmbedBuilder();
-      bahaEmbed2.setColor(0x5FC9CA);
+      bahaEmbed2.setColor(1559500);
+      bahaEmbed2.setTitle($('meta[property=og:title]').attr('content'));
+      bahaEmbed2.setURL('https://forum.gamer.com.tw/' + result[1]);
       try {
-        if ($('meta[property=og:title]').attr('content')) {
-          bahaEmbed2.setTitle($('meta[property=og:title]').attr('content'));
-        } else {
-          throw new Error('baha error: '+ message.guild.name);
-        }
+        bahaEmbed2.setDescription($('meta[property=og:description]').attr('content'));
       } catch {}
       try {
-        if (result[1]) {
-          bahaEmbed2.setURL('https://forum.gamer.com.tw/' + result[1]);
-        }
+        bahaEmbed2.setImage($('meta[property=og:image]').attr('content'));
       } catch {}
-      try {
-        if ($('meta[property=og:description]').attr('content')) {
-          bahaEmbed2.setDescription($('meta[property=og:description]').attr('content'));
-        }
-      } catch {}
-      try {
-        if ($('meta[property=og:image]').attr('content')) {
-          bahaEmbed2.setImage($('meta[property=og:image]').attr('content'));
-        }
-      } catch {}
-      try {
-        messageSender(message.channel, bahaEmbed2, 'ermiana');
-        embedSuppresser(message);
-      } catch {}
+
+      messageSender(message.channel, bahaEmbed2, 'ermiana');
+      embedSuppresser(message);
     } catch {
       console.log('baha error: '+ message.guild.name);
+      // console.log('baha second try error');
     }
   }
 };
