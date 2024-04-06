@@ -145,7 +145,7 @@ export async function handleTwitterRegex( result, message ) {
     } catch {
       // console.log('vxtwitter api error: '+ message.guild.name);
       try {
-        console.log('fx vx twitter api error: '+ tid);
+        // console.log('fx vx twitter api error: '+ tid);
         message.channel.send('https://fxtwitter.com/i/status/' + result[1]);
         embedSuppresser(message);
       } catch {
