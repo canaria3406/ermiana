@@ -84,7 +84,6 @@ export async function handleEhRegex(result, message) {
     const waitingtime2 = ((5 - (Math.ceil(new Date().getTime() / 1000) % 5)) % 5) * 1000;
     await new Promise((resolve) => setTimeout(resolve, waitingtime2));
     // console.log('eh sleep');
-    console.log('eh error: '+ message.guild.name);
     try {
       const resp = await axios.request({
         method: 'post',
@@ -153,7 +152,7 @@ export async function handleEhRegex(result, message) {
       messageSender(message.channel, ehEmbed, 'ermiana');
       embedSuppresser(message);
     } catch {
-      // console.log('eh error');
+      console.log('eh error: '+ message.guild.name);
     }
   }
 };
