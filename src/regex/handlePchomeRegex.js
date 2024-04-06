@@ -60,6 +60,6 @@ export async function handlePchomeRegex( result, message ) {
       messageSender(message.channel, pchomeEmbed, 'ermiana');
     }
   } catch {
-    // console.log('pchome error');
+    console.log('pchome error: '+ message.guild.name);
   }
 };
