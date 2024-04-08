@@ -33,6 +33,26 @@ export async function handlePttRegex( result, message ) {
     }
   }
 
+  function getPictures(text) {
+    const pattern = /https:\/\/.*\.(jpg|jpeg|png|gif|webp)/;
+    const result = text.match(pattern);
+    if (result && result.length > 0) {
+      return result[0];
+    } else {
+      return '';
+    }
+  }
+
+  function getMainContent(text) {
+    const pattern = /^(.|\n)+批踢踢實業坊\(ptt\.cc\)/;
+    const result = text.match(pattern);
+    if (result && result.length > 0) {
+      return getPictures(result[0]);
+    } else {
+      return getPictures(text);
+    }
+  }
+
   try {
     if (supportBoard.includes(boardNameStandardization(result[1]))) {
       const pttHTML = await axios.request({
@@ -50,6 +70,7 @@ export async function handlePttRegex( result, message ) {
         const $ = cheerio.load(pttHTML.data);
         const pttHtmlTitle = $('meta[property=og:title]').attr('content') || 'PTT.cc';
         const pttHtmlDescription = $('meta[property=og:description]').attr('content') || '';
+        const mainContent = $('#main-content').text().substring(0, 1000) || '';
         try {
           const pttResp = await axios.request({
             method: 'get',
@@ -79,6 +100,11 @@ export async function handlePttRegex( result, message ) {
           try {
             if (pttResp.data.imageSource) {
               mopttEmbed.setImage(pttResp.data.imageSource);
+            } else if (mainContent) {
+              const constentPic = getMainContent(mainContent);
+              if (constentPic) {
+                mopttEmbed.setImage(constentPic);
+              }
             }
           } catch {}
           try {
@@ -96,6 +122,14 @@ export async function handlePttRegex( result, message ) {
             try {
               if (pttHtmlDescription) {
                 pttEmbed.setDescription(pttHtmlDescription);
+              }
+            } catch {}
+            try {
+              if (mainContent) {
+                const constentPic = getMainContent(mainContent);
+                if (constentPic) {
+                  pttEmbed.setImage(constentPic);
+                }
               }
             } catch {}
             try {
@@ -117,6 +151,7 @@ export async function handlePttRegex( result, message ) {
           const $ = cheerio.load(pttHTML2.data);
           const pttHtmlTitle2 = $('meta[property=og:title]').attr('content') || 'PTT.cc';
           const pttHtmlDescription2 = $('meta[property=og:description]').attr('content') || '';
+          const mainContent2 = $('#main-content').text().substring(0, 1000) || '';
 
           try {
             const pttResp2 = await axios.request({
@@ -146,6 +181,11 @@ export async function handlePttRegex( result, message ) {
             try {
               if (pttResp2.data.imageSource) {
                 mopttEmbed2.setImage(pttResp2.data.imageSource);
+              } else if (mainContent2) {
+                const constentPic2 = getMainContent(mainContent2);
+                if (constentPic2) {
+                  mopttEmbed2.setImage(constentPic2);
+                }
               }
             } catch {}
             try {
@@ -163,6 +203,14 @@ export async function handlePttRegex( result, message ) {
               try {
                 if (pttHtmlDescription2) {
                   pttEmbed2.setDescription(pttHtmlDescription2);
+                }
+              } catch {}
+              try {
+                if (mainContent2) {
+                  const constentPic2 = getMainContent(mainContent2);
+                  if (constentPic2) {
+                    pttEmbed2.setImage(constentPic2);
+                  }
                 }
               } catch {}
               try {
