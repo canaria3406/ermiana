@@ -1,9 +1,9 @@
 import { PermissionsBitField, Client, GatewayIntentBits } from 'discord.js';
-import { currentTime } from './common/currentTime.js';
-import { configManager } from './common/configManager.js';
-import { runBahaCron } from './common/runBahaCron.js';
+import { currentTime } from './utils/currentTime.js';
+import { configManager } from './utils/configManager.js';
+import { runBahaCron } from './utils/runBahaCron.js';
 import { regexs } from './regex/regexManager.js';
-import { refreshContextMenus } from './common/refreshContextMenus.js';
+import { refreshContextMenus } from './utils/refreshContextMenus.js';
 
 const client = new Client({
   intents: [

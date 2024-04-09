@@ -2,7 +2,6 @@ import { EmbedBuilder } from 'discord.js';
 import axios from 'axios';
 import Conf from 'conf';
 import { messageSender } from '../common/messageSender.js';
-import { reloadNhTK } from '../common/reloadNhTK.js';
 import { embedSuppresser } from '../common/embedSuppresser.js';
 
 export async function handleNhRegex( result, message ) {

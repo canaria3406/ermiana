@@ -3,7 +3,7 @@ import axios from 'axios';
 import cheerio from 'cheerio';
 import Conf from 'conf';
 import { messageSender } from '../common/messageSender.js';
-import { reloadBahaTK } from '../common/reloadBahaTK.js';
+import { reloadBahaTK } from '../utils/reloadBahaTK.js';
 import { embedSuppresser } from '../common/embedSuppresser.js';
 
 export async function handleBahaRegex(result, message) {
