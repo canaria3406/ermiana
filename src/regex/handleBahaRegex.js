@@ -2,9 +2,9 @@ import { EmbedBuilder } from 'discord.js';
 import axios from 'axios';
 import cheerio from 'cheerio';
 import Conf from 'conf';
-import { messageSender } from '../common/messageSender.js';
+import { messageSender } from '../events/messageSender.js';
 import { reloadBahaTK } from '../utils/reloadBahaTK.js';
-import { embedSuppresser } from '../common/embedSuppresser.js';
+import { embedSuppresser } from '../events/embedSuppresser.js';
 
 export async function handleBahaRegex(result, message) {
   try {

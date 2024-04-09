@@ -1,7 +1,7 @@
 import { EmbedBuilder } from 'discord.js';
 import axios from 'axios';
-import { messageSender } from '../common/messageSender.js';
-import { embedSuppresser } from '../common/embedSuppresser.js';
+import { messageSender } from '../events/messageSender.js';
+import { embedSuppresser } from '../events/embedSuppresser.js';
 
 export async function handleMisskeyRegex(result, message) {
   try {

@@ -1,8 +1,8 @@
 import { EmbedBuilder } from 'discord.js';
 import axios from 'axios';
 import cheerio from 'cheerio';
-import { messageSender } from '../common/messageSender.js';
-import { embedSuppresser } from '../common/embedSuppresser.js';
+import { messageSender } from '../events/messageSender.js';
+import { embedSuppresser } from '../events/embedSuppresser.js';
 
 export async function handlePttRegex( result, message ) {
   // 其他看板觀察中 'Gamesale', 'SportLottery'

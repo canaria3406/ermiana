@@ -1,7 +1,7 @@
 import { EmbedBuilder } from 'discord.js';
 import axios from 'axios';
 import cheerio from 'cheerio';
-import { messageSender } from '../common/messageSender.js';
+import { messageSender } from '../events/messageSender.js';
 
 export async function handlePchomeRegex( result, message ) {
   try {

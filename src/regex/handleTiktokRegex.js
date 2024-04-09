@@ -1,4 +1,4 @@
-import { embedSuppresser } from '../common/embedSuppresser.js';
+import { embedSuppresser } from '../events/embedSuppresser.js';
 
 export async function handleTiktokRegex(result, message) {
   try {
