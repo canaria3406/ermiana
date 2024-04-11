@@ -3,11 +3,10 @@ import axios from 'axios';
 import { messageSender } from '../events/messageSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
 import { videoLinkSender } from '../events/videoLinkSender.js';
+import { typingSender } from '../events/typingSender.js';
 
 export async function handleMisskeyRegex(result, message) {
-  try {
-    await message.channel.sendTyping();
-  } catch {}
+  typingSender(message);
   try {
     const resp = await axios.request({
       method: 'post',

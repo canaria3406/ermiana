@@ -2,11 +2,10 @@ import { EmbedBuilder } from 'discord.js';
 import axios from 'axios';
 import cheerio from 'cheerio';
 import { messageSender } from '../events/messageSender.js';
+import { typingSender } from '../events/typingSender.js';
 
 export async function handlePchomeRegex( result, message ) {
-  try {
-    await message.channel.sendTyping();
-  } catch {}
+  typingSender(message);
   try {
     const pcid = result[1];
     const str = result[0];

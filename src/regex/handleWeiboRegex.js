@@ -3,11 +3,10 @@ import axios from 'axios';
 import cheerio from 'cheerio';
 import { messageSender } from '../events/messageSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
+import { typingSender } from '../events/typingSender.js';
 
 export async function handleWeiboRegex(result, message) {
-  try {
-    await message.channel.sendTyping();
-  } catch {}
+  typingSender(message);
   try {
     const weiboResp = await axios.request({
       method: 'get',

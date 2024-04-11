@@ -3,14 +3,11 @@ import axios from 'axios';
 import Conf from 'conf';
 import { messageSender } from '../events/messageSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
+import { typingSender } from '../events/typingSender.js';
 
 export async function handleNhRegex( result, message ) {
-  try {
-    await message.channel.sendTyping();
-  } catch {}
-
+  typingSender(message);
   const nid = result[1];
-
   try {
     const ermianaNh = new Conf({ projectName: 'ermianaJS' });
     if (!ermianaNh.get('NhHeaderCookie')) {

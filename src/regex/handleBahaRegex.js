@@ -5,11 +5,10 @@ import Conf from 'conf';
 import { messageSender } from '../events/messageSender.js';
 import { reloadBahaTK } from '../utils/reloadBahaTK.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
+import { typingSender } from '../events/typingSender.js';
 
 export async function handleBahaRegex(result, message) {
-  try {
-    await message.channel.sendTyping();
-  } catch {}
+  typingSender(message);
   try {
     const ermianaBH = new Conf({ projectName: 'ermianaJS' });
     if (!ermianaBH.get('BAHAENUR') || !ermianaBH.get('BAHARUNE')) {

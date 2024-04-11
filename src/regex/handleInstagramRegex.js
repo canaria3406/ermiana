@@ -3,14 +3,11 @@ import axios from 'axios';
 import { messageSender } from '../events/messageSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
 import { videoLinkSender } from '../events/videoLinkSender.js';
+import { typingSender } from '../events/typingSender.js';
 
 export async function handleInstagramRegex(result, message) {
-  try {
-    await message.channel.sendTyping();
-  } catch {}
-
+  typingSender(message);
   const igid = result[1];
-
   try {
     const igResp = await axios({
       url: 'https://www.instagram.com/graphql/query/',

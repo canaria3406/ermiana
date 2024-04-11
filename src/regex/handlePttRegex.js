@@ -3,6 +3,7 @@ import axios from 'axios';
 import cheerio from 'cheerio';
 import { messageSender } from '../events/messageSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
+import { typingSender } from '../events/typingSender.js';
 
 export async function handlePttRegex( result, message ) {
   // 其他看板觀察中 'Gamesale', 'SportLottery'
@@ -62,9 +63,7 @@ export async function handlePttRegex( result, message ) {
         timeout: 2000,
       });
 
-      try {
-        await message.channel.sendTyping();
-      } catch {}
+      typingSender(message);
 
       if (pttHTML.status === 200) {
         const $ = cheerio.load(pttHTML.data);

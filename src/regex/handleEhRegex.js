@@ -2,11 +2,10 @@ import { EmbedBuilder } from 'discord.js';
 import axios from 'axios';
 import { messageSender } from '../events/messageSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
+import { typingSender } from '../events/typingSender.js';
 
 export async function handleEhRegex(result, message) {
-  try {
-    await message.channel.sendTyping();
-  } catch {}
+  typingSender(message);
   const galleryId = parseInt(result[1]);
   const galleryToken = result[2];
   try {
