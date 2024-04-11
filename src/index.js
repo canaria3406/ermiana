@@ -29,9 +29,11 @@ client.on('messageCreate', async (message) => {
   if (message.author.bot) return;
   regexs.forEach(({ regex, handler }) => {
     if (regex.test(message.content)) {
-      if (message.channel.permissionsFor(message.client.user).has(PermissionsBitField.Flags.SendMessages) && message.channel.permissionsFor(message.client.user).has(PermissionsBitField.Flags.EmbedLinks)) {
+      if (message.channel.permissionsFor(message.client.user).has(PermissionsBitField.Flags.SendMessages) &&
+          message.channel.permissionsFor(message.client.user).has(PermissionsBitField.Flags.EmbedLinks)) {
         const result = message.content.match(regex);
-        if (!(/\|\|[\s\S]*http[\s\S]*\|\|/).test(message.content) && !(/\<[\s\S]*http[\s\S]*\>/).test(message.content)) {
+        if (!(/\|\|[\s\S]*http[\s\S]*\|\|/).test(message.content) &&
+            !(/\<[\s\S]*http[\s\S]*\>/).test(message.content)) {
           handler(result, message);
         }
       }
