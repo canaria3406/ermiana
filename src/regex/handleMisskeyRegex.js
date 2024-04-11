@@ -2,7 +2,7 @@ import { EmbedBuilder } from 'discord.js';
 import axios from 'axios';
 import { messageSender } from '../events/messageSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
-import { videoLinkSender } from '../events/videoLinkSender.js';
+// import { videoLinkSender } from '../events/videoLinkSender.js';
 import { typingSender } from '../events/typingSender.js';
 
 export async function handleMisskeyRegex(result, message) {
@@ -57,7 +57,7 @@ export async function handleMisskeyRegex(result, message) {
               });
         }
       } catch {}
-
+      /*
       try {
         resp.data.files?.forEach((file) => {
           if (file.type == 'video/mp4') {
@@ -70,6 +70,7 @@ export async function handleMisskeyRegex(result, message) {
           }
         });
       } catch {}
+      */
     } else {
       console.error('Request failed');
     }
