@@ -2,6 +2,7 @@ import { EmbedBuilder } from 'discord.js';
 import axios from 'axios';
 import { messageSender } from '../events/messageSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
+import { videoLinkSender } from '../events/videoLinkSender.js';
 
 export async function handleTwitterRegex( result, message ) {
   try {
@@ -63,7 +64,7 @@ export async function handleTwitterRegex( result, message ) {
         if (fxapiResp.data.tweet.media) {
           fxapiResp.data.tweet.media.all.forEach((element) => {
             if (element.type != 'photo') {
-              message.channel.send('[連結](' + element.url +')');
+              videoLinkSender(message, element.url);
             }
           });
         }
@@ -134,7 +135,7 @@ export async function handleTwitterRegex( result, message ) {
           if (vxapiResp.data.media_extended) {
             vxapiResp.data.media_extended.forEach((element) => {
               if (element.type != 'image') {
-                message.channel.send('[連結](' + element.url +')');
+                videoLinkSender(message, element.url);
               }
             });
           }
@@ -146,7 +147,7 @@ export async function handleTwitterRegex( result, message ) {
       // console.log('vxtwitter api error: '+ message.guild.name);
       try {
         // console.log('fx vx twitter api error: '+ tid);
-        message.channel.send('https://fxtwitter.com/i/status/' + result[1]);
+        videoLinkSender(message, `https://fxtwitter.com/i/status/${result[1]}`);
         embedSuppresser(message);
       } catch {
         console.log('twitter api error: '+ message.guild.name);

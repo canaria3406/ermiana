@@ -2,6 +2,7 @@ import { EmbedBuilder } from 'discord.js';
 import axios from 'axios';
 import { messageSender } from '../events/messageSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
+import { videoLinkSender } from '../events/videoLinkSender.js';
 
 export async function handleInstagramRegex(result, message) {
   try {
@@ -70,7 +71,7 @@ export async function handleInstagramRegex(result, message) {
       } catch {}
       try {
         if (igResp.data.data.shortcode_media.is_video) {
-          message.channel.send(`[連結](https://d.ddinstagram.com/p/${igid}/)`);
+          videoLinkSender(message, `https://d.ddinstagram.com/p/${igid}/`);
         }
       } catch {}
       try {
@@ -92,7 +93,7 @@ export async function handleInstagramRegex(result, message) {
     }
   } catch {
     try {
-      message.channel.send('https://www.ddinstagram.com/p/' + result[1] + '/');
+      videoLinkSender(message, `https://www.ddinstagram.com/p/${result[1]}/`);
       await new Promise((resolve) => setTimeout(resolve, 1500));
       embedSuppresser(message);
     } catch {

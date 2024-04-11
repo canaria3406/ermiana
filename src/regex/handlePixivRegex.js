@@ -2,6 +2,7 @@ import { EmbedBuilder } from 'discord.js';
 import axios from 'axios';
 import { messageSender } from '../events/messageSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
+import { videoLinkSender } from '../events/videoLinkSender.js';
 
 export async function handlePixivRegex( result, message ) {
   try {
@@ -91,7 +92,7 @@ export async function handlePixivRegex( result, message ) {
     } catch {}
   } catch {
     try {
-      message.channel.send('https://www.phixiv.net/artworks/' + pid);
+      videoLinkSender(message, `https://www.phixiv.net/artworks/${pid}`);
       await new Promise((resolve) => setTimeout(resolve, 1500));
       embedSuppresser(message);
     } catch {

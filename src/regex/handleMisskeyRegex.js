@@ -2,6 +2,7 @@ import { EmbedBuilder } from 'discord.js';
 import axios from 'axios';
 import { messageSender } from '../events/messageSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
+import { videoLinkSender } from '../events/videoLinkSender.js';
 
 export async function handleMisskeyRegex(result, message) {
   try {
@@ -62,10 +63,10 @@ export async function handleMisskeyRegex(result, message) {
         resp.data.files?.forEach((file) => {
           if (file.type == 'video/mp4') {
             if (file.url.match(/https:\/\/media\.misskeyusercontent\.com\/io\/.*\.mp4/)) {
-              message.channel.send(file.url);
+              videoLinkSender(message, file.url);
             } else if (file.url.match(/https:\/\/proxy\.misskeyusercontent\.com\/image\.webp\?url=.*\.mp4/)) {
               const othersiteUrl = decodeURIComponent(file.url.match(/url=(.+)/)[1]);
-              message.channel.send(othersiteUrl);
+              videoLinkSender(message, othersiteUrl);
             }
           }
         });
