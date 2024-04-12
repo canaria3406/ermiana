@@ -2,6 +2,7 @@ import { EmbedBuilder } from 'discord.js';
 import axios from 'axios';
 import cheerio from 'cheerio';
 import { messageSender } from '../events/messageSender.js';
+import { messageSubSender } from '../events/messageSubSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
 import { typingSender } from '../events/typingSender.js';
 
@@ -47,7 +48,7 @@ export async function handlePlurkRegex( result, message ) {
               const picEmbed = new EmbedBuilder();
               picEmbed.setColor(0xefa54c);
               picEmbed.setImage(pic);
-              messageSender(message, picEmbed, 'ermiana');
+              messageSubSender(message, picEmbed, 'ermiana');
             });
       }
     } catch {}

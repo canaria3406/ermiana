@@ -1,6 +1,7 @@
 import { EmbedBuilder } from 'discord.js';
 import axios from 'axios';
 import { messageSender } from '../events/messageSender.js';
+import { messageSubSender } from '../events/messageSubSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
 import { typingSender } from '../events/typingSender.js';
 
@@ -65,7 +66,7 @@ export async function handleBlueskyRegex(result, message) {
                   const picEmbed = new EmbedBuilder();
                   picEmbed.setColor(0x53b4ff);
                   picEmbed.setImage(image.fullsize);
-                  messageSender(message, picEmbed, 'ermiana');
+                  messageSubSender(message, picEmbed, 'ermiana');
                 });
           }
         } catch {}

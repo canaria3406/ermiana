@@ -2,6 +2,7 @@ import { EmbedBuilder } from 'discord.js';
 import axios from 'axios';
 import cheerio from 'cheerio';
 import { messageSender } from '../events/messageSender.js';
+import { messageSubSender } from '../events/messageSubSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
 import { typingSender } from '../events/typingSender.js';
 
@@ -57,7 +58,7 @@ export async function handleWeiboRegex(result, message) {
                   const picEmbed = new EmbedBuilder();
                   picEmbed.setColor(0xff0000);
                   picEmbed.setImage(`https://weibo-pic.canaria.cc/${match[1]}/${match[2]}`);
-                  messageSender(message, picEmbed, 'ermiana');
+                  messageSubSender(message, picEmbed, 'ermiana');
                 }
               });
         }

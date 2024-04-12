@@ -1,6 +1,7 @@
 import { EmbedBuilder } from 'discord.js';
 import axios from 'axios';
 import { messageSender } from '../events/messageSender.js';
+import { messageSubSender } from '../events/messageSubSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
 import { videoLinkSender } from '../events/videoLinkSender.js';
 import { typingSender } from '../events/typingSender.js';
@@ -80,7 +81,7 @@ export async function handleInstagramRegex(result, message) {
                   const picEmbed = new EmbedBuilder();
                   picEmbed.setColor(0xE1306C);
                   picEmbed.setImage(edge.node.display_url);
-                  messageSender(message, picEmbed, 'ermiana');
+                  messageSubSender(message, picEmbed, 'ermiana');
                 }
               });
         }

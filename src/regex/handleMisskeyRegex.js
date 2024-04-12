@@ -1,6 +1,7 @@
 import { EmbedBuilder } from 'discord.js';
 import axios from 'axios';
 import { messageSender } from '../events/messageSender.js';
+import { messageSubSender } from '../events/messageSubSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
 // import { videoLinkSender } from '../events/videoLinkSender.js';
 import { typingSender } from '../events/typingSender.js';
@@ -52,7 +53,7 @@ export async function handleMisskeyRegex(result, message) {
                   const noteEmbed = new EmbedBuilder();
                   noteEmbed.setColor(0x96d04a);
                   noteEmbed.setImage(file.url);
-                  messageSender(message, noteEmbed, 'ermiana');
+                  messageSubSender(message, noteEmbed, 'ermiana');
                 }
               });
         }

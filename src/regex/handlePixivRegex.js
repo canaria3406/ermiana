@@ -1,6 +1,7 @@
 import { EmbedBuilder } from 'discord.js';
 import axios from 'axios';
 import { messageSender } from '../events/messageSender.js';
+import { messageSubSender } from '../events/messageSubSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
 import { videoLinkSender } from '../events/videoLinkSender.js';
 import { typingSender } from '../events/typingSender.js';
@@ -41,7 +42,7 @@ export async function handlePixivRegex( result, message ) {
             const picEmbed = new EmbedBuilder();
             picEmbed.setColor(0x0096fa);
             picEmbed.setImage(regularPicUrl.replace('_p0', `_p${i+1}` ));
-            messageSender(message, picEmbed, 'ermiana');
+            messageSubSender(message, picEmbed, 'ermiana');
           }
         }
         embedSuppresser(message);
@@ -55,7 +56,7 @@ export async function handlePixivRegex( result, message ) {
             const picEmbed = new EmbedBuilder();
             picEmbed.setColor(0x0096fa);
             picEmbed.setImage(userIllustsUrl.replace('_p0', `_p${i+1}` ));
-            messageSender(message, picEmbed, 'ermiana');
+            messageSubSender(message, picEmbed, 'ermiana');
           }
         }
         embedSuppresser(message);
@@ -82,7 +83,7 @@ export async function handlePixivRegex( result, message ) {
               const picEmbed = new EmbedBuilder();
               picEmbed.setColor(0x0096fa);
               picEmbed.setImage(resp2.data.original_urls[i+1].replace('i.pximg.net', 'pixiv.canaria.cc'));
-              messageSender(message, picEmbed, 'ermiana');
+              messageSubSender(message, picEmbed, 'ermiana');
             }
             embedSuppresser(message);
           }
