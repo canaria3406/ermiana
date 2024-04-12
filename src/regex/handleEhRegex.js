@@ -76,7 +76,7 @@ export async function handleEhRegex(result, message) {
       ehEmbed.setImage(resp.data.gmetadata[0].thumb);
     } catch {}
 
-    messageSender(message.channel, ehEmbed, 'ermiana');
+    messageSender(message, ehEmbed, 'ermiana');
     embedSuppresser(message);
   } catch {
     // console.log('eh no response');
@@ -148,7 +148,7 @@ export async function handleEhRegex(result, message) {
         ehEmbed.setImage(resp.data.gmetadata[0].thumb);
       } catch {}
 
-      messageSender(message.channel, ehEmbed, 'ermiana');
+      messageSender(message, ehEmbed, 'ermiana');
       embedSuppresser(message);
     } catch {
       console.log('eh error: '+ message.guild.name);

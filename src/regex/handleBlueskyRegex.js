@@ -54,7 +54,7 @@ export async function handleBlueskyRegex(result, message) {
 
         const threadinfo ='💬' + threadResp.data.thread.post.replyCount.toString() + ' 🔁' + threadResp.data.thread.post.repostCount.toString() + ' ❤️' + threadResp.data.thread.post.likeCount.toString();
 
-        messageSender(message.channel, blueskyEmbed, threadinfo);
+        messageSender(message, blueskyEmbed, threadinfo);
         embedSuppresser(message);
 
         try {
@@ -65,7 +65,7 @@ export async function handleBlueskyRegex(result, message) {
                   const picEmbed = new EmbedBuilder();
                   picEmbed.setColor(0x53b4ff);
                   picEmbed.setImage(image.fullsize);
-                  messageSender(message.channel, picEmbed, 'ermiana');
+                  messageSender(message, picEmbed, 'ermiana');
                 });
           }
         } catch {}

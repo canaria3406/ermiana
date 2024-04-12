@@ -54,7 +54,7 @@ export async function handleTwitterRegex( result, message ) {
       } catch {}
       const fxapitweetinfo = '💬' + (fxapiResp.data.tweet.replies?.toString() || '0') + ' 🔁' + (fxapiResp.data.tweet.retweets?.toString() || '0') + ' ❤️' + (fxapiResp.data.tweet.likes?.toString() || '0');
       try {
-        messageSender(message.channel, fxapitwitterEmbed, fxapitweetinfo);
+        messageSender(message, fxapitwitterEmbed, fxapitweetinfo);
         embedSuppresser(message);
       } catch {}
       try {
@@ -125,7 +125,7 @@ export async function handleTwitterRegex( result, message ) {
         } catch {}
         const vxapitweetinfo = '💬' + (vxapiResp.data.replies?.toString() || '0') + ' 🔁' + (vxapiResp.data.retweets?.toString() || '0') + ' ❤️' + (vxapiResp.data.likes?.toString() || '0');
         try {
-          messageSender(message.channel, vxapitwitterEmbed, vxapitweetinfo);
+          messageSender(message, vxapitwitterEmbed, vxapitweetinfo);
           embedSuppresser(message);
         } catch {}
         try {

@@ -56,7 +56,7 @@ export async function handlePchomeRegex( result, message ) {
         pchomeEmbed.setImage(picurl);
       } catch {}
 
-      messageSender(message.channel, pchomeEmbed, 'ermiana');
+      messageSender(message, pchomeEmbed, 'ermiana');
     }
   } catch {
     console.log('pchome error: '+ message.guild.name);

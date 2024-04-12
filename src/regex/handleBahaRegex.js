@@ -37,7 +37,7 @@ export async function handleBahaRegex(result, message) {
       bahaEmbed.setImage($('meta[property=og:image]').attr('content'));
     } catch {}
 
-    messageSender(message.channel, bahaEmbed, 'ermiana');
+    messageSender(message, bahaEmbed, 'ermiana');
     embedSuppresser(message);
   } catch {
     // console.log('baha error');
@@ -67,7 +67,7 @@ export async function handleBahaRegex(result, message) {
         bahaEmbed2.setImage($('meta[property=og:image]').attr('content'));
       } catch {}
 
-      messageSender(message.channel, bahaEmbed2, 'ermiana');
+      messageSender(message, bahaEmbed2, 'ermiana');
       embedSuppresser(message);
     } catch {
       console.log('baha error: '+ message.guild.name);

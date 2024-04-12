@@ -38,7 +38,7 @@ export async function handlePlurkRegex( result, message ) {
 
     const plurkInfo = '💬' + respPlurk + ' 🔁' + rePlurk + ' ❤️' + favPlurk;
 
-    messageSender(message.channel, plurkEmbed, plurkInfo);
+    messageSender(message, plurkEmbed, plurkInfo);
 
     try {
       if (picPlurk.length > 1) {
@@ -47,7 +47,7 @@ export async function handlePlurkRegex( result, message ) {
               const picEmbed = new EmbedBuilder();
               picEmbed.setColor(0xefa54c);
               picEmbed.setImage(pic);
-              messageSender(message.channel, picEmbed, 'ermiana');
+              messageSender(message, picEmbed, 'ermiana');
             });
       }
     } catch {}

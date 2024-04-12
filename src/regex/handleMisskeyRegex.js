@@ -40,7 +40,7 @@ export async function handleMisskeyRegex(result, message) {
 
       const noteinfo = '💬' + resp.data.repliesCount.toString() + ' 🔁' + resp.data.renoteCount.toString() + ' ❤️' + sumReactions(resp.data.reactions).toString();
 
-      messageSender(message.channel, misskeyEmbed, noteinfo);
+      messageSender(message, misskeyEmbed, noteinfo);
       embedSuppresser(message);
 
       try {
@@ -52,7 +52,7 @@ export async function handleMisskeyRegex(result, message) {
                   const noteEmbed = new EmbedBuilder();
                   noteEmbed.setColor(0x96d04a);
                   noteEmbed.setImage(file.url);
-                  messageSender(message.channel, noteEmbed, 'ermiana');
+                  messageSender(message, noteEmbed, 'ermiana');
                 }
               });
         }

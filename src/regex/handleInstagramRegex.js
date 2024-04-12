@@ -63,7 +63,7 @@ export async function handleInstagramRegex(result, message) {
       } catch {}
       const iginfo = '💬' + (igResp.data.data.shortcode_media.edge_media_to_comment.count?.toString() || '0') + ' ❤️' + (igResp.data.data.shortcode_media.edge_media_preview_like.count?.toString() || '0');
       try {
-        messageSender(message.channel, igEmbed, iginfo);
+        messageSender(message, igEmbed, iginfo);
         embedSuppresser(message);
       } catch {}
       try {
@@ -80,7 +80,7 @@ export async function handleInstagramRegex(result, message) {
                   const picEmbed = new EmbedBuilder();
                   picEmbed.setColor(0xE1306C);
                   picEmbed.setImage(edge.node.display_url);
-                  messageSender(message.channel, picEmbed, 'ermiana');
+                  messageSender(message, picEmbed, 'ermiana');
                 }
               });
         }

@@ -107,7 +107,7 @@ export async function handlePttRegex( result, message ) {
             }
           } catch {}
           try {
-            messageSender(message.channel, mopttEmbed, 'ermiana');
+            messageSender(message, mopttEmbed, 'ermiana');
             embedSuppresser(message);
           } catch {}
         } catch {
@@ -132,7 +132,7 @@ export async function handlePttRegex( result, message ) {
               }
             } catch {}
             try {
-              messageSender(message.channel, pttEmbed, 'ermiana');
+              messageSender(message, pttEmbed, 'ermiana');
               embedSuppresser(message);
             } catch {}
           } catch {}
@@ -188,7 +188,7 @@ export async function handlePttRegex( result, message ) {
               }
             } catch {}
             try {
-              messageSender(message.channel, mopttEmbed2, 'ermiana');
+              messageSender(message, mopttEmbed2, 'ermiana');
               embedSuppresser(message);
             } catch {}
           } catch {
@@ -213,7 +213,7 @@ export async function handlePttRegex( result, message ) {
                 }
               } catch {}
               try {
-                messageSender(message.channel, pttEmbed2, 'ermiana');
+                messageSender(message, pttEmbed2, 'ermiana');
                 embedSuppresser(message);
               } catch {}
             } catch {}

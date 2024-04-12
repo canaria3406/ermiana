@@ -44,7 +44,7 @@ export async function handleWeiboRegex(result, message) {
 
       const weiboinfo ='💬' + weiboResp.data.data.comments_count.toString() + ' 🔁' + weiboResp.data.data.reposts_count.toString() + ' ❤️' + weiboResp.data.data.attitudes_count.toString();
 
-      messageSender(message.channel, weiboEmbed, weiboinfo);
+      messageSender(message, weiboEmbed, weiboinfo);
       embedSuppresser(message);
 
       try {
@@ -57,7 +57,7 @@ export async function handleWeiboRegex(result, message) {
                   const picEmbed = new EmbedBuilder();
                   picEmbed.setColor(0xff0000);
                   picEmbed.setImage(`https://weibo-pic.canaria.cc/${match[1]}/${match[2]}`);
-                  messageSender(message.channel, picEmbed, 'ermiana');
+                  messageSender(message, picEmbed, 'ermiana');
                 }
               });
         }
