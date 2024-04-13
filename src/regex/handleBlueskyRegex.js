@@ -3,6 +3,7 @@ import axios from 'axios';
 import { messageSender } from '../events/messageSender.js';
 import { messageSubSender } from '../events/messageSubSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
+import { backupLinkSender } from '../events/backupLinkSender.js';
 import { typingSender } from '../events/typingSender.js';
 
 export async function handleBlueskyRegex(result, message) {
@@ -73,6 +74,12 @@ export async function handleBlueskyRegex(result, message) {
       }
     }
   } catch {
-    console.log('bluesky error: '+ message.guild.name);
+    try {
+      backupLinkSender(message, `https://bsyy.app/profile/${result[1]}/post/${result[2]}`);
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      embedSuppresser(message);
+    } catch {
+      console.log('bluesky error: '+ message.guild.name);
+    }
   }
 };
