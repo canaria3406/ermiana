@@ -3,6 +3,7 @@ import axios from 'axios';
 import { messageSender } from '../events/messageSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
 import { videoLinkSender } from '../events/videoLinkSender.js';
+import { backupLinkSender } from '../events/backupLinkSender.js';
 import { typingSender } from '../events/typingSender.js';
 
 export async function handleTwitterRegex( result, message ) {
@@ -144,7 +145,7 @@ export async function handleTwitterRegex( result, message ) {
       // console.log('vxtwitter api error: '+ message.guild.name);
       try {
         // console.log('fx vx twitter api error: '+ tid);
-        videoLinkSender(message, `https://fxtwitter.com/i/status/${result[1]}`);
+        backupLinkSender(message, `https://fxtwitter.com/i/status/${result[1]}`);
         embedSuppresser(message);
       } catch {
         console.log('twitter api error: '+ message.guild.name);

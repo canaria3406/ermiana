@@ -4,6 +4,7 @@ import { messageSender } from '../events/messageSender.js';
 import { messageSubSender } from '../events/messageSubSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
 import { videoLinkSender } from '../events/videoLinkSender.js';
+import { backupLinkSender } from '../events/backupLinkSender.js';
 import { typingSender } from '../events/typingSender.js';
 
 export async function handleInstagramRegex(result, message) {
@@ -91,7 +92,7 @@ export async function handleInstagramRegex(result, message) {
     }
   } catch {
     try {
-      videoLinkSender(message, `https://www.ddinstagram.com/p/${result[1]}/`);
+      backupLinkSender(message, `https://www.ddinstagram.com/p/${result[1]}/`);
       await new Promise((resolve) => setTimeout(resolve, 1500));
       embedSuppresser(message);
     } catch {

@@ -3,7 +3,7 @@ import axios from 'axios';
 import { messageSender } from '../events/messageSender.js';
 import { messageSubSender } from '../events/messageSubSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
-import { videoLinkSender } from '../events/videoLinkSender.js';
+import { backupLinkSender } from '../events/backupLinkSender.js';
 import { typingSender } from '../events/typingSender.js';
 
 export async function handlePixivRegex( result, message ) {
@@ -92,7 +92,7 @@ export async function handlePixivRegex( result, message ) {
     } catch {}
   } catch {
     try {
-      videoLinkSender(message, `https://www.phixiv.net/artworks/${pid}`);
+      backupLinkSender(message, `https://www.phixiv.net/artworks/${pid}`);
       await new Promise((resolve) => setTimeout(resolve, 1500));
       embedSuppresser(message);
     } catch {
