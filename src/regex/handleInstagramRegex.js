@@ -55,7 +55,7 @@ export async function handleInstagramRegex(result, message) {
       } catch {}
       try {
         if (igResp.data.data.shortcode_media.edge_media_to_caption.edges[0].node.text) {
-          igEmbed.setDescription(igResp.data.data.shortcode_media.edge_media_to_caption.edges[0].node.text);
+          igEmbed.setDescription(igResp.data.data.shortcode_media.edge_media_to_caption.edges[0].node.text.substring(0, 300));
         }
       } catch {}
       try {
