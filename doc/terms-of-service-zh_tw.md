@@ -15,10 +15,10 @@ ermiana(以下稱"本服務")是一個能夠自動解析並顯示網頁預覽及
 大多數的爭議可以通過非正式途徑解決，倘若您對本服務有任何問題，您同意在提起訴訟或仲裁之前先與我們聯繫。您可以隨時以書面方式將您的問題描述、您希望的解決方法，附上您的真實姓名和 Discord 帳號 ID，發送至 admin#canaria.cc（將 # 替換為 @），我們收到後將盡快為您解決。若在充分溝通後仍有未解決的問題需要進行訴訟或仲裁，爭議雙方同意以中華民國法律作為準據法，並以臺灣台北地方法院作為第一審管轄法院。
 
 ## 軟體
-本服務是以 MIT 授權條款在 GitHub 上發布的開放原始碼專案。您可以在 https://github.com/canaria3406/ermiana 查看本專案的所有原始碼。若您根據 MIT 授權條款進行包括但不限於複製、修改、合併、發布、分發等操作時，您需要於所有衍生簡介中提及本服務，並附上專案的 GitHub 網址 (https://github.com/canaria3406/ermiana)。
+本服務是以 MIT 授權條款在 GitHub 上發布的開放原始碼專案。您可以在 https://github.com/canaria3406/ermiana 查看本專案的所有原始碼。若您根據 MIT 授權條款進行包括但不限於複製、修改、合併、發布、分發等操作時，您需要於所有衍生簡介中提及本服務，並附上專案的 GitHub 網址 ( https://github.com/canaria3406/ermiana )。
 
 ## 漏洞揭露
-若要通報任何軟體漏洞，請至 https://github.com/canaria3406/ermiana/discussions。
+若要通報任何軟體漏洞，請至 https://github.com/canaria3406/ermiana/discussions 。
 
 ## 問題釋疑
 若您對本條款有任何疑問，請以書面方式將您的問題描述，附上您的真實姓名和 Discord 帳號 ID，發送至 admin#canaria.cc（將 # 替換為 @），我們將盡快為您解答。
