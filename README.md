@@ -13,7 +13,7 @@
 
 A Discord bot that fixes sites with broken preview by providing more detailed images and webpage content. Supports multiple popular sites in Taiwan, East Asia. 
 
-![demo](pic/demo1.png)
+![demo](pic/demo20.png)
 
 ## Invite BOT
 
