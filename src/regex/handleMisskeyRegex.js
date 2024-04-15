@@ -42,6 +42,7 @@ export async function handleMisskeyRegex(result, message) {
       const noteinfo = '💬' + resp.data.repliesCount.toString() + ' 🔁' + resp.data.renoteCount.toString() + ' ❤️' + sumReactions(resp.data.reactions).toString();
 
       messageSender(message, misskeyEmbed, noteinfo);
+      await new Promise((resolve) => setTimeout(resolve, 1500));
       embedSuppresser(message);
 
       try {
