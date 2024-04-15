@@ -23,23 +23,22 @@ A Discord bot that fixes sites with broken preview by providing more detailed im
 
 - [Privacy Policy](doc/privacy-policy.md)
 - [Terms of Service](doc/terms-of-service.md)
-
 - [隱私權政策](doc/privacy-policy-zh_tw.md)
 - [服務條款](doc/terms-of-service-zh_tw.md)
 
 ## Screenshot
 
-![demo](pic/demo14.png)
+![demo](pic/demo21.png)
 
-![demo](pic/demo13.png)
+![demo](pic/demo22.png)
 
-![demo](pic/demo11.png)
+![demo](pic/demo25.png)
 
 ![demo](pic/demo3.png)
 
-![demo](pic/demo12.png)
+![demo](pic/demo24.png)
 
-![demo](pic/demo10.png)
+![demo](pic/demo23.png)
 
 ## Support
 
