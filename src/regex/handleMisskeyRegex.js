@@ -3,7 +3,7 @@ import axios from 'axios';
 import { messageSender } from '../events/messageSender.js';
 import { messageSubSender } from '../events/messageSubSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
-// import { videoLinkSender } from '../events/videoLinkSender.js';
+import { videoLinkSender } from '../events/videoLinkSender.js';
 import { typingSender } from '../events/typingSender.js';
 
 export async function handleMisskeyRegex(result, message) {
@@ -59,20 +59,19 @@ export async function handleMisskeyRegex(result, message) {
               });
         }
       } catch {}
-      /*
+
       try {
         resp.data.files?.forEach((file) => {
           if (file.type == 'video/mp4') {
-            if (file.url.match(/https:\/\/media\.misskeyusercontent\.com\/io\/.*\.mp4/)) {
+            if (file.url.match(/https:\/\/media\.misskeyusercontent\.(?:com|jp)\/io\/.*\.mp4/)) {
               videoLinkSender(message, file.url);
-            } else if (file.url.match(/https:\/\/proxy\.misskeyusercontent\.com\/image\.webp\?url=.*\.mp4/)) {
+            } else if (file.url.match(/https:\/\/proxy\.misskeyusercontent\.(?:com|jp)\/image\.webp\?url=.*\.mp4/)) {
               const othersiteUrl = decodeURIComponent(file.url.match(/url=(.+)/)[1]);
               videoLinkSender(message, othersiteUrl);
             }
           }
         });
       } catch {}
-      */
     } else {
       console.error('Request failed');
     }
