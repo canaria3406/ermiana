@@ -62,7 +62,7 @@ export async function handleBlueskyRegex(result, message) {
         try {
           if (threadResp.data.thread.post.embed?.images.length > 1) {
             threadResp.data.thread.post.embed.images
-                .filter((_image, index) => index > 0)
+                .filter((_image, index) => index > 0 && index < 4)
                 .forEach((image) => {
                   const picEmbed = new EmbedBuilder();
                   picEmbed.setColor(0x53b4ff);
