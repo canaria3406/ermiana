@@ -13,7 +13,7 @@ import { handleTiktokRegex } from './handleTiktokRegex.js';
 
 export const regexs = [
   {
-    regex: /https:\/\/www\.tiktok\.com\/@[a-zA-Z0-9-_]+\/video\/[0-9]+/,
+    regex: /https:\/\/www\.tiktok\.com\/@[a-zA-Z0-9-_.]+\/video\/[0-9]+/,
     handler: handleTiktokRegex },
   {
     regex: /https:\/\/www\.instagram\.com\/(?:p|reel)\/([a-zA-Z0-9-_]+)/,
