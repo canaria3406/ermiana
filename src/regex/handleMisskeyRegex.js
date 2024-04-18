@@ -48,7 +48,7 @@ export async function handleMisskeyRegex(result, message) {
       try {
         if (resp.data.files?.length > 1) {
           resp.data.files
-              .filter((_file, index) => index > 0)
+              .filter((_file, index) => index > 0 && index < 4)
               .forEach((file) => {
                 if (file.type == 'image/webp' || 'image/png' || 'image/jpg') {
                   const noteEmbed = new EmbedBuilder();
