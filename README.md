@@ -68,6 +68,6 @@ A Discord bot that fixes sites with broken preview by providing more detailed im
   - [x] Pixiv
   - [x] ehentai
   - [x] exhentai
-  - [x] nhentai
+  - [ ] nhentai
 - [x] E-commerce site
   - [x] PChome24h

@@ -10,12 +10,8 @@ import { handleBlueskyRegex } from './handleBlueskyRegex.js';
 import { handleWeiboRegex } from './handleWeiboRegex.js';
 import { handleInstagramRegex } from './handleInstagramRegex.js';
 import { handleTiktokRegex } from './handleTiktokRegex.js';
-import { handleNhRegex } from './handleNhRegex.js';
 
 export const regexs = [
-  {
-    regex: /https:\/\/nhentai\.net\/g\/([0-9]+)/,
-    handler: handleNhRegex },
   {
     regex: /https:\/\/www\.tiktok\.com\/@[a-zA-Z0-9-_.]+\/video\/[0-9]+/,
     handler: handleTiktokRegex },
