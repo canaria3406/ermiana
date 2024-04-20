@@ -7,6 +7,7 @@ export async function configManager() {
     DCID: process.env.DCID,
     BHUD: process.env.BHUD,
     BHPD: process.env.BHPD,
+    NHTK: process.env.NHTK,
   };
   return config;
 }

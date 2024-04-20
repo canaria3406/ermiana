@@ -1,6 +1,7 @@
 import { EmbedBuilder } from 'discord.js';
 import axios from 'axios';
 import Conf from 'conf';
+import { reloadNhTK } from '../utils/reloadNhTK.js';
 import { messageSender } from '../events/messageSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
 import { typingSender } from '../events/typingSender.js';
@@ -9,26 +10,26 @@ export async function handleNhRegex( result, message ) {
   typingSender(message);
   const nid = result[1];
   try {
-    const ermianaNh = new Conf({ projectName: 'ermianaJS' });
-    if (!ermianaNh.get('NhHeaderCookie')) {
+    const ermianaNH = new Conf({ projectName: 'ermianaJS' });
+    if (!ermianaNH.get('NhHeaderToken')) {
       await reloadNhTK();
     }
-    const NhHeaderCookie = ermianaNh.get('NhHeaderCookie');
+    const NhHeaderToken = ermianaNH.get('NhHeaderToken');
 
     const headers = {
       'Accept': 'application/json',
       'Accept-Encoding': 'gzip, deflate, br',
       'Connection': 'keep-alive',
       'Host': 'nhentai.net',
-      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36',
-      'Cookie': NhHeaderCookie,
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0',
+      'Cookie': NhHeaderToken,
     };
 
     const resp = await axios.request({
       method: 'get',
       url: 'https://nhentai.net/api/gallery/' + nid,
       headers: headers,
-      timeout: 2000,
+      timeout: 2500,
     });
 
     if (resp.status === 200) {
@@ -73,7 +74,6 @@ export async function handleNhRegex( result, message ) {
 
       const nhEmbed = new EmbedBuilder();
       nhEmbed.setColor(0xed2553);
-
       try {
         if (resp.data.title.japanese) {
           nhEmbed.setTitle(resp.data.title.japanese);
@@ -81,14 +81,9 @@ export async function handleNhRegex( result, message ) {
           nhEmbed.setTitle(resp.data.title.english);
         }
       } catch {}
-
       nhEmbed.setURL(result[0]);
-      // nhEmbed.addFields(
-      //        { name: "頁數", value: resp.data.num_pages.toString(), inline : true},
-      //        { name: "收藏", value: resp.data.num_favorites.toString(), inline : true}
-      // );
       try {
-        nhEmbed.addFields({ name: '說明', value: translateTags.reverse().join('\n') });
+        nhEmbed.setDescription(translateTags.reverse().join('\n'));
       } catch {}
       try {
         nhEmbed.setImage('https://t.nhentai.net/galleries/' + resp.data.media_id + '/thumb.jpg');
@@ -96,11 +91,8 @@ export async function handleNhRegex( result, message ) {
 
       messageSender(message, nhEmbed, 'ermiana');
       embedSuppresser(message);
-    } else {
-      console.error('Request failed');
     }
   } catch {
-    console.log('nh error');
-    await reloadNhTK();
+    console.log('nh error: '+ message.guild.name);
   }
 };
