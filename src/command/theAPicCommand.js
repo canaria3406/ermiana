@@ -1,3 +1,5 @@
+import { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle } from 'discord.js';
+
 export async function theAPicCommand(interaction) {
   try {
     const imageUrl = interaction.message.embeds[0].image.url;
@@ -42,7 +44,24 @@ export async function theAPicCommand(interaction) {
       interaction.reply( { content: '取得圖片發生問題。', ephemeral: true });
       return;
     } else {
-      interaction.reply( { content: `to page ${targetPage}` });
+      const currentEmbed = interaction.message.embeds[0];
+      const targetEmbed = EmbedBuilder.from(currentEmbed).setImage(imageUrl.replace(`_p${currentPage - 1}`, `_p${targetPage - 1}`));
+
+      const currentComponents = interaction.message.components[0];
+      const buttonPage = new ButtonBuilder()
+          .setCustomId('pagePicture')
+          .setLabel(`${targetPage}/${totalPage}`)
+          .setStyle(ButtonStyle.Secondary)
+          .setDisabled(true);
+      const targetComponents = new ActionRowBuilder()
+          .addComponents(currentComponents.components[0], currentComponents.components[1], buttonPage, currentComponents.components[3], currentComponents.components[4]);
+
+      await interaction.message.edit({
+        components: [targetComponents],
+        embeds: [targetEmbed],
+      });
+
+      interaction.deferUpdate();
     }
   } catch {}
 }
