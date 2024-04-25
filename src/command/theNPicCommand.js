@@ -10,6 +10,7 @@ export async function theNPicCommand(interaction) {
         components: [],
       });
       interaction.reply( { content: '取得圖片發生問題。', ephemeral: true });
+      console.log('button error: '+ interaction.message.guild.name);
       return;
     }
 
@@ -27,6 +28,7 @@ export async function theNPicCommand(interaction) {
         components: [],
       });
       interaction.reply( { content: '取得圖片發生問題。', ephemeral: true });
+      console.log('button error: '+ interaction.message.guild.name);
       return;
     }
 
@@ -36,12 +38,14 @@ export async function theNPicCommand(interaction) {
         components: [],
       });
       interaction.reply( { content: '取得圖片發生問題。', ephemeral: true });
+      console.log('button error: '+ interaction.message.guild.name);
       return;
     } else if (parseInt(match[1]) !== currentPage -1) {
       interaction.message.edit({
         components: [],
       });
       interaction.reply( { content: '取得圖片發生問題。', ephemeral: true });
+      console.log('button error: '+ interaction.message.guild.name);
       return;
     } else {
       const currentEmbed = interaction.message.embeds[0];
