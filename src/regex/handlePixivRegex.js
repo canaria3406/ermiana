@@ -5,7 +5,7 @@ import { messageSender } from '../events/messageSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
 import { backupLinkSender } from '../events/backupLinkSender.js';
 import { typingSender } from '../events/typingSender.js';
-import { messageSenderV2 } from '../events/messageSenderV2.js';
+import { messageSenderPixiv } from '../events/messageSenderPixiv.js';
 
 export async function handlePixivRegex( result, message ) {
   typingSender(message);
@@ -18,7 +18,8 @@ export async function handlePixivRegex( result, message ) {
     });
 
     const tagString = resp.data.body.tags.tags.map((element) => `[${element.tag}](https://www.pixiv.net/tags/${element.tag}/artworks)`).join(', ');
-    const pageCount = Math.min(resp.data.body.pageCount, 5);
+    // const pageCount = Math.min(resp.data.body.pageCount, 5);
+    const pageCount = resp.data.body.pageCount;
 
     const pixivEmbed = new EmbedBuilder();
     pixivEmbed.setColor(0x0096fa);
@@ -40,7 +41,7 @@ export async function handlePixivRegex( result, message ) {
         if (pageCount == 1) {
           messageSender(message, pixivEmbed, 'ermiana');
         } else if (pageCount > 1) {
-          messageSenderV2(message, pixivEmbed, 'ermiana');
+          messageSenderPixiv(message, pixivEmbed, 'ermiana', pageCount);
           /*
           for (const i of Array(pageCount-1).keys()) {
             const picEmbed = new EmbedBuilder();
@@ -59,7 +60,7 @@ export async function handlePixivRegex( result, message ) {
         if (pageCount == 1) {
           messageSender(message, pixivEmbed, 'ermiana');
         } else if (pageCount > 1) {
-          messageSenderV2(message, pixivEmbed, 'ermiana');
+          messageSenderPixiv(message, pixivEmbed, 'ermiana', pageCount);
           /*
           for (const i of Array(pageCount-1).keys()) {
             const picEmbed = new EmbedBuilder();
@@ -89,7 +90,7 @@ export async function handlePixivRegex( result, message ) {
           }
           if (resp2.data?.original_urls) {
             pixivEmbed.setImage(resp2.data.original_urls[0].replace('i.pximg.net', 'pixiv.canaria.cc'));
-            messageSenderV2(message, pixivEmbed, 'ermiana');
+            messageSenderPixiv(message, pixivEmbed, 'ermiana', resp2.data.original_urls.length);
             /*
             const pageCount2 = Math.min(resp2.data.original_urls.length, 5);
             pixivEmbed.setImage(resp2.data.original_urls[0].replace('i.pximg.net', 'pixiv.canaria.cc'));
