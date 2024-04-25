@@ -42,12 +42,20 @@ client.on('messageCreate', async (message) => {
 });
 
 client.on('interactionCreate', async (interaction) => {
-  if (!interaction.isMessageContextMenuCommand()) return;
-  commands.forEach(({ commandNames, handler }) => {
-    if (interaction.commandName === commandNames) {
-      handler(interaction);
-    }
-  });
+  if (!interaction.isMessageContextMenuCommand() && !interaction.isButton()) return;
+  if (interaction.isMessageContextMenuCommand()) {
+    commands.forEach(({ commandNames, handler }) => {
+      if (interaction.commandName === commandNames) {
+        handler(interaction);
+      }
+    });
+  } else if (interaction.isButton()) {
+    commands.forEach(({ commandNames, handler }) => {
+      if (interaction.customId === commandNames) {
+        handler(interaction);
+      }
+    });
+  }
 });
 
 const config = await configManager();

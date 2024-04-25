@@ -9,6 +9,8 @@ export async function delMsgCommand(interaction) {
             .then(() => {
               if (interaction.targetMessage.reference?.messageId) {
                 interaction.reply( { content: '成功刪除訊息。' });
+              } else if (interaction.targetMessage.interaction?.id) {
+                interaction.reply( { content: '成功刪除訊息。' });
               } else {
                 interaction.reply( { content: '成功刪除訊息。', ephemeral: true });
               }
