@@ -1,10 +1,34 @@
+import { EmbedBuilder } from 'discord.js';
+
 export async function morePicCommand(interaction) {
   try {
-    const url = interaction.message.embeds[0].url;
-    if (url) {
-      interaction.reply( { content: `<${url}>` });
+    const picArray = [];
+    interaction.message.components[0].components
+        .filter((_button, index) => index > 0 && index < 4)
+        .forEach((button) => {
+          picArray.push(button.url);
+        });
+
+    if (picArray) {
+      const embedColor = interaction.message.embeds[0].color || 0x0e2e47;
+
+      picArray.forEach((image) => {
+        const picEmbed = new EmbedBuilder();
+        picEmbed.setColor(embedColor);
+        picEmbed.setImage(image);
+        picEmbed.setFooter({ text: 'ermiana', iconURL: 'https://cdn.discordapp.com/avatars/242927802557399040/14d549f14db4efece387552397433e6b.png' });
+        interaction.message.channel.send({ embeds: [picEmbed] });
+      });
+
+      interaction.message.edit({
+        components: [],
+      });
+      interaction.deferUpdate();
     } else {
-      interaction.reply( { content: '發生問題。', ephemeral: true });
+      interaction.message.edit({
+        components: [],
+      });
+      interaction.reply( { content: '解析網址發生問題。', ephemeral: true });
     }
   } catch {}
 }

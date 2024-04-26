@@ -1,10 +1,11 @@
 import { EmbedBuilder } from 'discord.js';
 import axios from 'axios';
 import { messageSender } from '../events/messageSender.js';
-import { messageSubSender } from '../events/messageSubSender.js';
+// import { messageSubSender } from '../events/messageSubSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
 import { backupLinkSender } from '../events/backupLinkSender.js';
 import { typingSender } from '../events/typingSender.js';
+import { messageSenderMore } from '../events/messageSenderMore.js';
 
 export async function handleBlueskyRegex(result, message) {
   typingSender(message);
@@ -55,7 +56,7 @@ export async function handleBlueskyRegex(result, message) {
         } catch {}
 
         const threadinfo ='💬' + threadResp.data.thread.post.replyCount.toString() + ' 🔁' + threadResp.data.thread.post.repostCount.toString() + ' ❤️' + threadResp.data.thread.post.likeCount.toString();
-
+        /*
         messageSender(message, blueskyEmbed, threadinfo);
         embedSuppresser(message);
 
@@ -69,6 +70,22 @@ export async function handleBlueskyRegex(result, message) {
                   picEmbed.setImage(image.fullsize);
                   messageSubSender(message, picEmbed, 'ermiana');
                 });
+          }
+        } catch {}
+        */
+        try {
+          if (threadResp.data.thread.post.embed?.images.length > 1) {
+            const imageArray =[];
+            threadResp.data.thread.post.embed.images
+                .filter((_image, index) => index > 0 && index < 4)
+                .forEach((image) => {
+                  imageArray.push(image.fullsize);
+                });
+            messageSenderMore(message, blueskyEmbed, threadinfo, imageArray);
+            embedSuppresser(message);
+          } else {
+            messageSender(message, blueskyEmbed, threadinfo);
+            embedSuppresser(message);
           }
         } catch {}
       }
