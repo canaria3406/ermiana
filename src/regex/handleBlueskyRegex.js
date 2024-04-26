@@ -74,7 +74,13 @@ export async function handleBlueskyRegex(result, message) {
         } catch {}
         */
         try {
-          if (threadResp.data.thread.post.embed?.images.length > 1) {
+          if (!threadResp.data.thread.post.embed?.images) {
+            messageSender(message, blueskyEmbed, threadinfo);
+            embedSuppresser(message);
+          } else if (threadResp.data.thread.post.embed?.images.length == 1) {
+            messageSender(message, blueskyEmbed, threadinfo);
+            embedSuppresser(message);
+          } else {
             const imageArray =[];
             threadResp.data.thread.post.embed.images
                 .filter((_image, index) => index > 0 && index < 4)
@@ -82,9 +88,6 @@ export async function handleBlueskyRegex(result, message) {
                   imageArray.push(image.fullsize);
                 });
             messageSenderMore(message, blueskyEmbed, threadinfo, imageArray);
-            embedSuppresser(message);
-          } else {
-            messageSender(message, blueskyEmbed, threadinfo);
             embedSuppresser(message);
           }
         } catch {}
