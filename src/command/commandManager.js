@@ -8,7 +8,7 @@ import { theZPicCommand } from './theZPicCommand.js';
 
 export const commands = [
   {
-    commandNames: '刪除訊息',
+    commandNames: 'removeMessage',
     handler: delMsgCommand },
   {
     commandNames: 'morePictureButton',
