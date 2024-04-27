@@ -80,7 +80,7 @@ export async function handleBlueskyRegex(result, message) {
           } else if (threadResp.data.thread.post.embed?.images.length == 1) {
             messageSender(message, blueskyEmbed, threadinfo);
             embedSuppresser(message);
-          } else {
+          } else if (threadResp.data.thread.post.embed?.images.length > 1) {
             const imageArray =[];
             threadResp.data.thread.post.embed.images
                 .filter((_image, index) => index > 0 && index < 4)
