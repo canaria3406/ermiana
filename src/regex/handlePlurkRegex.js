@@ -2,9 +2,10 @@ import { EmbedBuilder } from 'discord.js';
 import axios from 'axios';
 import cheerio from 'cheerio';
 import { messageSender } from '../events/messageSender.js';
-import { messageSubSender } from '../events/messageSubSender.js';
+// import { messageSubSender } from '../events/messageSubSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
 import { typingSender } from '../events/typingSender.js';
+import { messageSenderMore } from '../events/messageSenderMore.js';
 
 export async function handlePlurkRegex( result, message ) {
   typingSender(message);
@@ -39,6 +40,25 @@ export async function handlePlurkRegex( result, message ) {
 
     const plurkInfo = '💬' + respPlurk + ' 🔁' + rePlurk + ' ❤️' + favPlurk;
 
+    try {
+      if (!picPlurk || picPlurk.length == 0) {
+        messageSender(message, plurkEmbed, plurkInfo);
+        embedSuppresser(message);
+      } else if (picPlurk.length == 1) {
+        messageSender(message, plurkEmbed, plurkInfo);
+        embedSuppresser(message);
+      } else {
+        const imageArray =[];
+        picPlurk.filter((_pic, index) => index > 0 && index < 4)
+            .forEach((pic) => {
+              imageArray.push(pic);
+            });
+        messageSenderMore(message, plurkEmbed, plurkInfo, imageArray);
+        embedSuppresser(message);
+      }
+    } catch {}
+
+    /*
     messageSender(message, plurkEmbed, plurkInfo);
 
     try {
@@ -54,6 +74,8 @@ export async function handlePlurkRegex( result, message ) {
     } catch {}
 
     embedSuppresser(message);
+
+    */
   } catch {
     console.log('plurk error: '+ message.guild.name);
   }
