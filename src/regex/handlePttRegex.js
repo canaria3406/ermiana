@@ -4,9 +4,9 @@ import cheerio from 'cheerio';
 import { messageSender } from '../events/messageSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
 import { typingSender } from '../events/typingSender.js';
+import { backupLinkSender } from '../events/backupLinkSender.js';
 
 export async function handlePttRegex( result, message ) {
-  // 其他看板觀察中 'Gamesale', 'SportLottery'
   const supportBoard = ['Gossiping', 'C_Chat', 'AC_In', 'H-GAME', 'sex', 'HatePolitics', 'Beauty', 'japanavgirls', 'DMM_GAMES'];
 
   function boardNameStandardization(boardName) {
@@ -73,7 +73,7 @@ export async function handlePttRegex( result, message ) {
         try {
           const pttResp = await axios.request({
             method: 'get',
-            url: `https://moptt.tw/ptt/${result[1]}.${result[2]}`,
+            url: `https://moptt.tw/ptt/${boardNameStandardization(result[1])}.${result[2]}`,
             timeout: 2000,
           });
 
@@ -155,7 +155,7 @@ export async function handlePttRegex( result, message ) {
           try {
             const pttResp2 = await axios.request({
               method: 'get',
-              url: `https://moptt.tw/ptt/${result[1]}.${result[2]}`,
+              url: `https://moptt.tw/ptt/${boardNameStandardization(result[1])}.${result[2]}`,
               timeout: 3000,
             });
             const mopttEmbed2 = new EmbedBuilder();
@@ -222,6 +222,12 @@ export async function handlePttRegex( result, message ) {
       }
     }
   } catch {
-    console.log('ptt error: '+ message.guild.name);
+    try {
+      backupLinkSender(message, `https://www.pttweb.cc/bbs/${boardNameStandardization(result[1])}/${result[2]}`);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      embedSuppresser(message);
+    } catch {
+      console.log('ptt error: '+ message.guild.name);
+    }
   }
 };
