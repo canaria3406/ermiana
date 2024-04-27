@@ -47,7 +47,7 @@ export async function handlePlurkRegex( result, message ) {
       } else if (picPlurk.length == 1) {
         messageSender(message, plurkEmbed, plurkInfo);
         embedSuppresser(message);
-      } else {
+      } else if (picPlurk.length > 1) {
         const imageArray =[];
         picPlurk.filter((_pic, index) => index > 0 && index < 4)
             .forEach((pic) => {
