@@ -12,23 +12,29 @@ export async function morePicCommand(interaction) {
     if (picArray) {
       const embedColor = interaction.message.embeds[0].color || 0x0e2e47;
 
-      picArray.forEach((image) => {
+      picArray.forEach(async (image, index) => {
         const picEmbed = new EmbedBuilder();
         picEmbed.setColor(embedColor);
         picEmbed.setImage(image);
         picEmbed.setFooter({ text: 'ermiana', iconURL: 'https://cdn.discordapp.com/avatars/242927802557399040/14d549f14db4efece387552397433e6b.png' });
-        interaction.message.channel.send({ embeds: [picEmbed] });
+
+        if (index === 0) {
+          interaction.reply({ embeds: [picEmbed] });
+        } else {
+          interaction.message.channel.send({ embeds: [picEmbed] });
+        }
       });
 
+      await interaction.deferUpdate();
       interaction.message.edit({
         components: [],
       });
-      interaction.deferUpdate();
     } else {
-      interaction.message.edit({
+      await interaction.message.edit({
         components: [],
       });
-      interaction.reply( { content: '解析網址發生問題。', ephemeral: true });
+      console.log('more pic error: '+ interaction.message.guild.name);
+      await interaction.reply( { content: '解析網址發生問題。', ephemeral: true });
     }
   } catch {}
 }
