@@ -65,6 +65,7 @@ export async function theAPicCommand(interaction) {
         embeds: [targetEmbed],
       });
 
+      await new Promise((resolve) => setTimeout(resolve, 500));
       await interaction.deferUpdate();
     }
   } catch {}
