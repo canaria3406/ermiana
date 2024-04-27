@@ -10,7 +10,7 @@ export async function theBPicCommand(interaction) {
         components: [],
       });
       interaction.reply( { content: '取得圖片發生問題。', ephemeral: true });
-      console.log('button error: '+ interaction.message.guild.name);
+      console.log('button error1: '+ interaction.message.guild.name);
       return;
     }
 
@@ -28,7 +28,7 @@ export async function theBPicCommand(interaction) {
         components: [],
       });
       interaction.reply( { content: '取得圖片發生問題。', ephemeral: true });
-      console.log('button error: '+ interaction.message.guild.name);
+      console.log('button error2: '+ interaction.message.guild.name);
       return;
     }
 
@@ -38,14 +38,14 @@ export async function theBPicCommand(interaction) {
         components: [],
       });
       interaction.reply( { content: '取得圖片發生問題。', ephemeral: true });
-      console.log('button error: '+ interaction.message.guild.name);
+      console.log('button error3: '+ interaction.message.guild.name);
       return;
     } else if (parseInt(match[1]) !== currentPage -1) {
       interaction.message.edit({
         components: [],
       });
       interaction.reply( { content: '取得圖片發生問題。', ephemeral: true });
-      console.log('button error: '+ interaction.message.guild.name);
+      console.log('button error4: '+ interaction.message.guild.name);
       return;
     } else {
       const currentEmbed = interaction.message.embeds[0];
