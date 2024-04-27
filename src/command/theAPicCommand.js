@@ -19,7 +19,7 @@ export async function theAPicCommand(interaction) {
     const targetPage = 1;
 
     if (currentPage === 1) {
-      interaction.deferUpdate();
+      await interaction.deferUpdate();
       return;
     }
 
@@ -65,7 +65,7 @@ export async function theAPicCommand(interaction) {
         embeds: [targetEmbed],
       });
 
-      interaction.deferUpdate();
+      await interaction.deferUpdate();
     }
   } catch {}
 }

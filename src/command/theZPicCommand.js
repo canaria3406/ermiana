@@ -19,7 +19,7 @@ export async function theZPicCommand(interaction) {
     const targetPage = totalPage;
 
     if (currentPage === totalPage) {
-      interaction.deferUpdate();
+      await interaction.deferUpdate();
       return;
     }
 
@@ -65,7 +65,7 @@ export async function theZPicCommand(interaction) {
         embeds: [targetEmbed],
       });
 
-      interaction.deferUpdate();
+      await interaction.deferUpdate();
     }
   } catch {}
 }

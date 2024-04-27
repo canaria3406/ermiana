@@ -19,7 +19,7 @@ export async function theNPicCommand(interaction) {
     const targetPage = parseInt(currentPage) + 1;
 
     if (currentPage === totalPage) {
-      interaction.deferUpdate();
+      await interaction.deferUpdate();
       return;
     }
 
@@ -65,7 +65,7 @@ export async function theNPicCommand(interaction) {
         embeds: [targetEmbed],
       });
 
-      interaction.deferUpdate();
+      await interaction.deferUpdate();
     }
   } catch {}
 }
