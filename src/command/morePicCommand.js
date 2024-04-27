@@ -20,15 +20,19 @@ export async function morePicCommand(interaction) {
 
         if (index === 0) {
           interaction.reply({ embeds: [picEmbed] });
+          await new Promise((resolve) => setTimeout(resolve, 500));
         } else {
+          await new Promise((resolve) => setTimeout(resolve, 200));
           interaction.message.channel.send({ embeds: [picEmbed] });
         }
       });
 
-      await interaction.deferUpdate();
       interaction.message.edit({
         components: [],
       });
+
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await interaction.deferUpdate();
     } else {
       await interaction.message.edit({
         components: [],
