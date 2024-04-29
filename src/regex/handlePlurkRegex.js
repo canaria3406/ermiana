@@ -43,9 +43,11 @@ export async function handlePlurkRegex( result, message ) {
     try {
       if (!picPlurk || picPlurk.length == 0) {
         messageSender(message, plurkEmbed, plurkInfo);
+        await new Promise((resolve) => setTimeout(resolve, 500));
         embedSuppresser(message);
       } else if (picPlurk.length == 1) {
         messageSender(message, plurkEmbed, plurkInfo);
+        await new Promise((resolve) => setTimeout(resolve, 500));
         embedSuppresser(message);
       } else if (picPlurk.length > 1) {
         const imageArray =[];
@@ -54,6 +56,7 @@ export async function handlePlurkRegex( result, message ) {
               imageArray.push(pic);
             });
         messageSenderMore(message, plurkEmbed, plurkInfo, imageArray);
+        await new Promise((resolve) => setTimeout(resolve, 500));
         embedSuppresser(message);
       }
     } catch {}
