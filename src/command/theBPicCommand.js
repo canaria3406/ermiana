@@ -65,7 +65,7 @@ export async function theBPicCommand(interaction) {
         embeds: [targetEmbed],
       });
 
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 300));
       await interaction.deferUpdate();
     }
   } catch {}
