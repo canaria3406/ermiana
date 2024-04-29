@@ -19,6 +19,7 @@ export async function theZPicCommand(interaction) {
     const targetPage = totalPage;
 
     if (currentPage === totalPage) {
+      await new Promise((resolve) => setTimeout(resolve, 300));
       await interaction.deferUpdate();
       return;
     }

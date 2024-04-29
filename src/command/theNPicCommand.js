@@ -19,6 +19,7 @@ export async function theNPicCommand(interaction) {
     const targetPage = parseInt(currentPage) + 1;
 
     if (currentPage === totalPage) {
+      await new Promise((resolve) => setTimeout(resolve, 300));
       await interaction.deferUpdate();
       return;
     }

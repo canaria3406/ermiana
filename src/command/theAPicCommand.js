@@ -19,6 +19,7 @@ export async function theAPicCommand(interaction) {
     const targetPage = 1;
 
     if (currentPage === 1) {
+      await new Promise((resolve) => setTimeout(resolve, 300));
       await interaction.deferUpdate();
       return;
     }
