@@ -1,7 +1,7 @@
 import { EmbedBuilder } from 'discord.js';
 import axios from 'axios';
 import { messageSender } from '../events/messageSender.js';
-import { messageSubSender } from '../events/messageSubSender.js';
+// import { messageSubSender } from '../events/messageSubSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
 import { videoLinkSender } from '../events/videoLinkSender.js';
 import { backupLinkSender } from '../events/backupLinkSender.js';
@@ -73,6 +73,7 @@ export async function handleInstagramRegex(result, message) {
           videoLinkSender(message, `https://d.ddinstagram.com/p/${igid}/`);
         }
       } catch {}
+      /*
       try {
         if (igResp.data.data.shortcode_media.edge_sidecar_to_children.edges) {
           igResp.data.data.shortcode_media.edge_sidecar_to_children.edges
@@ -87,6 +88,7 @@ export async function handleInstagramRegex(result, message) {
               });
         }
       } catch {}
+      */
     } else {
       throw new Error();
     }
