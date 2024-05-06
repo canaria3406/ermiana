@@ -17,21 +17,32 @@ export async function handlePixivRegex( result, message ) {
       timeout: 2500,
     });
 
-    const tagString = resp.data.body.tags.tags.map((element) => `[${element.tag}](https://www.pixiv.net/tags/${element.tag}/artworks)`).join(', ');
+    const tagString = resp.data.body.tags.tags.map((element) => `[${element.tag}](https://www.pixiv.net/tags/${element.tag}/artworks)`).join(', ') || '';
     // const pageCount = Math.min(resp.data.body.pageCount, 5);
-    const pageCount = resp.data.body.pageCount;
+    const pageCount = resp.data.body.pageCount || 1;
 
     const pixivEmbed = new EmbedBuilder();
     pixivEmbed.setColor(0x0096fa);
     pixivEmbed.setTitle(resp.data.body.title);
-    pixivEmbed.setURL(result[0]);
-    pixivEmbed.setDescription(resp.data.body.extraData.meta.twitter.description.substring(0, 300));
-    pixivEmbed.addFields(
-        { name: '作者', value: `[${resp.data.body.userName}](https://www.pixiv.net/users/${resp.data.body.userId})`, inline: true },
-        { name: '收藏', value: resp.data.body.bookmarkCount.toString(), inline: true },
-    );
+    pixivEmbed.setURL(`https://www.pixiv.net/artworks/${pid}`);
+
     try {
-      pixivEmbed.addFields({ name: '標籤', value: tagString });
+      if (resp.data.body.extraData.meta.twitter.description) {
+        pixivEmbed.setDescription(resp.data.body.extraData.meta.twitter.description.substring(0, 300));
+      }
+    } catch {}
+
+    try {
+      pixivEmbed.addFields(
+          { name: '作者', value: `[${resp.data.body.userName}](https://www.pixiv.net/users/${resp.data.body.userId})`, inline: true },
+          { name: '收藏', value: resp.data.body.bookmarkCount.toString(), inline: true },
+      );
+    } catch {}
+
+    try {
+      if (tagString) {
+        pixivEmbed.addFields({ name: '標籤', value: tagString });
+      }
     } catch {}
 
     try {
