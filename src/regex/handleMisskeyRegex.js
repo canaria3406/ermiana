@@ -1,10 +1,11 @@
 import { EmbedBuilder } from 'discord.js';
 import axios from 'axios';
 import { messageSender } from '../events/messageSender.js';
-import { messageSubSender } from '../events/messageSubSender.js';
+// import { messageSubSender } from '../events/messageSubSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
 import { videoLinkSender } from '../events/videoLinkSender.js';
 import { typingSender } from '../events/typingSender.js';
+import { messageSenderMore } from '../events/messageSenderMore.js';
 
 export async function handleMisskeyRegex(result, message) {
   typingSender(message);
@@ -41,6 +42,30 @@ export async function handleMisskeyRegex(result, message) {
 
       const noteinfo = '💬' + resp.data.repliesCount.toString() + ' 🔁' + resp.data.renoteCount.toString() + ' ❤️' + sumReactions(resp.data.reactions).toString();
 
+      try {
+        if (!resp.data?.files || resp.data.files.length == 0) {
+          messageSender(message, misskeyEmbed, noteinfo);
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          embedSuppresser(message);
+        } else if (resp.data.files?.length == 1) {
+          messageSenderMore(message, misskeyEmbed, noteinfo);
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          embedSuppresser(message);
+        } else if (resp.data.files?.length > 1) {
+          const imageArray =[];
+          resp.data.files
+              .filter((_file, index) => index > 0 && index < 4)
+              .forEach((file) => {
+                if (file.type == 'image/webp' || 'image/png' || 'image/jpg') {
+                  imageArray.push(file.url);
+                }
+              });
+          messageSenderMore(message, misskeyEmbed, noteinfo, imageArray);
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          embedSuppresser(message);
+        }
+      } catch {}
+      /*
       messageSender(message, misskeyEmbed, noteinfo);
       await new Promise((resolve) => setTimeout(resolve, 1500));
       embedSuppresser(message);
@@ -59,7 +84,7 @@ export async function handleMisskeyRegex(result, message) {
               });
         }
       } catch {}
-
+      */
       try {
         resp.data.files?.forEach((file) => {
           if (file.type == 'video/mp4') {
