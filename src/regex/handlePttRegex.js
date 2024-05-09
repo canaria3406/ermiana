@@ -55,8 +55,8 @@ export async function handlePttRegex( result, message ) {
   }
 
   function getDescription(text) {
-    const matches = (text+'5.完整新聞連結').match(/4\.完整新聞內文:[\s\S]+?5.完整新聞連結/);
-    const newsContent = matches ? matches[0].replace('4.完整新聞內文:\n', '').trim() : text;
+    const matches = (text+'5.完整新聞連結').match(/4\.完整新聞內文:[\s\S]+?5.完整新聞連結/) || (text+'5.完整新聞連結').match(/2\.記者署名:[\s\S]+?5.完整新聞連結/);
+    const newsContent = matches ? matches[0].replace('4.完整新聞內文:\n', '').trim() : '';
     return newsContent.replace(/^※.*$/gm, '').replace(/^\s*[\r\n]/gm, '').substring(0, 160);
   }
 
@@ -98,7 +98,11 @@ export async function handlePttRegex( result, message ) {
           } catch {}
           try {
             if (pttHtmlDescription.match(/1\.媒體來源:/)) {
-              mopttEmbed.setDescription(getDescription(mainContent));
+              if (getDescription(mainContent)) {
+                mopttEmbed.setDescription(getDescription(mainContent));
+              } else if (pttHtmlDescription) {
+                mopttEmbed.setDescription(pttHtmlDescription);
+              }
             } else if (pttHtmlDescription) {
               mopttEmbed.setDescription(pttHtmlDescription);
             } else if (pttResp.data.description) {
@@ -129,7 +133,11 @@ export async function handlePttRegex( result, message ) {
             } catch {}
             try {
               if (pttHtmlDescription.match(/1\.媒體來源:/)) {
-                pttEmbed.setDescription(getDescription(mainContent));
+                if (getDescription(mainContent)) {
+                  pttEmbed.setDescription(getDescription(mainContent));
+                } else if (pttHtmlDescription) {
+                  pttEmbed.setDescription(pttHtmlDescription);
+                }
               } else if (pttHtmlDescription) {
                 pttEmbed.setDescription(pttHtmlDescription);
               }
@@ -183,7 +191,11 @@ export async function handlePttRegex( result, message ) {
             } catch {}
             try {
               if (pttHtmlDescription2.match(/1\.媒體來源:/)) {
-                mopttEmbed2.setDescription(getDescription(mainContent));
+                if (getDescription(mainContent2)) {
+                  mopttEmbed2.setDescription(getDescription(mainContent2));
+                } else if (pttHtmlDescription2) {
+                  mopttEmbed2.setDescription(pttHtmlDescription2);
+                }
               } else if (pttHtmlDescription2) {
                 mopttEmbed2.setDescription(pttHtmlDescription2);
               } else if (pttResp2.data.description) {
@@ -214,7 +226,11 @@ export async function handlePttRegex( result, message ) {
               } catch {}
               try {
                 if (pttHtmlDescription2.match(/1\.媒體來源:/)) {
-                  pttEmbed2.setDescription(getDescription(mainContent));
+                  if (getDescription(mainContent2)) {
+                    pttEmbed2.setDescription(getDescription(mainContent2));
+                  } else if (pttHtmlDescription2) {
+                    pttEmbed2.setDescription(pttHtmlDescription2);
+                  }
                 } else if (pttHtmlDescription2) {
                   pttEmbed2.setDescription(pttHtmlDescription2);
                 }
