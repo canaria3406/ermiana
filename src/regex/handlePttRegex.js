@@ -54,6 +54,12 @@ export async function handlePttRegex( result, message ) {
     }
   }
 
+  function getDescription(text) {
+    const matches = (text+'5.完整新聞連結').match(/4\.完整新聞內文:[\s\S]+?5.完整新聞連結/);
+    const newsContent = matches ? matches[0].replace('4.完整新聞內文:\n', '').trim() : text;
+    return newsContent.replace(/^※.*$/gm, '').replace(/^\s*[\r\n]/gm, '').substring(0, 160);
+  }
+
   try {
     if (supportBoard.includes(boardNameStandardization(result[1]))) {
       const pttHTML = await axios.request({
@@ -70,6 +76,7 @@ export async function handlePttRegex( result, message ) {
         const pttHtmlTitle = $('meta[property=og:title]').attr('content') || 'PTT.cc';
         const pttHtmlDescription = $('meta[property=og:description]').attr('content') || '';
         const mainContent = $('#main-content').text().substring(0, 1000) || '';
+
         try {
           const pttResp = await axios.request({
             method: 'get',
@@ -90,7 +97,9 @@ export async function handlePttRegex( result, message ) {
             mopttEmbed.setURL(`https://www.ptt.cc/bbs/${boardNameStandardization(result[1])}/${result[2]}.html`);
           } catch {}
           try {
-            if (pttHtmlDescription) {
+            if (pttHtmlDescription.match(/1\.媒體來源:/)) {
+              mopttEmbed.setDescription(getDescription(mainContent));
+            } else if (pttHtmlDescription) {
               mopttEmbed.setDescription(pttHtmlDescription);
             } else if (pttResp.data.description) {
               mopttEmbed.setDescription(pttResp.data.description);
@@ -119,7 +128,9 @@ export async function handlePttRegex( result, message ) {
               pttEmbed.setURL(result[0]);
             } catch {}
             try {
-              if (pttHtmlDescription) {
+              if (pttHtmlDescription.match(/1\.媒體來源:/)) {
+                pttEmbed.setDescription(getDescription(mainContent));
+              } else if (pttHtmlDescription) {
                 pttEmbed.setDescription(pttHtmlDescription);
               }
             } catch {}
@@ -171,7 +182,9 @@ export async function handlePttRegex( result, message ) {
               mopttEmbed2.setURL(`https://www.ptt.cc/bbs/${boardNameStandardization(result[1])}/${result[2]}.html`);
             } catch {}
             try {
-              if (pttHtmlDescription2) {
+              if (pttHtmlDescription2.match(/1\.媒體來源:/)) {
+                mopttEmbed2.setDescription(getDescription(mainContent));
+              } else if (pttHtmlDescription2) {
                 mopttEmbed2.setDescription(pttHtmlDescription2);
               } else if (pttResp2.data.description) {
                 mopttEmbed2.setDescription(pttResp2.data.description);
@@ -200,7 +213,9 @@ export async function handlePttRegex( result, message ) {
                 pttEmbed2.setURL(result[0]);
               } catch {}
               try {
-                if (pttHtmlDescription2) {
+                if (pttHtmlDescription2.match(/1\.媒體來源:/)) {
+                  pttEmbed2.setDescription(getDescription(mainContent));
+                } else if (pttHtmlDescription2) {
                   pttEmbed2.setDescription(pttHtmlDescription2);
                 }
               } catch {}
