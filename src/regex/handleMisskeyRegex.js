@@ -22,8 +22,13 @@ export async function handleMisskeyRegex(result, message) {
     if (resp.status === 200) {
       const misskeyEmbed = new EmbedBuilder();
       misskeyEmbed.setColor(0x96d04a);
-      misskeyEmbed.setAuthor({ name: '@' + resp.data.user.username, iconURL: resp.data.user.avatarUrl });
-      misskeyEmbed.setTitle(resp.data.user.name);
+      try {
+        misskeyEmbed.setAuthor({ name: '@' + resp.data.user.username, iconURL: resp.data.user.avatarUrl });
+      } catch {}
+      try {
+        misskeyEmbed.setTitle(resp.data.user.name);
+      } catch {}
+
       misskeyEmbed.setURL(result[0]);
 
       try {
@@ -41,14 +46,13 @@ export async function handleMisskeyRegex(result, message) {
       }
 
       const noteinfo = '💬' + resp.data.repliesCount.toString() + ' 🔁' + resp.data.renoteCount.toString() + ' ❤️' + sumReactions(resp.data.reactions).toString();
-
       try {
         if (!resp.data?.files || resp.data.files.length == 0) {
           messageSender(message, misskeyEmbed, noteinfo);
           await new Promise((resolve) => setTimeout(resolve, 500));
           embedSuppresser(message);
         } else if (resp.data.files?.length == 1) {
-          messageSenderMore(message, misskeyEmbed, noteinfo);
+          messageSender(message, misskeyEmbed, noteinfo);
           await new Promise((resolve) => setTimeout(resolve, 500));
           embedSuppresser(message);
         } else if (resp.data.files?.length > 1) {
