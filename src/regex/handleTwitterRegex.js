@@ -62,7 +62,10 @@ export async function handleTwitterRegex( result, message ) {
         if (fxapiResp.data.tweet.media) {
           fxapiResp.data.tweet.media.all.forEach((element) => {
             if (element.type != 'photo') {
-              videoLinkSender(message, element.url);
+              const match = element.url.match(/https:\/\/.*?\.mp4/);
+              if (match) {
+                videoLinkSender(message, match[0]);
+              }
             }
           });
         }
@@ -133,7 +136,10 @@ export async function handleTwitterRegex( result, message ) {
           if (vxapiResp.data.media_extended) {
             vxapiResp.data.media_extended.forEach((element) => {
               if (element.type != 'image') {
-                videoLinkSender(message, element.url);
+                const vxmatch = element.url.match(/https:\/\/.*?\.mp4/);
+                if (vxmatch) {
+                  videoLinkSender(message, vxmatch[0]);
+                }
               }
             });
           }
