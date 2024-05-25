@@ -2,7 +2,6 @@ import { EmbedBuilder } from 'discord.js';
 import axios from 'axios';
 import cheerio from 'cheerio';
 import { messageSender } from '../events/messageSender.js';
-// import { messageSubSender } from '../events/messageSubSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
 import { typingSender } from '../events/typingSender.js';
 import { messageSenderMore } from '../events/messageSenderMore.js';
@@ -44,12 +43,12 @@ export async function handlePlurkRegex( result, message ) {
       if (!picPlurk || picPlurk.length == 0) {
         messageSender(message, plurkEmbed, plurkInfo);
         embedSuppresser(message);
-        await new Promise((resolve) => setTimeout(resolve, 750));
+        await new Promise((resolve) => setTimeout(resolve, 800));
         embedSuppresser(message);
       } else if (picPlurk.length == 1) {
         messageSender(message, plurkEmbed, plurkInfo);
         embedSuppresser(message);
-        await new Promise((resolve) => setTimeout(resolve, 750));
+        await new Promise((resolve) => setTimeout(resolve, 800));
         embedSuppresser(message);
       } else if (picPlurk.length > 1) {
         const imageArray =[];
@@ -59,29 +58,10 @@ export async function handlePlurkRegex( result, message ) {
             });
         messageSenderMore(message, plurkEmbed, plurkInfo, imageArray);
         embedSuppresser(message);
-        await new Promise((resolve) => setTimeout(resolve, 750));
+        await new Promise((resolve) => setTimeout(resolve, 800));
         embedSuppresser(message);
       }
     } catch {}
-
-    /*
-    messageSender(message, plurkEmbed, plurkInfo);
-
-    try {
-      if (picPlurk.length > 1) {
-        picPlurk.filter((_pic, index) => index > 0 && index < 4)
-            .forEach((pic) => {
-              const picEmbed = new EmbedBuilder();
-              picEmbed.setColor(0xefa54c);
-              picEmbed.setImage(pic);
-              messageSubSender(message, picEmbed, 'ermiana');
-            });
-      }
-    } catch {}
-
-    embedSuppresser(message);
-
-    */
   } catch {
     console.log('plurk error: '+ message.guild.name);
   }
