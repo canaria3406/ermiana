@@ -1,0 +1,25 @@
+name: DockerBuild
+
+on:
+  push:
+    branches:
+      - "master"
+      - "docker"
+    paths:
+      - "src/**"
+      - "workers/**"
+      - "**/*.js"
+      - "package.json"
+  workflow_dispatch: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  DockerBuild:
+    uses: ./.github/workflows/reusable_docker.yml
