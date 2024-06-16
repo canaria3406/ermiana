@@ -4,7 +4,7 @@ on:
   workflow_call: {}
 
 env:
-  GHCR_NAME: ghcr.io/kt-yeh/ermiana
+  GHCR_NAME: ghcr.io/canaria3406/ermiana
 
 jobs:
   builder:

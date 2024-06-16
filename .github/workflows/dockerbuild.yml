@@ -2,10 +2,8 @@ name: DockerBuild
 
 on:
   push:
-    branches:
-      - "master"
-      - "docker"
     paths:
+      - ".github/**"
       - "src/**"
       - "workers/**"
       - "**/*.js"
