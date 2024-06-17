@@ -94,7 +94,7 @@ export async function handleInstagramRegex(result, message) {
     }
   } catch {
     try {
-      backupLinkSender(message, `https://www.ddinstagram.com/p/${result[1]}/`);
+      backupLinkSender(message, `https://www.instagramez.com/p/${result[1]}/`);
       await new Promise((resolve) => setTimeout(resolve, 1500));
       embedSuppresser(message);
     } catch {
