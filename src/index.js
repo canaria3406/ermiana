@@ -3,7 +3,7 @@ import { currentTime } from './utils/currentTime.js';
 import { configManager } from './utils/configManager.js';
 import { runBahaCron } from './utils/runBahaCron.js';
 import { refreshContextMenus } from './utils/refreshContextMenus.js';
-import { commands } from './command/commandManager.js';
+import { msgCommands, btnCommands } from './command/commandManager.js';
 import { regexs } from './regex/regexManager.js';
 
 const client = new Client({
@@ -44,13 +44,13 @@ client.on('messageCreate', async (message) => {
 client.on('interactionCreate', async (interaction) => {
   if (!interaction.isMessageContextMenuCommand() && !interaction.isButton()) return;
   if (interaction.isMessageContextMenuCommand()) {
-    commands.forEach(({ commandNames, handler }) => {
+    msgCommands.forEach(({ commandNames, handler }) => {
       if (interaction.commandName === commandNames) {
         handler(interaction);
       }
     });
   } else if (interaction.isButton()) {
-    commands.forEach(({ commandNames, handler }) => {
+    btnCommands.forEach(({ commandNames, handler }) => {
       if (interaction.customId === commandNames) {
         handler(interaction);
       }

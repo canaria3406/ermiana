@@ -6,10 +6,7 @@ import { theBPicCommand } from './theBPicCommand.js';
 import { theNPicCommand } from './theNPicCommand.js';
 import { theZPicCommand } from './theZPicCommand.js';
 
-export const commands = [
-  {
-    commandNames: 'removeMessage',
-    handler: delMsgCommand },
+export const btnCommands = [
   {
     commandNames: 'morePictureButton',
     handler: morePicCommand },
@@ -28,4 +25,10 @@ export const commands = [
   {
     commandNames: 'theZPicture',
     handler: theZPicCommand },
+];
+
+export const msgCommands = [
+  {
+    commandNames: 'removeMessage',
+    handler: delMsgCommand },
 ];
