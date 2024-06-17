@@ -3,6 +3,7 @@ import axios from 'axios';
 import cheerio from 'cheerio';
 import { messageSender } from '../events/messageSender.js';
 import { typingSender } from '../events/typingSender.js';
+import { embedSuppresser } from '../events/embedSuppresser.js';
 
 export async function handlePchomeRegex( result, message ) {
   typingSender(message);
@@ -57,6 +58,8 @@ export async function handlePchomeRegex( result, message ) {
       } catch {}
 
       messageSender(message, pchomeEmbed, 'ermiana');
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      embedSuppresser(message);
     }
   } catch {
     console.log('pchome error: '+ message.guild.name);
