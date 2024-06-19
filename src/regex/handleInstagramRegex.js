@@ -30,7 +30,7 @@ export async function handleInstagramRegex(result, message) {
         query_hash: 'b3055c01b4b222b8a47dc12b090e4e64',
         variables: JSON.stringify({ shortcode: igid }),
       },
-      timeout: 4500,
+      timeout: 3000,
     });
 
     if (igResp.status === 200) {
