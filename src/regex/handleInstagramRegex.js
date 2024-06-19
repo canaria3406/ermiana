@@ -15,11 +15,15 @@ export async function handleInstagramRegex(result, message) {
       url: 'https://www.instagram.com/graphql/query/',
       method: 'get',
       headers: {
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+        'Accept': '*/*',
         'Accept-Language': 'en-US,en;q=0.9',
-        'Connection': 'close',
+        'Host': 'www.instagram.com',
+        'Origin': 'https://www.instagram.com',
+        'Connection': 'keep-alive',
+        'Sec-Fetch-Dest': 'empty',
         'Sec-Fetch-Mode': 'navigate',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36',
+        'Sec-Fetch-Site': 'same-origin',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:127.0) Gecko/20100101 Firefox/127.0',
         'Referer': `https://www.instagram.com/p/${igid}/`,
       },
       params: {
