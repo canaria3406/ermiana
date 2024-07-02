@@ -6,10 +6,10 @@ export async function theZPicCommand(interaction) {
     const page = interaction.message.components[0].components[2].label.match(/(\d+)\/(\d+)/);
 
     if (!imageUrl || !page) {
-      interaction.message.edit({
+      await interaction.message.edit({
         components: [],
       });
-      interaction.reply( { content: '取得圖片發生問題。', ephemeral: true });
+      await interaction.reply( { content: '取得圖片發生問題。', ephemeral: true });
       console.log('button error1: '+ interaction.message.guild.name);
       return;
     }
@@ -25,27 +25,27 @@ export async function theZPicCommand(interaction) {
     }
 
     if (targetPage < 1 || targetPage > totalPage) {
-      interaction.message.edit({
+      await interaction.message.edit({
         components: [],
       });
-      interaction.reply( { content: '取得圖片發生問題。', ephemeral: true });
+      await interaction.reply( { content: '取得圖片發生問題。', ephemeral: true });
       console.log('button error2: '+ interaction.message.guild.name);
       return;
     }
 
     const match = imageUrl.match(/\d+_p(\d+)(?:\.|_)/);
     if (!match) {
-      interaction.message.edit({
+      await interaction.message.edit({
         components: [],
       });
-      interaction.reply( { content: '取得圖片發生問題。', ephemeral: true });
+      await interaction.reply( { content: '取得圖片發生問題。', ephemeral: true });
       console.log('button error3: '+ interaction.message.guild.name);
       return;
     } else if (parseInt(match[1]) !== currentPage -1) {
-      interaction.message.edit({
+      await interaction.message.edit({
         components: [],
       });
-      interaction.reply( { content: '取得圖片發生問題。', ephemeral: true });
+      await interaction.reply( { content: '取得圖片發生問題。', ephemeral: true });
       console.log('button error4: '+ interaction.message.guild.name);
       return;
     } else {
