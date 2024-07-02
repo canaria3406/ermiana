@@ -1,8 +1,7 @@
 import { PermissionsBitField, Client, GatewayIntentBits } from 'discord.js';
 import { currentTime } from './utils/currentTime.js';
 import { configManager } from './utils/configManager.js';
-import { runBahaCron } from './utils/runBahaCron.js';
-import { refreshContextMenus } from './utils/refreshContextMenus.js';
+import { runCronJob } from './utils/runCronJob.js';
 import { msgCommands, btnCommands } from './command/commandManager.js';
 import { regexs } from './regex/regexManager.js';
 
@@ -59,6 +58,5 @@ client.on('interactionCreate', async (interaction) => {
 });
 
 const config = await configManager();
-refreshContextMenus();
-runBahaCron();
+runCronJob();
 client.login(config.DCTK);
