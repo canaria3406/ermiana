@@ -1,0 +1,16 @@
+services:
+  ermiana:
+    image: ghcr.io/canaria3406/ermiana:master
+    container_name: ermiana
+    environment:
+      # Discord Bot Token
+      - DCTK=ABCD123456789
+      # Discord Bot Application ID
+      - DCID=123456789
+      # 巴哈帳號
+      - BHUD=abc123
+      # 巴哈密碼
+      - BHPD=abc123
+      # 時區
+      - TZ=Asia/Taipei
+    restart: always
