@@ -1,7 +1,7 @@
 services:
   ermiana:
     image: ghcr.io/canaria3406/ermiana:master
-    container_name: ermiana-bot
+    container_name: ermiana
     environment:
       # Discord Bot Token
       - DCTK=ABCD123456789
