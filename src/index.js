@@ -16,9 +16,9 @@ const client = new Client({
 client.on('ready', () =>{
   console.log(`Ready! 以 ${client.user.tag} 身分登入`);
   currentTime();
-  client.guilds.cache
-      .filter((guild) => guild.memberCount > 500)
-      .forEach((guild) => console.log(`${guild.memberCount} | ${guild.name}`));
+  // client.guilds.cache
+  //    .filter((guild) => guild.memberCount > 500)
+  //    .forEach((guild) => console.log(`${guild.memberCount} | ${guild.name}`));
   console.log(`正在 ${client.guilds.cache.size} 個伺服器上運作中`);
   const totalUserCount = client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0);
   console.log(`正在服務 ${totalUserCount} 位使用者`);
