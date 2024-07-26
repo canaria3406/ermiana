@@ -2,6 +2,7 @@ import { PermissionsBitField, Client, GatewayIntentBits } from 'discord.js';
 import { currentTime } from './utils/currentTime.js';
 import { configManager } from './utils/configManager.js';
 import { runCronJob } from './utils/runCronJob.js';
+import { guildLog } from './utils/guildLog.js';
 import { msgCommands, btnCommands } from './command/commandManager.js';
 import { regexs } from './regex/regexManager.js';
 
@@ -38,6 +39,10 @@ client.on('messageCreate', async (message) => {
       }
     }
   });
+});
+
+client.on('guildCreate', async (guild) => {
+  guildLog(guild);
 });
 
 client.on('interactionCreate', async (interaction) => {
