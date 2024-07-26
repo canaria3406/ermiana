@@ -7,6 +7,8 @@ services:
       - DCTK=ABCD123456789
       # Discord Bot Application ID
       - DCID=123456789
+      # Discord Private Webhook URL
+      - DCWH="https://discord.com/api/webhooks/123456789/ABCD123456789"
       # 巴哈帳號
       - BHUD=abc123
       # 巴哈密碼
