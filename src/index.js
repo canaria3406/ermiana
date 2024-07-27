@@ -2,7 +2,7 @@ import { PermissionsBitField, Client, GatewayIntentBits } from 'discord.js';
 import { currentTime } from './utils/currentTime.js';
 import { configManager } from './utils/configManager.js';
 import { runCronJob } from './utils/runCronJob.js';
-import { guildLog } from './utils/guildLog.js';
+import { reloadLog, guildLog } from './utils/botLog.js';
 import { msgCommands, btnCommands } from './command/commandManager.js';
 import { regexs } from './regex/regexManager.js';
 
@@ -17,12 +17,11 @@ const client = new Client({
 client.on('ready', () =>{
   console.log(`Ready! 以 ${client.user.tag} 身分登入`);
   currentTime();
-  // client.guilds.cache
-  //    .filter((guild) => guild.memberCount > 500)
-  //    .forEach((guild) => console.log(`${guild.memberCount} | ${guild.name}`));
-  console.log(`正在 ${client.guilds.cache.size} 個伺服器上運作中`);
+  const serverCount = client.guilds.cache.size;
+  console.log(`正在 ${serverCount} 個伺服器上運作中`);
   const totalUserCount = client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0);
   console.log(`正在服務 ${totalUserCount} 位使用者`);
+  reloadLog(serverCount, totalUserCount);
 });
 
 client.on('messageCreate', async (message) => {
