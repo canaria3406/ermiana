@@ -6,9 +6,11 @@ export async function refreshContextMenus() {
     new ContextMenuCommandBuilder()
         .setName('removeMessage')
         .setNameLocalizations({
+          'en-GB': 'Delete Message',
+          'en-US': 'Delete Message',
           'zh-TW': '刪除訊息',
-          'zh-CN': '删除消息',
-          'ja': 'メッセージ削除',
+          'zh-CN': '删除信息',
+          'ja': 'メッセージを削除',
         })
         .setType(ApplicationCommandType.Message),
   ];
