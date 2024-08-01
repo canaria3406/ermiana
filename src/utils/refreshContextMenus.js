@@ -4,7 +4,14 @@ import { ContextMenuCommandBuilder, ApplicationCommandType, REST, Routes } from 
 export async function refreshContextMenus() {
   const commandData = [
     new ContextMenuCommandBuilder()
-        .setName('刪除訊息')
+        .setName('removeMessage')
+        .setNameLocalizations({
+          'en-GB': 'Delete Message',
+          'en-US': 'Delete Message',
+          'zh-TW': '刪除訊息',
+          'zh-CN': '删除信息',
+          'ja': 'メッセージを削除',
+        })
         .setType(ApplicationCommandType.Message),
   ];
 

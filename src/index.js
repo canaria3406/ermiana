@@ -1,10 +1,10 @@
-import { Client, GatewayIntentBits, ActivityType } from 'discord.js';
-import { currentTime } from './common/currentTime.js';
-import { configManager } from './common/configManager.js';
-import { runBahaCron } from './common/runBahaCron.js';
-import { runPresenceCron } from './common/runPresenceCron.js';
+import { PermissionsBitField, Client, GatewayIntentBits } from 'discord.js';
+import { currentTime } from './utils/currentTime.js';
+import { configManager } from './utils/configManager.js';
+import { runCronJob } from './utils/runCronJob.js';
+import { reloadLog, guildLog } from './utils/botLog.js';
+import { msgCommands, btnCommands } from './command/commandManager.js';
 import { regexs } from './regex/regexManager.js';
-import { refreshContextMenus } from './common/refreshContextMenus.js';
 
 const client = new Client({
   intents: [
@@ -16,59 +16,51 @@ const client = new Client({
 
 client.on('ready', () =>{
   console.log(`Ready! 以 ${client.user.tag} 身分登入`);
-  client.user.setPresence({ status: 'dnd' });
   currentTime();
-  let totalUserCount = 0;
-  client.guilds.cache.forEach( (guild) => {
-    if (guild.memberCount > 100) {
-      console.log(`${guild.memberCount} | ${guild.name}`);
-    }
-    totalUserCount += guild.memberCount;
-  });
-  console.log(`正在 ${client.guilds.cache.size} 個伺服器上運作中`);
+  const serverCount = client.guilds.cache.size;
+  console.log(`正在 ${serverCount} 個伺服器上運作中`);
+  const totalUserCount = client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0);
   console.log(`正在服務 ${totalUserCount} 位使用者`);
-  client.user.setPresence({
-    activities: [{ name: `${client.guilds.cache.size} 個伺服器的魔法詠唱`, type: ActivityType.Listening }],
-    status: 'online',
-  });
-  runPresenceCron(client);
+  reloadLog(serverCount, totalUserCount);
 });
 
 client.on('messageCreate', async (message) => {
+  if (message.author.bot) return;
   regexs.forEach(({ regex, handler }) => {
     if (regex.test(message.content)) {
-      const result = message.content.match(regex);
-      handler(result, message);
+      if (message.channel.permissionsFor(message.client.user).has(PermissionsBitField.Flags.SendMessages) &&
+          message.channel.permissionsFor(message.client.user).has(PermissionsBitField.Flags.EmbedLinks)) {
+        const result = message.content.match(regex);
+        if (!(/\|\|[\s\S]*http[\s\S]*\|\|/).test(message.content) &&
+            !(/\<[\s\S]*http[\s\S]*\>/).test(message.content)) {
+          handler(result, message);
+        }
+      }
     }
   });
 });
 
-client.on('interactionCreate', async (interaction) => {
-  if (!interaction.isMessageContextMenuCommand()) return;
+client.on('guildCreate', async (guild) => {
+  guildLog(guild);
+});
 
-  if (interaction.commandName === '刪除訊息') {
-    const targetMessage = interaction.targetMessage;
-    try {
-      if (targetMessage.author.id === config.DCID) {
-        if (targetMessage.deletable) {
-          targetMessage.delete()
-              .then(() => {
-                interaction.reply('成功刪除訊息。');
-              })
-              .catch(() => {
-                interaction.reply('刪除訊息時發生錯誤。');
-              });
-        } else {
-          interaction.reply('我沒有權限刪除這個訊息，請聯絡管理員，並給我**管理訊息**權限。');
-        }
-      } else {
-        interaction.reply('我只能刪除由我自己發送的訊息喔。');
+client.on('interactionCreate', async (interaction) => {
+  if (!interaction.isMessageContextMenuCommand() && !interaction.isButton()) return;
+  if (interaction.isMessageContextMenuCommand()) {
+    msgCommands.forEach(({ commandNames, handler }) => {
+      if (interaction.commandName === commandNames) {
+        handler(interaction);
       }
-    } catch {}
+    });
+  } else if (interaction.isButton()) {
+    btnCommands.forEach(({ commandNames, handler }) => {
+      if (interaction.customId === commandNames) {
+        handler(interaction);
+      }
+    });
   }
 });
 
 const config = await configManager();
-refreshContextMenus();
-runBahaCron();
+runCronJob();
 client.login(config.DCTK);

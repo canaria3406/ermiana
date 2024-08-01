@@ -1,0 +1,9 @@
+{
+  "tasks": {
+    "start": "deno run --allow-net --unstable-kv --unstable-cron counter.ts"
+  },
+  "deploy": {
+    "project": "ermiana",
+    "entrypoint": "counter.ts"
+  }
+}
