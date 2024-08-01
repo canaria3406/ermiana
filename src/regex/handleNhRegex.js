@@ -1,17 +1,13 @@
 import { EmbedBuilder } from 'discord.js';
 import axios from 'axios';
 import Conf from 'conf';
-import { messageSender } from '../common/messageSender.js';
-import { reloadNhTK } from '../common/reloadNhTK.js';
-import { embedSuppresser } from '../common/embedSuppresser.js';
+import { messageSender } from '../events/messageSender.js';
+import { embedSuppresser } from '../events/embedSuppresser.js';
+import { typingSender } from '../events/typingSender.js';
 
 export async function handleNhRegex( result, message ) {
-  try {
-    await message.channel.sendTyping();
-  } catch {}
-
+  typingSender(message);
   const nid = result[1];
-
   try {
     const ermianaNh = new Conf({ projectName: 'ermianaJS' });
     if (!ermianaNh.get('NhHeaderCookie')) {
@@ -98,7 +94,7 @@ export async function handleNhRegex( result, message ) {
         nhEmbed.setImage('https://t.nhentai.net/galleries/' + resp.data.media_id + '/thumb.jpg');
       } catch {}
 
-      messageSender(message.channel, nhEmbed, 'canaria3406');
+      messageSender(message, nhEmbed, 'ermiana');
       embedSuppresser(message);
     } else {
       console.error('Request failed');

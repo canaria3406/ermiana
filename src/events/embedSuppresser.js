@@ -1,6 +1,8 @@
 export async function embedSuppresser(message) {
   try {
-    await message.suppressEmbeds(true);
+    if (message.deletable) {
+      await message.suppressEmbeds(true);
+    }
   } catch {
     // console.log('no permission');
   }
