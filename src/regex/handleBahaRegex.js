@@ -1,6 +1,6 @@
 import { EmbedBuilder } from 'discord.js';
 import axios from 'axios';
-import cheerio from 'cheerio';
+import * as cheerio from 'cheerio';
 import Conf from 'conf';
 import { reloadBahaTK } from '../utils/reloadBahaTK.js';
 import { messageSender } from '../events/messageSender.js';

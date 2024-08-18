@@ -1,6 +1,6 @@
 import { EmbedBuilder } from 'discord.js';
 import axios from 'axios';
-import cheerio from 'cheerio';
+import * as cheerio from 'cheerio';
 import { messageSender } from '../events/messageSender.js';
 // import { messageSubSender } from '../events/messageSubSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';

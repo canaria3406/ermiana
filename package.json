@@ -19,7 +19,7 @@
     "@discordjs/rest": "^2.3.0",
     "@discordjs/ws": "^1.1.1",
     "axios": "^1.7.2",
-    "cheerio": "^1.0.0-rc.12",
+    "cheerio": "^1.0.0",
     "conf": "^12.0.0",
     "cron": "^3.1.7",
     "discord.js": "^14.15.3",
