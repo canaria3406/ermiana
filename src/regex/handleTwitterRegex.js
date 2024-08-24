@@ -64,7 +64,7 @@ export async function handleTwitterRegex( result, message ) {
             if (element.type != 'photo') {
               const match = element.url.match(/https:\/\/.*?\.mp4/);
               if (match) {
-                videoLinkSender(message, match[0]);
+                videoLinkSender(message, match[0] + '?s=17');
               }
             }
           });
@@ -138,7 +138,7 @@ export async function handleTwitterRegex( result, message ) {
               if (element.type != 'image') {
                 const vxmatch = element.url.match(/https:\/\/.*?\.mp4/);
                 if (vxmatch) {
-                  videoLinkSender(message, vxmatch[0]);
+                  videoLinkSender(message, vxmatch[0] + '?s=17');
                 }
               }
             });
