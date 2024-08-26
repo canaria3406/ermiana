@@ -6,6 +6,15 @@ import { videoLinkSender } from '../events/videoLinkSender.js';
 import { backupLinkSender } from '../events/backupLinkSender.js';
 import { typingSender } from '../events/typingSender.js';
 
+function videoLinkFormat( link ) {
+  const linkmatch = link.match(/https:\/\/.*?\.mp4/);
+  if (linkmatch) {
+    return linkmatch[0].includes('ext_tw_video') ? `${linkmatch[0]}?s=19` : linkmatch[0];
+  } else {
+    return 'https://twitter.com/';
+  }
+}
+
 export async function handleTwitterRegex( result, message ) {
   typingSender(message);
   const tid = result[1];
@@ -62,10 +71,7 @@ export async function handleTwitterRegex( result, message ) {
         if (fxapiResp.data.tweet.media) {
           fxapiResp.data.tweet.media.all.forEach((element) => {
             if (element.type != 'photo') {
-              const match = element.url.match(/https:\/\/.*?\.mp4/);
-              if (match) {
-                videoLinkSender(message, match[0] + '?s=17');
-              }
+              videoLinkSender(message, videoLinkFormat(element.url));
             }
           });
         }
@@ -136,10 +142,7 @@ export async function handleTwitterRegex( result, message ) {
           if (vxapiResp.data.media_extended) {
             vxapiResp.data.media_extended.forEach((element) => {
               if (element.type != 'image') {
-                const vxmatch = element.url.match(/https:\/\/.*?\.mp4/);
-                if (vxmatch) {
-                  videoLinkSender(message, vxmatch[0] + '?s=17');
-                }
+                videoLinkSender(message, videoLinkFormat(element.url));
               }
             });
           }
