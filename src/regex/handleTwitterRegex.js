@@ -62,6 +62,9 @@ export async function handleTwitterRegex( result, message ) {
           fxapitwitterEmbed.setImage(fxapiResp.data.tweet.media.photos[0].url + '?name=large');
         }
       } catch {}
+      try {
+        fxapitwitterEmbed.setTimestamp(fxapiResp.data.tweet.created_timestamp * 1000);
+      } catch {}
       const fxapitweetinfo = '💬' + (fxapiResp.data.tweet.replies?.toString() || '0') + ' 🔁' + (fxapiResp.data.tweet.retweets?.toString() || '0') + ' ❤️' + (fxapiResp.data.tweet.likes?.toString() || '0');
       try {
         messageSender(message, fxapitwitterEmbed, fxapitweetinfo);
@@ -132,6 +135,9 @@ export async function handleTwitterRegex( result, message ) {
               vxapitwitterEmbed.setImage('https://convert.vxtwitter.com/rendercombined.jpg?imgs=' + vxapiRespImage.join(','));
             }
           }
+        } catch {}
+        try {
+          vxapitwitterEmbed.setTimestamp(vxapiResp.data.date_epoch * 1000);
         } catch {}
         const vxapitweetinfo = '💬' + (vxapiResp.data.replies?.toString() || '0') + ' 🔁' + (vxapiResp.data.retweets?.toString() || '0') + ' ❤️' + (vxapiResp.data.likes?.toString() || '0');
         try {
