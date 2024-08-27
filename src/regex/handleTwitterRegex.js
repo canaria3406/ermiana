@@ -72,9 +72,9 @@ export async function handleTwitterRegex( result, message ) {
       } catch {}
       try {
         if (fxapiResp.data.tweet.media) {
-          fxapiResp.data.tweet.media.all.forEach((element) => {
+          fxapiResp.data.tweet.media.all.forEach((element, index) => {
             if (element.type != 'photo') {
-              videoLinkSender(message, videoLinkFormat(element.url));
+              videoLinkSender(message, `https://d.fxtwitter.com/i/status/${tid}/photo/${index+1}/.mp4`);
             }
           });
         }
