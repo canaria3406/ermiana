@@ -16,7 +16,7 @@ export const regexs = [
     regex: /https:\/\/www\.tiktok\.com\/@[a-zA-Z0-9-_.]+\/video\/[0-9]+/,
     handler: handleTiktokRegex },
   {
-    regex: /https:\/\/www\.instagram\.com\/(?:p|reel)\/([a-zA-Z0-9-_]+)/,
+    regex: /https:\/\/www\.instagram\.com\/p\/([a-zA-Z0-9-_]+)/,
     handler: handleInstagramRegex },
   {
     regex: /https:\/\/m\.weibo\.cn\/detail\/([0-9]+)/,
