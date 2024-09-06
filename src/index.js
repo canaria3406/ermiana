@@ -3,8 +3,8 @@ import { currentTime } from './utils/currentTime.js';
 import { configManager } from './utils/configManager.js';
 import { runCronJob } from './utils/runCronJob.js';
 import { reloadLog, guildLog } from './utils/botLog.js';
-import { msgCommands, btnCommands } from './command/commandManager.js';
-import { regexs } from './regex/regexManager.js';
+import { msgCommandsMap, btnCommandsMap } from './command/commandManager.js';
+import { regexsMap } from './regex/regexManager.js';
 
 const client = new Client({
   intents: [
@@ -26,20 +26,19 @@ client.on('ready', () =>{
 
 client.on('messageCreate', async (message) => {
   if (message.author.bot) return;
-  regexs.forEach(({ regex, handler }) => {
+  for (const [regex, handler] of regexsMap) {
     if (regex.test(message.content)) {
       if (message.channel.permissionsFor(client.user).has([
         PermissionsBitField.Flags.SendMessages,
         PermissionsBitField.Flags.EmbedLinks,
-      ])) {
+      ]) && !(/\|\|[\s\S]*http[\s\S]*\|\|/).test(message.content) &&
+         !(/\<[\s\S]*http[\s\S]*\>/).test(message.content)) {
         const result = message.content.match(regex);
-        if (!(/\|\|[\s\S]*http[\s\S]*\|\|/).test(message.content) &&
-            !(/\<[\s\S]*http[\s\S]*\>/).test(message.content)) {
-          handler(result, message);
-        }
+        handler(result, message);
+        break;
       }
     }
-  });
+  }
 });
 
 client.on('guildCreate', async (guild) => {
@@ -49,17 +48,19 @@ client.on('guildCreate', async (guild) => {
 client.on('interactionCreate', async (interaction) => {
   if (!interaction.isMessageContextMenuCommand() && !interaction.isButton()) return;
   if (interaction.isMessageContextMenuCommand()) {
-    msgCommands.forEach(({ commandNames, handler }) => {
+    for (const [commandNames, handler] of msgCommandsMap) {
       if (interaction.commandName === commandNames) {
         handler(interaction);
+        break;
       }
-    });
+    }
   } else if (interaction.isButton()) {
-    btnCommands.forEach(({ commandNames, handler }) => {
+    for (const [commandNames, handler] of btnCommandsMap) {
       if (interaction.customId === commandNames) {
         handler(interaction);
+        break;
       }
-    });
+    }
   }
 });
 

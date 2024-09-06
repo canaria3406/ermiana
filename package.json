@@ -1,6 +1,6 @@
 {
   "name": "ermiana",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A discord bot that shows hidden description.",
   "main": "index.js",
   "scripts": {
