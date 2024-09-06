@@ -24,6 +24,7 @@ export const regexsMap = new Map([
   [/https:\/\/www\.plurk\.com\/p\/([a-zA-Z0-9]{3,10})/, handlePlurkRegex],
   [/https:\/\/24h\.pchome\.com\.tw\/prod\/([^?]+)/, handlePchomeRegex],
   [/https:\/\/www\.instagram\.com\/(?:p|reel)\/([a-zA-Z0-9-_]+)/, handleInstagramRegex],
+  [/https:\/\/www\.instagram\.com\/[A-Za-z0-9_.]+\/(?:p|reel)\/([a-zA-Z0-9-_]+)/, handleInstagramRegex],
   [/https:\/\/m\.weibo\.cn\/detail\/([0-9]+)/, handleWeiboRegex],
   [/https:\/\/bsky\.app\/profile\/([a-zA-Z0-9-.]+)\/post\/([a-zA-Z0-9]{10,16})/, handleBlueskyRegex],
   [/https:\/\/misskey\.io\/notes\/([a-zA-Z0-9]{10,16})/, handleMisskeyRegex],
