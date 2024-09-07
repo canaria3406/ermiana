@@ -30,3 +30,12 @@ export const regexsMap = new Map([
   [/https:\/\/misskey\.io\/notes\/([a-zA-Z0-9]{10,16})/, handleMisskeyRegex],
   [/https:\/\/www\.tiktok\.com\/@[a-zA-Z0-9-_.]+\/video\/[0-9]+/, handleTiktokRegex],
 ]);
+
+export function matchRules(content) {
+  const rules = [
+    /\|\|[\s\S]*http[\s\S]*\|\|/,
+    /\<[\s\S]*http[\s\S]*\>/,
+    /\~\~[\s\S]*http[\s\S]*\~\~/,
+  ];
+  return rules.some((rule) => rule.test(content));
+}

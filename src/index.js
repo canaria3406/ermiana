@@ -4,7 +4,7 @@ import { configManager } from './utils/configManager.js';
 import { runCronJob } from './utils/runCronJob.js';
 import { reloadLog, guildLog } from './utils/botLog.js';
 import { msgCommandsMap, btnCommandsMap } from './command/commandManager.js';
-import { regexsMap } from './regex/regexManager.js';
+import { regexsMap, matchRules } from './regex/regexManager.js';
 
 const client = new Client({
   intents: [
@@ -31,10 +31,11 @@ client.on('messageCreate', async (message) => {
       if (message.channel.permissionsFor(client.user).has([
         PermissionsBitField.Flags.SendMessages,
         PermissionsBitField.Flags.EmbedLinks,
-      ]) && !(/\|\|[\s\S]*http[\s\S]*\|\|/).test(message.content) &&
-         !(/\<[\s\S]*http[\s\S]*\>/).test(message.content)) {
+      ]) && !matchRules(message.content)) {
         const result = message.content.match(regex);
-        handler(result, message);
+        await handler(result, message);
+        break;
+      } else {
         break;
       }
     }
@@ -50,17 +51,19 @@ client.on('interactionCreate', async (interaction) => {
   if (interaction.isMessageContextMenuCommand()) {
     for (const [commandNames, handler] of msgCommandsMap) {
       if (interaction.commandName === commandNames) {
-        handler(interaction);
+        await handler(interaction);
         break;
       }
     }
   } else if (interaction.isButton()) {
     for (const [commandNames, handler] of btnCommandsMap) {
       if (interaction.customId === commandNames) {
-        handler(interaction);
+        await handler(interaction);
         break;
       }
     }
+  } else {
+    return;
   }
 });
 
