@@ -26,17 +26,19 @@ client.on('ready', () =>{
 
 client.on('messageCreate', async (message) => {
   if (message.author.bot) return;
-  for (const [regex, handler] of regexsMap) {
-    if (regex.test(message.content)) {
-      if (message.channel.permissionsFor(client.user).has([
-        PermissionsBitField.Flags.SendMessages,
-        PermissionsBitField.Flags.EmbedLinks,
-      ]) && !matchRules(message.content)) {
-        const result = message.content.match(regex);
-        await handler(result, message);
-        break;
-      } else {
-        break;
+  if (/http/.test(message.content)) {
+    for (const [regex, handler] of regexsMap) {
+      if (regex.test(message.content)) {
+        if (message.channel.permissionsFor(client.user).has([
+          PermissionsBitField.Flags.SendMessages,
+          PermissionsBitField.Flags.EmbedLinks,
+        ]) && !matchRules(message.content)) {
+          const result = message.content.match(regex);
+          await handler(result, message);
+          break;
+        } else {
+          break;
+        }
       }
     }
   }
