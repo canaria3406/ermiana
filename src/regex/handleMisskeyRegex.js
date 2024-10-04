@@ -3,7 +3,7 @@ import axios from 'axios';
 import { messageSender } from '../events/messageSender.js';
 // import { messageSubSender } from '../events/messageSubSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
-import { videoLinkSender } from '../events/videoLinkSender.js';
+// import { videoLinkSender } from '../events/videoLinkSender.js';
 import { typingSender } from '../events/typingSender.js';
 import { messageSenderMore } from '../events/messageSenderMore.js';
 
@@ -89,6 +89,9 @@ export async function handleMisskeyRegex(result, message) {
         }
       } catch {}
       */
+
+      /*
+     暫時先不處理影片
       try {
         resp.data.files?.forEach((file) => {
           if (file.type == 'video/mp4') {
@@ -101,6 +104,7 @@ export async function handleMisskeyRegex(result, message) {
           }
         });
       } catch {}
+      */
     } else {
       console.error('Request failed');
     }
