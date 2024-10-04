@@ -1,6 +1,10 @@
 export async function videoLinkSender(message, videoLink) {
   try {
-    await message.channel.send(`[連結](${videoLink})`);
+    try {
+      await message.channel.send({ files: [videoLink] });
+    } catch {
+      await message.channel.send(`[連結](${videoLink})`);
+    }
   } catch {
     // console.log('videoLink send error');
   }
