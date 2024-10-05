@@ -5,15 +5,21 @@ export async function videoLinkSender(message, videoLink) {
     if (message.channel.permissionsFor(message.client.user).has([
       PermissionsBitField.Flags.AttachFiles,
     ]) ) {
-      await message.channel.send({ files: [videoLink] });
+      await Promise.race([
+        message.channel.send({ files: [videoLink] }),
+        new Promise((_, reject) => setTimeout(() => {
+          reject(new Error());
+        }, 3000)),
+      ]);
     } else {
-      try {
-        await message.channel.send(`[連結](${videoLink})`);
-      } catch {
-        // console.log('videoLink backup send error');
-      }
+      throw new Error;
     }
   } catch {
-    // console.log('videoLink send error');
+    try {
+      await message.channel.send(`[連結](${videoLink})`);
+      return;
+    } catch {
+      // console.log('videoLink backup send error');
+    }
   }
 }
