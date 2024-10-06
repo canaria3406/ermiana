@@ -1,3 +1,4 @@
+/*
 import { PermissionsBitField } from 'discord.js';
 
 export async function videoLinkSender(message, videoLink) {
@@ -21,5 +22,14 @@ export async function videoLinkSender(message, videoLink) {
     } catch {
       // console.log('videoLink backup send error');
     }
+  }
+}
+*/
+
+export async function videoLinkSender(message, videoLink) {
+  try {
+    await message.channel.send(`[連結](${videoLink})`);
+  } catch {
+    // console.log('videoLink send error');
   }
 }
