@@ -1,17 +1,16 @@
-/*
 import { PermissionsBitField } from 'discord.js';
 
 export async function videoLinkSender(message, videoLink) {
   try {
-    if (message.channel.permissionsFor(message.client.user).has([
-      PermissionsBitField.Flags.AttachFiles,
-    ]) ) {
-      await Promise.race([
-        message.channel.send({ files: [videoLink] }),
-        new Promise((_, reject) => setTimeout(() => {
-          reject(new Error());
-        }, 3000)),
-      ]);
+    // TODO: videoLink.includes('ext_tw_video') || videoLink.includes('tweet_video')
+    if (videoLink.includes('tweet_video')) {
+      if (message.channel.permissionsFor(message.client.user).has([
+        PermissionsBitField.Flags.AttachFiles,
+      ]) ) {
+        message.channel.send({ files: [videoLink] });
+      } else {
+        throw new Error;
+      }
     } else {
       throw new Error;
     }
@@ -24,8 +23,8 @@ export async function videoLinkSender(message, videoLink) {
     }
   }
 }
-*/
 
+/*
 export async function videoLinkSender(message, videoLink) {
   try {
     await message.channel.send(`[連結](${videoLink})`);
@@ -33,3 +32,4 @@ export async function videoLinkSender(message, videoLink) {
     // console.log('videoLink send error');
   }
 }
+*/
