@@ -70,7 +70,7 @@ export async function handleTwitterRegex( result, message ) {
           fxapiRespVideo.forEach((url) => {
             videoLinkSender(message, url);
           });
-        } else if (fxapiResp.data.tweet.media?.photos[0] && !fxapiResp.data.tweet.media?.mosaic) {
+        } else if (fxapiResp.data.tweet.media?.photos && !fxapiResp.data.tweet.media?.mosaic) {
           const fxapitwitterEmbed = twitterEmbedMaker(fxapiResp.data.tweet.author.screen_name,
               (fxapiResp.data.tweet.author.avatar_url||''),
               (fxapiResp.data.tweet.author.name||'Twitter.com'),
@@ -83,9 +83,17 @@ export async function handleTwitterRegex( result, message ) {
           fxapiRespVideo.forEach((url) => {
             videoLinkSender(message, url);
           });
-        } else if (fxapiResp.data.tweet.media?.videos[0] && !fxapiResp.data.tweet.media?.photos) {
-          backupLinkSender(message, `https://vxtwitter.com/i/status/${result[1]}`);
+        } else if (fxapiRespVideo && !fxapiResp.data.tweet.media?.photos) {
+          const fxapitwitterEmbed = twitterEmbedMaker(fxapiResp.data.tweet.author.screen_name,
+              (fxapiResp.data.tweet.author.avatar_url||''),
+              (fxapiResp.data.tweet.author.name||'Twitter.com'),
+              (fxapiResp.data.tweet.url||''),
+              (fxapiResp.data.tweet.text||''),
+              '',
+              fxapiResp.data.tweet.created_timestamp * 1000);
+          messageSender(message, fxapitwitterEmbed, fxapitweetinfo);
           embedSuppresser(message);
+          videoLinkSender(message, `https://d.vxtwitter.com/i/status/${result[1]}`);
           fxapiRespVideo.filter((_url, index) => index > 0)
               .forEach((url) => {
                 videoLinkSender(message, url);
