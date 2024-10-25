@@ -2,17 +2,16 @@ import { PermissionsBitField } from 'discord.js';
 
 export async function videoLinkSender(message, videoLink) {
   try {
-    // TODO: videoLink.includes('ext_tw_video') || videoLink.includes('tweet_video')
-    if (videoLink.includes('tweet_video')) {
+    if (videoLink.includes('ext_tw_video') || videoLink.includes('tweet_video')) {
       if (message.channel.permissionsFor(message.client.user).has([
         PermissionsBitField.Flags.AttachFiles,
       ]) ) {
         message.channel.send({ files: [videoLink] });
       } else {
-        throw new Error;
+        await message.channel.send(`[連結](${videoLink})`);
       }
     } else {
-      throw new Error;
+      await message.channel.send(`[連結](${videoLink})`);
     }
   } catch {
     try {
