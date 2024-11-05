@@ -34,7 +34,7 @@ client.on('messageCreate', async (message) => {
           PermissionsBitField.Flags.EmbedLinks,
         ]) && !matchRules(message.content)) {
           const result = message.content.match(regex);
-          const spoiler = message.content.test(/\|\|[\s\S]*http[\s\S]*\|\|/) ? `||${result[0]}||` : '';
+          const spoiler = (/\|\|[\s\S]*http[\s\S]*\|\|/).test(message.content) ? `||${result[0]}||` : '';
           await handler(result, message, spoiler);
           break;
         } else {
