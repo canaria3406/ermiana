@@ -13,7 +13,11 @@ export async function videoLinkSender(message, spoiler, videoLink) {
       if (message.channel.permissionsFor(message.client.user).has([
         PermissionsBitField.Flags.AttachFiles,
       ]) ) {
-        message.channel.send({ files: [videoLink] });
+        if (!spoiler) {
+          await message.channel.send({ files: [videoLink] });
+        } else {
+          await message.channel.send(spoilerCheck(videoLink));
+        }
       } else {
         await message.channel.send(spoilerCheck(videoLink));
       }
