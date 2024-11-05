@@ -21,7 +21,7 @@ export async function messageSenderMore(message, spoiler, embed, textinfo, linkA
       row.addComponents(linkButton);
     });
 
-    await message.reply({ embeds: [embed], components: [row], allowedMentions: { repliedUser: false } });
+    await message.reply({ content: spoiler, embeds: [embed], components: [row], allowedMentions: { repliedUser: false } });
   } catch {
     // console.log('button send error');
   }

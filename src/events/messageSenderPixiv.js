@@ -28,7 +28,7 @@ export async function messageSenderPixiv(message, spoiler, embed, textinfo, page
     const row = new ActionRowBuilder()
         .addComponents(button1, button2, buttonPage, button3, button4);
 
-    await message.reply({ embeds: [embed], components: [row], allowedMentions: { repliedUser: false } });
+    await message.reply({ content: spoiler, embeds: [embed], components: [row], allowedMentions: { repliedUser: false } });
   } catch {
     // console.log('button send error');
   }
