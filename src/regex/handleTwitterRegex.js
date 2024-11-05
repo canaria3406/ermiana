@@ -67,14 +67,14 @@ export async function handleTwitterRegex( result, message ) {
       } catch {}
       const fxapitweetinfo = '💬' + (fxapiResp.data.tweet.replies?.toString() || '0') + ' 🔁' + (fxapiResp.data.tweet.retweets?.toString() || '0') + ' ❤️' + (fxapiResp.data.tweet.likes?.toString() || '0');
       try {
-        messageSender(message, fxapitwitterEmbed, fxapitweetinfo);
+        messageSender(message, spoiler, fxapitwitterEmbed, fxapitweetinfo);
         embedSuppresser(message);
       } catch {}
       try {
         if (fxapiResp.data.tweet.media) {
           fxapiResp.data.tweet.media.all.forEach((element) => {
             if (element.type != 'photo') {
-              videoLinkSender(message, videoLinkFormat(element.url));
+              videoLinkSender(message, spoiler, videoLinkFormat(element.url));
             }
           });
         }
@@ -141,14 +141,14 @@ export async function handleTwitterRegex( result, message ) {
         } catch {}
         const vxapitweetinfo = '💬' + (vxapiResp.data.replies?.toString() || '0') + ' 🔁' + (vxapiResp.data.retweets?.toString() || '0') + ' ❤️' + (vxapiResp.data.likes?.toString() || '0');
         try {
-          messageSender(message, vxapitwitterEmbed, vxapitweetinfo);
+          messageSender(message, spoiler, vxapitwitterEmbed, vxapitweetinfo);
           embedSuppresser(message);
         } catch {}
         try {
           if (vxapiResp.data.media_extended) {
             vxapiResp.data.media_extended.forEach((element) => {
               if (element.type != 'image') {
-                videoLinkSender(message, videoLinkFormat(element.url));
+                videoLinkSender(message, spoiler, videoLinkFormat(element.url));
               }
             });
           }
@@ -160,7 +160,7 @@ export async function handleTwitterRegex( result, message ) {
       // console.log('vxtwitter api error: '+ message.guild.name);
       try {
         // console.log('fx vx twitter api error: '+ tid);
-        backupLinkSender(message, `https://fxtwitter.com/i/status/${result[1]}`);
+        backupLinkSender(message, spoiler, `https://fxtwitter.com/i/status/${result[1]}`);
         embedSuppresser(message);
       } catch {
         console.log('twitter api error: '+ message.guild.name);

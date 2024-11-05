@@ -7,7 +7,7 @@ import { embedSuppresser } from '../events/embedSuppresser.js';
 import { typingSender } from '../events/typingSender.js';
 import { messageSenderMore } from '../events/messageSenderMore.js';
 
-export async function handleWeiboRegex(result, message) {
+export async function handleWeiboRegex( result, message ) {
   typingSender(message);
   try {
     const weiboResp = await axios.request({
@@ -48,10 +48,10 @@ export async function handleWeiboRegex(result, message) {
 
       try {
         if (!weiboResp.data.data?.pics || weiboResp.data.data?.pics.length == 0) {
-          messageSender(message, weiboEmbed, weiboinfo);
+          messageSender(message, spoiler, weiboEmbed, weiboinfo);
           embedSuppresser(message);
         } else if (weiboResp.data.data?.pics.length == 1) {
-          messageSender(message, weiboEmbed, weiboinfo);
+          messageSender(message, spoiler, weiboEmbed, weiboinfo);
           embedSuppresser(message);
         } else if (weiboResp.data.data.pics?.length > 1) {
           const imageArray =[];
@@ -63,13 +63,13 @@ export async function handleWeiboRegex(result, message) {
                   imageArray.push(`https://weibo-pic.canaria.cc/${match[1]}/${match[2]}`);
                 }
               });
-          messageSenderMore(message, weiboEmbed, weiboinfo, imageArray);
+          messageSenderMore(message, spoiler, weiboEmbed, weiboinfo, imageArray);
           embedSuppresser(message);
         }
       } catch {}
 
       /*
-      messageSender(message, weiboEmbed, weiboinfo);
+      messageSender(message, spoiler, weiboEmbed, weiboinfo);
       embedSuppresser(message);
 
       try {
@@ -82,7 +82,7 @@ export async function handleWeiboRegex(result, message) {
                   const picEmbed = new EmbedBuilder();
                   picEmbed.setColor(0xff0000);
                   picEmbed.setImage(`https://weibo-pic.canaria.cc/${match[1]}/${match[2]}`);
-                  messageSubSender(message, picEmbed, 'ermiana');
+                  messageSubSender(message, spoiler, picEmbed, 'ermiana');
                 }
               });
         }

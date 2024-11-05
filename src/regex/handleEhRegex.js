@@ -4,7 +4,7 @@ import { messageSender } from '../events/messageSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
 import { typingSender } from '../events/typingSender.js';
 
-export async function handleEhRegex(result, message) {
+export async function handleEhRegex( result, message ) {
   typingSender(message);
   const galleryId = parseInt(result[1]);
   const galleryToken = result[2];
@@ -76,7 +76,7 @@ export async function handleEhRegex(result, message) {
       ehEmbed.setImage(resp.data.gmetadata[0].thumb);
     } catch {}
 
-    messageSender(message, ehEmbed, 'ermiana');
+    messageSender(message, spoiler, ehEmbed, 'ermiana');
     embedSuppresser(message);
   } catch {
     // console.log('eh no response');
@@ -148,7 +148,7 @@ export async function handleEhRegex(result, message) {
         ehEmbed.setImage(resp.data.gmetadata[0].thumb);
       } catch {}
 
-      messageSender(message, ehEmbed, 'ermiana');
+      messageSender(message, spoiler, ehEmbed, 'ermiana');
       embedSuppresser(message);
     } catch {
       console.log('eh error: '+ message.guild.name);

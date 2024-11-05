@@ -65,10 +65,10 @@ export async function handleTwitterRegex( result, message ) {
               (fxapiResp.data.tweet.text)||'',
               fxapiResp.data.tweet.media.mosaic.formats.jpeg,
               fxapiResp.data.tweet.created_timestamp * 1000);
-          messageSender(message, fxapitwitterEmbed, fxapitweetinfo);
+          messageSender(message, spoiler, fxapitwitterEmbed, fxapitweetinfo);
           embedSuppresser(message);
           fxapiRespVideo.forEach((url) => {
-            videoLinkSender(message, url);
+            videoLinkSender(message, spoiler, url);
           });
         } else if (fxapiResp.data.tweet.media?.photos && !fxapiResp.data.tweet.media?.mosaic) {
           const fxapitwitterEmbed = twitterEmbedMaker(fxapiResp.data.tweet.author.screen_name,
@@ -78,10 +78,10 @@ export async function handleTwitterRegex( result, message ) {
               (fxapiResp.data.tweet.text||''),
               fxapiResp.data.tweet.media.photos[0].url + '?name=large',
               fxapiResp.data.tweet.created_timestamp * 1000);
-          messageSender(message, fxapitwitterEmbed, fxapitweetinfo);
+          messageSender(message, spoiler, fxapitwitterEmbed, fxapitweetinfo);
           embedSuppresser(message);
           fxapiRespVideo.forEach((url) => {
-            videoLinkSender(message, url);
+            videoLinkSender(message, spoiler, url);
           });
         } else if (fxapiRespVideo && !fxapiResp.data.tweet.media?.photos) {
           const fxapitwitterEmbed = twitterEmbedMaker(fxapiResp.data.tweet.author.screen_name,
@@ -91,12 +91,12 @@ export async function handleTwitterRegex( result, message ) {
               (fxapiResp.data.tweet.text||''),
               '',
               fxapiResp.data.tweet.created_timestamp * 1000);
-          messageSender(message, fxapitwitterEmbed, fxapitweetinfo);
+          messageSender(message, spoiler, fxapitwitterEmbed, fxapitweetinfo);
           embedSuppresser(message);
-          videoLinkSender(message, `https://d.vxtwitter.com/i/status/${result[1]}`);
+          videoLinkSender(message, spoiler, `https://d.vxtwitter.com/i/status/${result[1]}`);
           fxapiRespVideo.filter((_url, index) => index > 0)
               .forEach((url) => {
-                videoLinkSender(message, url);
+                videoLinkSender(message, spoiler, url);
               });
         }
       } else {
@@ -107,7 +107,7 @@ export async function handleTwitterRegex( result, message ) {
             (fxapiResp.data.tweet.text||''),
             '',
             fxapiResp.data.tweet.created_timestamp * 1000);
-        messageSender(message, fxapitwitterEmbed, fxapitweetinfo);
+        messageSender(message, spoiler, fxapitwitterEmbed, fxapitweetinfo);
         embedSuppresser(message);
       }
     } else {
@@ -145,10 +145,10 @@ export async function handleTwitterRegex( result, message ) {
                 (vxapiResp.data.text||''),
                 vxapiRespImage[0] + '?name=large',
                 vxapiResp.data.date_epoch * 1000);
-            messageSender(message, vxapitwitterEmbed, vxapitweetinfo);
+            messageSender(message, spoiler, vxapitwitterEmbed, vxapitweetinfo);
             embedSuppresser(message);
             vxapiRespVideo.forEach((url) => {
-              videoLinkSender(message, url);
+              videoLinkSender(message, spoiler, url);
             });
           } else if (vxapiRespImage.length > 1) {
             const vxapitwitterEmbed = twitterEmbedMaker(vxapiResp.data.user_screen_name,
@@ -158,17 +158,17 @@ export async function handleTwitterRegex( result, message ) {
                 (vxapiResp.data.text||''),
                 'https://convert.vxtwitter.com/rendercombined.jpg?imgs=' + vxapiRespImage.join(','),
                 vxapiResp.data.date_epoch * 1000);
-            messageSender(message, vxapitwitterEmbed, vxapitweetinfo);
+            messageSender(message, spoiler, vxapitwitterEmbed, vxapitweetinfo);
             embedSuppresser(message);
             vxapiRespVideo.forEach((url) => {
-              videoLinkSender(message, url);
+              videoLinkSender(message, spoiler, url);
             });
           } else {
-            backupLinkSender(message, `https://vxtwitter.com/i/status/${result[1]}`);
+            backupLinkSender(message, spoiler, `https://vxtwitter.com/i/status/${result[1]}`);
             embedSuppresser(message);
             vxapiRespVideo.filter((_url, index) => index > 0 && index < 4)
                 .forEach((url) => {
-                  videoLinkSender(message, url);
+                  videoLinkSender(message, spoiler, url);
                 });
           }
         } else {
@@ -179,7 +179,7 @@ export async function handleTwitterRegex( result, message ) {
               (vxapiResp.data.text||''),
               '',
               vxapiResp.data.date_epoch * 1000);
-          messageSender(message, vxapitwitterEmbed, vxapitweetinfo);
+          messageSender(message, spoiler, vxapitwitterEmbed, vxapitweetinfo);
           embedSuppresser(message);
         }
       } else {
@@ -189,7 +189,7 @@ export async function handleTwitterRegex( result, message ) {
       // throw new Error('fxvxtwitter api error: '+ tid);
       try {
         // console.log('fx vx twitter api error: '+ tid);
-        backupLinkSender(message, `https://fxtwitter.com/i/status/${result[1]}`);
+        backupLinkSender(message, spoiler, `https://fxtwitter.com/i/status/${result[1]}`);
         embedSuppresser(message);
       } catch {
         console.log('twitter error: '+ message.guild.name);

@@ -7,7 +7,7 @@ import { embedSuppresser } from '../events/embedSuppresser.js';
 import { typingSender } from '../events/typingSender.js';
 import { messageSenderMore } from '../events/messageSenderMore.js';
 
-export async function handleMisskeyRegex(result, message) {
+export async function handleMisskeyRegex( result, message ) {
   typingSender(message);
   try {
     const resp = await axios.request({
@@ -48,11 +48,11 @@ export async function handleMisskeyRegex(result, message) {
       const noteinfo = '💬' + resp.data.repliesCount.toString() + ' 🔁' + resp.data.renoteCount.toString() + ' ❤️' + sumReactions(resp.data.reactions).toString();
       try {
         if (!resp.data?.files || resp.data.files.length == 0) {
-          messageSender(message, misskeyEmbed, noteinfo);
+          messageSender(message, spoiler, misskeyEmbed, noteinfo);
           await new Promise((resolve) => setTimeout(resolve, 500));
           embedSuppresser(message);
         } else if (resp.data.files?.length == 1) {
-          messageSender(message, misskeyEmbed, noteinfo);
+          messageSender(message, spoiler, misskeyEmbed, noteinfo);
           await new Promise((resolve) => setTimeout(resolve, 500));
           embedSuppresser(message);
         } else if (resp.data.files?.length > 1) {
@@ -64,13 +64,13 @@ export async function handleMisskeyRegex(result, message) {
                   imageArray.push(file.url);
                 }
               });
-          messageSenderMore(message, misskeyEmbed, noteinfo, imageArray);
+          messageSenderMore(message, spoiler, misskeyEmbed, noteinfo, imageArray);
           await new Promise((resolve) => setTimeout(resolve, 500));
           embedSuppresser(message);
         }
       } catch {}
       /*
-      messageSender(message, misskeyEmbed, noteinfo);
+      messageSender(message, spoiler, misskeyEmbed, noteinfo);
       await new Promise((resolve) => setTimeout(resolve, 1500));
       embedSuppresser(message);
 
@@ -83,7 +83,7 @@ export async function handleMisskeyRegex(result, message) {
                   const noteEmbed = new EmbedBuilder();
                   noteEmbed.setColor(0x96d04a);
                   noteEmbed.setImage(file.url);
-                  messageSubSender(message, noteEmbed, 'ermiana');
+                  messageSubSender(message, spoiler, noteEmbed, 'ermiana');
                 }
               });
         }
@@ -96,10 +96,10 @@ export async function handleMisskeyRegex(result, message) {
         resp.data.files?.forEach((file) => {
           if (file.type == 'video/mp4') {
             if (file.url.match(/https:\/\/media\.misskeyusercontent\.(?:com|jp)\/io\/.*\.mp4/)) {
-              videoLinkSender(message, file.url);
+              videoLinkSender(message, spoiler, file.url);
             } else if (file.url.match(/https:\/\/proxy\.misskeyusercontent\.(?:com|jp)\/image\.webp\?url=.*\.mp4/)) {
               const othersiteUrl = decodeURIComponent(file.url.match(/url=(.+)/)[1]);
-              videoLinkSender(message, othersiteUrl);
+              videoLinkSender(message, spoiler, othersiteUrl);
             }
           }
         });

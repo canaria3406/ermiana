@@ -45,12 +45,12 @@ export async function handlePlurkRegex( result, message ) {
 
       try {
         if (!picPlurk || picPlurk.length == 0) {
-          messageSender(message, plurkEmbed, plurkInfo);
+          messageSender(message, spoiler, plurkEmbed, plurkInfo);
           embedSuppresser(message);
           await new Promise((resolve) => setTimeout(resolve, 800));
           embedSuppresser(message);
         } else if (picPlurk.length == 1) {
-          messageSender(message, plurkEmbed, plurkInfo);
+          messageSender(message, spoiler, plurkEmbed, plurkInfo);
           embedSuppresser(message);
           await new Promise((resolve) => setTimeout(resolve, 800));
           embedSuppresser(message);
@@ -60,7 +60,7 @@ export async function handlePlurkRegex( result, message ) {
               .forEach((pic) => {
                 imageArray.push(pic);
               });
-          messageSenderMore(message, plurkEmbed, plurkInfo, imageArray);
+          messageSenderMore(message, spoiler, plurkEmbed, plurkInfo, imageArray);
           embedSuppresser(message);
           await new Promise((resolve) => setTimeout(resolve, 800));
           embedSuppresser(message);

@@ -94,7 +94,7 @@ export async function handleNhRegex( result, message ) {
         nhEmbed.setImage('https://t.nhentai.net/galleries/' + resp.data.media_id + '/thumb.jpg');
       } catch {}
 
-      messageSender(message, nhEmbed, 'ermiana');
+      messageSender(message, spoiler, nhEmbed, 'ermiana');
       embedSuppresser(message);
     } else {
       console.error('Request failed');

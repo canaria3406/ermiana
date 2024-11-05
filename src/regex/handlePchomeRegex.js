@@ -57,7 +57,7 @@ export async function handlePchomeRegex( result, message ) {
         pchomeEmbed.setImage(picurl);
       } catch {}
 
-      messageSender(message, pchomeEmbed, 'ermiana');
+      messageSender(message, spoiler, pchomeEmbed, 'ermiana');
       await new Promise((resolve) => setTimeout(resolve, 1000));
       embedSuppresser(message);
     }

@@ -7,7 +7,7 @@ import { backupLinkSender } from '../events/backupLinkSender.js';
 import { typingSender } from '../events/typingSender.js';
 import { messageSenderMore } from '../events/messageSenderMore.js';
 
-export async function handleBlueskyRegex(result, message) {
+export async function handleBlueskyRegex( result, message ) {
   typingSender(message);
   try {
     const didResp = await axios.request({
@@ -57,7 +57,7 @@ export async function handleBlueskyRegex(result, message) {
 
         const threadinfo ='💬' + threadResp.data.thread.post.replyCount.toString() + ' 🔁' + threadResp.data.thread.post.repostCount.toString() + ' ❤️' + threadResp.data.thread.post.likeCount.toString();
         /*
-        messageSender(message, blueskyEmbed, threadinfo);
+        messageSender(message, spoiler, blueskyEmbed, threadinfo);
         embedSuppresser(message);
 
         try {
@@ -68,17 +68,17 @@ export async function handleBlueskyRegex(result, message) {
                   const picEmbed = new EmbedBuilder();
                   picEmbed.setColor(0x53b4ff);
                   picEmbed.setImage(image.fullsize);
-                  messageSubSender(message, picEmbed, 'ermiana');
+                  messageSubSender(message, spoiler, picEmbed, 'ermiana');
                 });
           }
         } catch {}
         */
         try {
           if (!threadResp.data.thread.post.embed?.images) {
-            messageSender(message, blueskyEmbed, threadinfo);
+            messageSender(message, spoiler, blueskyEmbed, threadinfo);
             embedSuppresser(message);
           } else if (threadResp.data.thread.post.embed?.images.length == 1) {
-            messageSender(message, blueskyEmbed, threadinfo);
+            messageSender(message, spoiler, blueskyEmbed, threadinfo);
             embedSuppresser(message);
           } else if (threadResp.data.thread.post.embed?.images.length > 1) {
             const imageArray =[];
@@ -87,7 +87,7 @@ export async function handleBlueskyRegex(result, message) {
                 .forEach((image) => {
                   imageArray.push(image.fullsize);
                 });
-            messageSenderMore(message, blueskyEmbed, threadinfo, imageArray);
+            messageSenderMore(message, spoiler, blueskyEmbed, threadinfo, imageArray);
             embedSuppresser(message);
           }
         } catch {}
@@ -95,7 +95,7 @@ export async function handleBlueskyRegex(result, message) {
     }
   } catch {
     try {
-      backupLinkSender(message, `https://bsyy.app/profile/${result[1]}/post/${result[2]}`);
+      backupLinkSender(message, spoiler, `https://bsyy.app/profile/${result[1]}/post/${result[2]}`);
       await new Promise((resolve) => setTimeout(resolve, 1500));
       embedSuppresser(message);
     } catch {

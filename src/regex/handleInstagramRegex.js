@@ -7,7 +7,7 @@ import { embedSuppresser } from '../events/embedSuppresser.js';
 import { backupLinkSender } from '../events/backupLinkSender.js';
 import { typingSender } from '../events/typingSender.js';
 
-export async function handleInstagramRegex(result, message) {
+export async function handleInstagramRegex( result, message ) {
   typingSender(message);
   // const igid = result[1];
   /* try {
@@ -69,12 +69,12 @@ export async function handleInstagramRegex(result, message) {
       } catch {}
       const iginfo = '💬' + (igResp.data.data.shortcode_media.edge_media_to_comment.count?.toString() || '0') + ' ❤️' + (igResp.data.data.shortcode_media.edge_media_preview_like.count?.toString() || '0');
       try {
-        messageSender(message, igEmbed, iginfo);
+        messageSender(message, spoiler, igEmbed, iginfo);
         embedSuppresser(message);
       } catch {}
       try {
         if (igResp.data.data.shortcode_media.is_video) {
-          videoLinkSender(message, `https://d.ddinstagram.com/p/${igid}/`);
+          videoLinkSender(message, spoiler, `https://d.ddinstagram.com/p/${igid}/`);
         }
       } catch {}
 
@@ -87,7 +87,7 @@ export async function handleInstagramRegex(result, message) {
                   const picEmbed = new EmbedBuilder();
                   picEmbed.setColor(0xE1306C);
                   picEmbed.setImage(edge.node.display_url);
-                  messageSubSender(message, picEmbed, 'ermiana');
+                  messageSubSender(message, spoiler, picEmbed, 'ermiana');
                 }
               });
         }
@@ -99,7 +99,7 @@ export async function handleInstagramRegex(result, message) {
   } catch {
   */
   try {
-    backupLinkSender(message, `https://www.ddinstagram.com/p/${result[1]}/`);
+    backupLinkSender(message, spoiler, `https://www.ddinstagram.com/p/${result[1]}/`);
     await new Promise((resolve) => setTimeout(resolve, 1500));
     embedSuppresser(message);
   } catch {

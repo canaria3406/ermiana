@@ -120,7 +120,7 @@ export async function handlePttRegex( result, message ) {
             }
           } catch {}
           try {
-            messageSender(message, mopttEmbed, 'ermiana');
+            messageSender(message, spoiler, mopttEmbed, 'ermiana');
             embedSuppresser(message);
           } catch {}
         } catch {
@@ -151,7 +151,7 @@ export async function handlePttRegex( result, message ) {
               }
             } catch {}
             try {
-              messageSender(message, pttEmbed, 'ermiana');
+              messageSender(message, spoiler, pttEmbed, 'ermiana');
               embedSuppresser(message);
             } catch {}
           } catch {}
@@ -213,7 +213,7 @@ export async function handlePttRegex( result, message ) {
               }
             } catch {}
             try {
-              messageSender(message, mopttEmbed2, 'ermiana');
+              messageSender(message, spoiler, mopttEmbed2, 'ermiana');
               embedSuppresser(message);
             } catch {}
           } catch {
@@ -244,7 +244,7 @@ export async function handlePttRegex( result, message ) {
                 }
               } catch {}
               try {
-                messageSender(message, pttEmbed2, 'ermiana');
+                messageSender(message, spoiler, pttEmbed2, 'ermiana');
                 embedSuppresser(message);
               } catch {}
             } catch {}
@@ -254,7 +254,7 @@ export async function handlePttRegex( result, message ) {
     }
   } catch {
     try {
-      backupLinkSender(message, `https://www.pttweb.cc/bbs/${boardNameStandardization(result[1])}/${result[2]}`);
+      backupLinkSender(message, spoiler, `https://www.pttweb.cc/bbs/${boardNameStandardization(result[1])}/${result[2]}`);
       await new Promise((resolve) => setTimeout(resolve, 1000));
       embedSuppresser(message);
     } catch {

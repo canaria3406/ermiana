@@ -1,6 +1,6 @@
 import { PermissionsBitField } from 'discord.js';
 
-export async function videoLinkSender(message, videoLink) {
+export async function videoLinkSender(message, spoiler, videoLink) {
   try {
     if (videoLink.includes('ext_tw_video') || videoLink.includes('tweet_video')) {
       if (message.channel.permissionsFor(message.client.user).has([
@@ -24,7 +24,7 @@ export async function videoLinkSender(message, videoLink) {
 }
 
 /*
-export async function videoLinkSender(message, videoLink) {
+export async function videoLinkSender(message, spoiler, videoLink) {
   try {
     await message.channel.send(`[連結](${videoLink})`);
   } catch {
