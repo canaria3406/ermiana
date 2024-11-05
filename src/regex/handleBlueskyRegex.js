@@ -7,7 +7,7 @@ import { backupLinkSender } from '../events/backupLinkSender.js';
 import { typingSender } from '../events/typingSender.js';
 import { messageSenderMore } from '../events/messageSenderMore.js';
 
-export async function handleBlueskyRegex( result, message ) {
+export async function handleBlueskyRegex( result, message, spoiler ) {
   typingSender(message);
   try {
     const didResp = await axios.request({

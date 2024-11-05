@@ -6,7 +6,7 @@ import { videoLinkSender } from '../events/videoLinkSender.js';
 import { backupLinkSender } from '../events/backupLinkSender.js';
 import { typingSender } from '../events/typingSender.js';
 
-export async function handleTwitterRegex( result, message ) {
+export async function handleTwitterRegex( result, message, spoiler ) {
   typingSender(message);
   const tid = result[1];
 

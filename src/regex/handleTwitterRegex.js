@@ -15,7 +15,7 @@ function videoLinkFormat( link ) {
   }
 }
 
-export async function handleTwitterRegex( result, message ) {
+export async function handleTwitterRegex( result, message, spoiler ) {
   typingSender(message);
   const tid = result[1];
   try {

@@ -6,7 +6,7 @@ import { embedSuppresser } from '../events/embedSuppresser.js';
 import { typingSender } from '../events/typingSender.js';
 import { backupLinkSender } from '../events/backupLinkSender.js';
 
-export async function handlePttRegex( result, message ) {
+export async function handlePttRegex( result, message, spoiler ) {
   const supportBoard = ['Gossiping', 'C_Chat', 'AC_In', 'H-GAME', 'sex', 'HatePolitics', 'Beauty', 'japanavgirls', 'DMM_GAMES'];
 
   function boardNameStandardization(boardName) {

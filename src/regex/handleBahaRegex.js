@@ -7,7 +7,7 @@ import { messageSender } from '../events/messageSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
 import { typingSender } from '../events/typingSender.js';
 
-export async function handleBahaRegex( result, message ) {
+export async function handleBahaRegex( result, message, spoiler ) {
   typingSender(message);
   try {
     const ermianaBH = new Conf({ projectName: 'ermianaJS' });

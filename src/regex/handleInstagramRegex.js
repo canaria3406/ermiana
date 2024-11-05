@@ -7,7 +7,7 @@ import { embedSuppresser } from '../events/embedSuppresser.js';
 import { backupLinkSender } from '../events/backupLinkSender.js';
 import { typingSender } from '../events/typingSender.js';
 
-export async function handleInstagramRegex( result, message ) {
+export async function handleInstagramRegex( result, message, spoiler ) {
   typingSender(message);
   // const igid = result[1];
   /* try {

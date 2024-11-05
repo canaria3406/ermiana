@@ -33,7 +33,6 @@ export const regexsMap = new Map([
 
 export function matchRules(content) {
   const rules = [
-    /\|\|[\s\S]*http[\s\S]*\|\|/,
     /\<[\s\S]*http[\s\S]*\>/,
     /\~\~[\s\S]*http[\s\S]*\~\~/,
   ];

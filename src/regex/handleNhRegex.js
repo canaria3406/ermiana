@@ -5,7 +5,7 @@ import { messageSender } from '../events/messageSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
 import { typingSender } from '../events/typingSender.js';
 
-export async function handleNhRegex( result, message ) {
+export async function handleNhRegex( result, message, spoiler ) {
   typingSender(message);
   const nid = result[1];
   try {

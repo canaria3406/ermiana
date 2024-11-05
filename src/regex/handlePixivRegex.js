@@ -7,7 +7,7 @@ import { backupLinkSender } from '../events/backupLinkSender.js';
 import { typingSender } from '../events/typingSender.js';
 import { messageSenderPixiv } from '../events/messageSenderPixiv.js';
 
-export async function handlePixivRegex( result, message ) {
+export async function handlePixivRegex( result, message, spoiler ) {
   typingSender(message);
   const pid = result[1];
   try {

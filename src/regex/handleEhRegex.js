@@ -4,7 +4,7 @@ import { messageSender } from '../events/messageSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
 import { typingSender } from '../events/typingSender.js';
 
-export async function handleEhRegex( result, message ) {
+export async function handleEhRegex( result, message, spoiler ) {
   typingSender(message);
   const galleryId = parseInt(result[1]);
   const galleryToken = result[2];

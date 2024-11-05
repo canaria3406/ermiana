@@ -7,7 +7,7 @@ import { embedSuppresser } from '../events/embedSuppresser.js';
 import { typingSender } from '../events/typingSender.js';
 import { messageSenderMore } from '../events/messageSenderMore.js';
 
-export async function handleWeiboRegex( result, message ) {
+export async function handleWeiboRegex( result, message, spoiler ) {
   typingSender(message);
   try {
     const weiboResp = await axios.request({

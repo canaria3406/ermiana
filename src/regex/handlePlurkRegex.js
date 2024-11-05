@@ -6,7 +6,7 @@ import { embedSuppresser } from '../events/embedSuppresser.js';
 import { typingSender } from '../events/typingSender.js';
 import { messageSenderMore } from '../events/messageSenderMore.js';
 
-export async function handlePlurkRegex( result, message ) {
+export async function handlePlurkRegex( result, message, spoiler ) {
   typingSender(message);
   try {
     const plurkHTML = await axios.request({

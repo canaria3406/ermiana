@@ -5,7 +5,7 @@ import { messageSender } from '../events/messageSender.js';
 import { typingSender } from '../events/typingSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
 
-export async function handlePchomeRegex( result, message ) {
+export async function handlePchomeRegex( result, message, spoiler ) {
   typingSender(message);
   try {
     const pcid = result[1];

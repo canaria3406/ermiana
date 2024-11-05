@@ -7,7 +7,7 @@ import { embedSuppresser } from '../events/embedSuppresser.js';
 import { typingSender } from '../events/typingSender.js';
 import { messageSenderMore } from '../events/messageSenderMore.js';
 
-export async function handleMisskeyRegex( result, message ) {
+export async function handleMisskeyRegex( result, message, spoiler ) {
   typingSender(message);
   try {
     const resp = await axios.request({
