@@ -5,7 +5,6 @@ export async function configManager() {
   const config = {
     DCTK: process.env.DCTK,
     DCID: process.env.DCID,
-    DCCD: process.env.DCCD,
     DCWH: process.env.DCWH,
     BHUD: process.env.BHUD,
     BHPD: process.env.BHPD,
