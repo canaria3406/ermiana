@@ -159,7 +159,7 @@ export async function handlePttRegex( result, message, spoiler ) {
       } else {
         await new Promise((resolve) => setTimeout(resolve, 1800));
         const pttHTML2 = await axios.request({
-          url: `https://www.ptt.cc/bbs/${boardNameStandardization(result[1])}/${result[2]}.html`,
+          url: `https://ptt-demo.canaria.cc/bbs/${boardNameStandardization(result[1])}/${result[2]}.html`,
           method: 'get',
           headers: { Cookie: 'over18=1;' },
           timeout: 3000,
