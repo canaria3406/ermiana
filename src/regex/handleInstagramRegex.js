@@ -1,5 +1,5 @@
 // import { EmbedBuilder } from 'discord.js';
-// import axios from 'axios';
+import axios from 'axios';
 // import { messageSender } from '../events/messageSender.js';
 // import { messageSubSender } from '../events/messageSubSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
@@ -8,7 +8,6 @@ import { backupLinkSender } from '../events/backupLinkSender.js';
 import { typingSender } from '../events/typingSender.js';
 
 export async function handleInstagramRegex( result, message, spoiler ) {
-  typingSender(message);
   // const igid = result[1];
   /* try {
     const igResp = await axios({
@@ -99,11 +98,23 @@ export async function handleInstagramRegex( result, message, spoiler ) {
   } catch {
   */
   try {
-    backupLinkSender(message, spoiler, `https://www.ddinstagram.com/p/${result[1]}/`);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    embedSuppresser(message);
+    const igHTML = await axios.request({
+      url: `https://www.ddinstagram.com/p/DD9yTv4SvWb/`,
+      method: 'get',
+      timeout: 2000,
+    });
+
+    if (igHTML.status == 200) {
+      await typingSender(message);
+      backupLinkSender(message, spoiler, `https://www.ddinstagram.com/p/${result[1]}/`);
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      embedSuppresser(message);
+    } else {
+      return;
+    }
   } catch {
-    console.log('instagram error: '+ message.guild.name);
+    // console.log('instagram error: '+ message.guild.name);
+    return;
   }
   // }
 };
