@@ -1,4 +1,4 @@
-import { PermissionsBitField, Client, GatewayIntentBits, ActivityType } from 'discord.js';
+import { PermissionsBitField, Client, GatewayIntentBits } from 'discord.js';
 import { currentTime } from './utils/currentTime.js';
 import { configManager } from './utils/configManager.js';
 import { runCronJob } from './utils/runCronJob.js';
@@ -32,14 +32,6 @@ client.on('ready', async () => {
           reloadLog(serverCount, totalUserCount);
         })
         .catch(console.error);
-
-    client.user.setPresence({
-      activities: [{
-        name: '今この瞬間を大切に',
-        type: ActivityType.Custom,
-      }],
-      status: 'online',
-    });
   } catch {
     return;
   }
