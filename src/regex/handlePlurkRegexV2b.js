@@ -42,10 +42,19 @@ export async function handlePlurkRegex( result, message, spoiler ) {
       const rawPlurkIndex = $('script').text().indexOf('content_raw') || -1;
       const picPlurk = $('script').text().slice(rawPlurkIndex).match(/https:\/\/images\.plurk\.com\/[^\\"\s]+/g) || [];
 
+      const plurkId = $('script').text().match(/"id":\s*(\d+)/)?.[1] || '17527487';
+      const plurkAvatar = $('script').text().match(/"avatar":\s*(\d+)/)?.[1] || '79721750';
+      const plurkNickName = $('script').text().match(/"nick_name":\s*"([^"]+)"/)?.[1] || 'plurkuser';
+
       const plurkEmbed = new EmbedBuilder();
       plurkEmbed.setColor(0xefa54c);
       plurkEmbed.setTitle(plurkName);
       plurkEmbed.setURL('https://www.plurk.com/p/' + result[1]);
+      try {
+        if (plurkId && plurkAvatar && plurkNickName) {
+          plurkEmbed.setAuthor({ name: '@' + plurkNickName, iconURL: `https://avatars.plurk.com/${plurkId}-medium${plurkAvatar}.gif` });
+        }
+      } catch {}
       try {
         if (plurkContent) {
           plurkEmbed.setDescription(plurkContent);
