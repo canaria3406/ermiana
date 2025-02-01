@@ -25,7 +25,8 @@ export async function handlePlurkRegex( result, message, spoiler ) {
       const plurkInfo = '💬' + respPlurk + ' 🔁' + rePlurk + ' ❤️' + favPlurk;
 
       const plurkName = $('.name').text() || '噗浪使用者';
-      // const plurkContent = $('.text_holder').replace(/<br\s*\/?>/g, '\n').text() || '';
+      const plurkContent = $('.text_holder').html().replace(/<br\s*\/?>/g, '\n').replace(/<[^>]+>/g, '') || '';
+      /*
       const plurkContent = (
         $('script')
             .text()
@@ -37,8 +38,7 @@ export async function handlePlurkRegex( result, message, spoiler ) {
             })
             .trim() || ''
       );
-      // console.log(plurkContent);
-
+      */
       const rawPlurkIndex = $('script').text().indexOf('content_raw') || -1;
       const picPlurk = $('script').text().slice(rawPlurkIndex).match(/https:\/\/images\.plurk\.com\/[^\\"\s]+/g) || [];
 
