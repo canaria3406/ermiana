@@ -8,6 +8,7 @@ import { embedSuppresser } from '../events/embedSuppresser.js';
 import { typingSender } from '../events/typingSender.js';
 
 export async function handleBahaRegex( result, message, spoiler ) {
+  const iconURL = 'https://ermiana.canaria.cc/pic/baha.png';
   typingSender(message);
   try {
     const ermianaBH = new Conf({ projectName: 'ermianaJS' });
@@ -37,7 +38,7 @@ export async function handleBahaRegex( result, message, spoiler ) {
       bahaEmbed.setImage($('meta[property=og:image]').attr('content'));
     } catch {}
 
-    messageSender(message, spoiler, bahaEmbed, 'ermiana');
+    messageSender(message, spoiler, iconURL, bahaEmbed, 'ermiana');
     embedSuppresser(message);
   } catch {
     // console.log('baha error');
@@ -67,7 +68,7 @@ export async function handleBahaRegex( result, message, spoiler ) {
         bahaEmbed2.setImage($('meta[property=og:image]').attr('content'));
       } catch {}
 
-      messageSender(message, spoiler, bahaEmbed2, 'ermiana');
+      messageSender(message, spoiler, iconURL, bahaEmbed2, 'ermiana');
       embedSuppresser(message);
     } catch {
       console.log('baha error: '+ message.guild.name);

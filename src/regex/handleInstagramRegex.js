@@ -9,6 +9,7 @@ import { typingSender } from '../events/typingSender.js';
 
 export async function handleInstagramRegex( result, message, spoiler ) {
   // const igid = result[1];
+  // const iconURL = 'https://ermiana.canaria.cc/pic/instagram.png';
   /* try {
     const igResp = await axios({
       url: 'https://www.instagram.com/graphql/query/',
@@ -68,7 +69,7 @@ export async function handleInstagramRegex( result, message, spoiler ) {
       } catch {}
       const iginfo = '💬' + (igResp.data.data.shortcode_media.edge_media_to_comment.count?.toString() || '0') + ' ❤️' + (igResp.data.data.shortcode_media.edge_media_preview_like.count?.toString() || '0');
       try {
-        messageSender(message, spoiler, igEmbed, iginfo);
+        messageSender(message, spoiler, iconURL, igEmbed, iginfo);
         embedSuppresser(message);
       } catch {}
       try {
@@ -86,7 +87,7 @@ export async function handleInstagramRegex( result, message, spoiler ) {
                   const picEmbed = new EmbedBuilder();
                   picEmbed.setColor(0xE1306C);
                   picEmbed.setImage(edge.node.display_url);
-                  messageSubSender(message, spoiler, picEmbed, 'ermiana');
+                  messageSubSender(message, spoiler, iconURL, picEmbed, 'ermiana');
                 }
               });
         }

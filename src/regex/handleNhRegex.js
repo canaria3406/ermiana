@@ -6,6 +6,7 @@ import { embedSuppresser } from '../events/embedSuppresser.js';
 import { typingSender } from '../events/typingSender.js';
 
 export async function handleNhRegex( result, message, spoiler ) {
+  const iconURL = 'https://ermiana.canaria.cc/pic/eh.png';
   typingSender(message);
   const nid = result[1];
   try {
@@ -94,7 +95,7 @@ export async function handleNhRegex( result, message, spoiler ) {
         nhEmbed.setImage('https://t.nhentai.net/galleries/' + resp.data.media_id + '/thumb.jpg');
       } catch {}
 
-      messageSender(message, spoiler, nhEmbed, 'ermiana');
+      messageSender(message, spoiler, iconURL, nhEmbed, 'ermiana');
       embedSuppresser(message);
     } else {
       console.error('Request failed');

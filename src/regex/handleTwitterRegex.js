@@ -16,6 +16,7 @@ function videoLinkFormat( link ) {
 }
 
 export async function handleTwitterRegex( result, message, spoiler ) {
+  const iconURL = 'https://ermiana.canaria.cc/pic/twitter.png';
   typingSender(message);
   const tid = result[1];
   try {
@@ -67,7 +68,7 @@ export async function handleTwitterRegex( result, message, spoiler ) {
       } catch {}
       const fxapitweetinfo = '💬' + (fxapiResp.data.tweet.replies?.toString() || '0') + ' 🔁' + (fxapiResp.data.tweet.retweets?.toString() || '0') + ' ❤️' + (fxapiResp.data.tweet.likes?.toString() || '0');
       try {
-        messageSender(message, spoiler, fxapitwitterEmbed, fxapitweetinfo);
+        messageSender(message, spoiler, iconURL, fxapitwitterEmbed, fxapitweetinfo);
         embedSuppresser(message);
       } catch {}
       try {
@@ -141,7 +142,7 @@ export async function handleTwitterRegex( result, message, spoiler ) {
         } catch {}
         const vxapitweetinfo = '💬' + (vxapiResp.data.replies?.toString() || '0') + ' 🔁' + (vxapiResp.data.retweets?.toString() || '0') + ' ❤️' + (vxapiResp.data.likes?.toString() || '0');
         try {
-          messageSender(message, spoiler, vxapitwitterEmbed, vxapitweetinfo);
+          messageSender(message, spoiler, iconURL, vxapitwitterEmbed, vxapitweetinfo);
           embedSuppresser(message);
         } catch {}
         try {

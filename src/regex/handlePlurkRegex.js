@@ -7,6 +7,7 @@ import { typingSender } from '../events/typingSender.js';
 import { messageSenderMore } from '../events/messageSenderMore.js';
 
 export async function handlePlurkRegex( result, message, spoiler ) {
+  const iconURL = 'https://ermiana.canaria.cc/pic/plurk.png';
   typingSender(message);
   try {
     const plurkHTML = await axios.request({
@@ -45,12 +46,12 @@ export async function handlePlurkRegex( result, message, spoiler ) {
 
       try {
         if (!picPlurk || picPlurk.length == 0) {
-          messageSender(message, spoiler, plurkEmbed, plurkInfo);
+          messageSender(message, spoiler, iconURL, plurkEmbed, plurkInfo);
           embedSuppresser(message);
           await new Promise((resolve) => setTimeout(resolve, 800));
           embedSuppresser(message);
         } else if (picPlurk.length == 1) {
-          messageSender(message, spoiler, plurkEmbed, plurkInfo);
+          messageSender(message, spoiler, iconURL, plurkEmbed, plurkInfo);
           embedSuppresser(message);
           await new Promise((resolve) => setTimeout(resolve, 800));
           embedSuppresser(message);
@@ -60,7 +61,7 @@ export async function handlePlurkRegex( result, message, spoiler ) {
               .forEach((pic) => {
                 imageArray.push(pic);
               });
-          messageSenderMore(message, spoiler, plurkEmbed, plurkInfo, imageArray);
+          messageSenderMore(message, spoiler, iconURL, plurkEmbed, plurkInfo, imageArray);
           embedSuppresser(message);
           await new Promise((resolve) => setTimeout(resolve, 800));
           embedSuppresser(message);

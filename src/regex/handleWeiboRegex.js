@@ -8,6 +8,7 @@ import { typingSender } from '../events/typingSender.js';
 import { messageSenderMore } from '../events/messageSenderMore.js';
 
 export async function handleWeiboRegex( result, message, spoiler ) {
+  const iconURL = 'https://ermiana.canaria.cc/pic/weibo.png';
   typingSender(message);
   try {
     const weiboResp = await axios.request({
@@ -48,10 +49,10 @@ export async function handleWeiboRegex( result, message, spoiler ) {
 
       try {
         if (!weiboResp.data.data?.pics || weiboResp.data.data?.pics.length == 0) {
-          messageSender(message, spoiler, weiboEmbed, weiboinfo);
+          messageSender(message, spoiler, iconURL, weiboEmbed, weiboinfo);
           embedSuppresser(message);
         } else if (weiboResp.data.data?.pics.length == 1) {
-          messageSender(message, spoiler, weiboEmbed, weiboinfo);
+          messageSender(message, spoiler, iconURL, weiboEmbed, weiboinfo);
           embedSuppresser(message);
         } else if (weiboResp.data.data.pics?.length > 1) {
           const imageArray =[];
@@ -63,13 +64,13 @@ export async function handleWeiboRegex( result, message, spoiler ) {
                   imageArray.push(`https://weibo-pic.canaria.cc/${match[1]}/${match[2]}`);
                 }
               });
-          messageSenderMore(message, spoiler, weiboEmbed, weiboinfo, imageArray);
+          messageSenderMore(message, spoiler, iconURL, weiboEmbed, weiboinfo, imageArray);
           embedSuppresser(message);
         }
       } catch {}
 
       /*
-      messageSender(message, spoiler, weiboEmbed, weiboinfo);
+      messageSender(message, spoiler, iconURL, weiboEmbed, weiboinfo);
       embedSuppresser(message);
 
       try {
@@ -82,7 +83,7 @@ export async function handleWeiboRegex( result, message, spoiler ) {
                   const picEmbed = new EmbedBuilder();
                   picEmbed.setColor(0xff0000);
                   picEmbed.setImage(`https://weibo-pic.canaria.cc/${match[1]}/${match[2]}`);
-                  messageSubSender(message, spoiler, picEmbed, 'ermiana');
+                  messageSubSender(message, spoiler, iconURL, picEmbed, 'ermiana');
                 }
               });
         }

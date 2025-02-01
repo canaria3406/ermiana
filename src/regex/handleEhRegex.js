@@ -5,6 +5,7 @@ import { embedSuppresser } from '../events/embedSuppresser.js';
 import { typingSender } from '../events/typingSender.js';
 
 export async function handleEhRegex( result, message, spoiler ) {
+  const iconURL = 'https://ermiana.canaria.cc/pic/eh.png';
   typingSender(message);
   const galleryId = parseInt(result[1]);
   const galleryToken = result[2];
@@ -76,7 +77,7 @@ export async function handleEhRegex( result, message, spoiler ) {
       ehEmbed.setImage(resp.data.gmetadata[0].thumb);
     } catch {}
 
-    messageSender(message, spoiler, ehEmbed, 'ermiana');
+    messageSender(message, spoiler, iconURL, ehEmbed, 'ermiana');
     embedSuppresser(message);
   } catch {
     // console.log('eh no response');
@@ -148,7 +149,7 @@ export async function handleEhRegex( result, message, spoiler ) {
         ehEmbed.setImage(resp.data.gmetadata[0].thumb);
       } catch {}
 
-      messageSender(message, spoiler, ehEmbed, 'ermiana');
+      messageSender(message, spoiler, iconURL, ehEmbed, 'ermiana');
       embedSuppresser(message);
     } catch {
       console.log('eh error: '+ message.guild.name);

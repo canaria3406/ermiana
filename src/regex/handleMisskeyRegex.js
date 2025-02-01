@@ -8,6 +8,7 @@ import { typingSender } from '../events/typingSender.js';
 import { messageSenderMore } from '../events/messageSenderMore.js';
 
 export async function handleMisskeyRegex( result, message, spoiler ) {
+  const iconURL = 'https://ermiana.canaria.cc/pic/misskey.png';
   typingSender(message);
   try {
     const resp = await axios.request({
@@ -48,11 +49,11 @@ export async function handleMisskeyRegex( result, message, spoiler ) {
       const noteinfo = '💬' + resp.data.repliesCount.toString() + ' 🔁' + resp.data.renoteCount.toString() + ' ❤️' + sumReactions(resp.data.reactions).toString();
       try {
         if (!resp.data?.files || resp.data.files.length == 0) {
-          messageSender(message, spoiler, misskeyEmbed, noteinfo);
+          messageSender(message, spoiler, iconURL, misskeyEmbed, noteinfo);
           await new Promise((resolve) => setTimeout(resolve, 500));
           embedSuppresser(message);
         } else if (resp.data.files?.length == 1) {
-          messageSender(message, spoiler, misskeyEmbed, noteinfo);
+          messageSender(message, spoiler, iconURL, misskeyEmbed, noteinfo);
           await new Promise((resolve) => setTimeout(resolve, 500));
           embedSuppresser(message);
         } else if (resp.data.files?.length > 1) {
@@ -64,13 +65,13 @@ export async function handleMisskeyRegex( result, message, spoiler ) {
                   imageArray.push(file.url);
                 }
               });
-          messageSenderMore(message, spoiler, misskeyEmbed, noteinfo, imageArray);
+          messageSenderMore(message, spoiler, iconURL, misskeyEmbed, noteinfo, imageArray);
           await new Promise((resolve) => setTimeout(resolve, 500));
           embedSuppresser(message);
         }
       } catch {}
       /*
-      messageSender(message, spoiler, misskeyEmbed, noteinfo);
+      messageSender(message, spoiler, iconURL, misskeyEmbed, noteinfo);
       await new Promise((resolve) => setTimeout(resolve, 1500));
       embedSuppresser(message);
 
@@ -83,7 +84,7 @@ export async function handleMisskeyRegex( result, message, spoiler ) {
                   const noteEmbed = new EmbedBuilder();
                   noteEmbed.setColor(0x96d04a);
                   noteEmbed.setImage(file.url);
-                  messageSubSender(message, spoiler, noteEmbed, 'ermiana');
+                  messageSubSender(message, spoiler, iconURL, noteEmbed, 'ermiana');
                 }
               });
         }

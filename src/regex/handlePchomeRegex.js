@@ -6,6 +6,7 @@ import { typingSender } from '../events/typingSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
 
 export async function handlePchomeRegex( result, message, spoiler ) {
+  const iconURL = 'https://ermiana.canaria.cc/pic/pchome.png';
   typingSender(message);
   try {
     const pcid = result[1];
@@ -57,7 +58,7 @@ export async function handlePchomeRegex( result, message, spoiler ) {
         pchomeEmbed.setImage(picurl);
       } catch {}
 
-      messageSender(message, spoiler, pchomeEmbed, 'ermiana');
+      messageSender(message, spoiler, iconURL, pchomeEmbed, 'ermiana');
       await new Promise((resolve) => setTimeout(resolve, 1000));
       embedSuppresser(message);
     }

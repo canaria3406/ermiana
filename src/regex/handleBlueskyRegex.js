@@ -8,6 +8,7 @@ import { typingSender } from '../events/typingSender.js';
 import { messageSenderMore } from '../events/messageSenderMore.js';
 
 export async function handleBlueskyRegex( result, message, spoiler ) {
+  const iconURL = 'https://ermiana.canaria.cc/pic/bluesky.png';
   typingSender(message);
   try {
     const didResp = await axios.request({
@@ -57,7 +58,7 @@ export async function handleBlueskyRegex( result, message, spoiler ) {
 
         const threadinfo ='💬' + threadResp.data.thread.post.replyCount.toString() + ' 🔁' + threadResp.data.thread.post.repostCount.toString() + ' ❤️' + threadResp.data.thread.post.likeCount.toString();
         /*
-        messageSender(message, spoiler, blueskyEmbed, threadinfo);
+        messageSender(message, spoiler, iconURL, blueskyEmbed, threadinfo);
         embedSuppresser(message);
 
         try {
@@ -68,17 +69,17 @@ export async function handleBlueskyRegex( result, message, spoiler ) {
                   const picEmbed = new EmbedBuilder();
                   picEmbed.setColor(0x53b4ff);
                   picEmbed.setImage(image.fullsize);
-                  messageSubSender(message, spoiler, picEmbed, 'ermiana');
+                  messageSubSender(message, spoiler, iconURL, picEmbed, 'ermiana');
                 });
           }
         } catch {}
         */
         try {
           if (!threadResp.data.thread.post.embed?.images) {
-            messageSender(message, spoiler, blueskyEmbed, threadinfo);
+            messageSender(message, spoiler, iconURL, blueskyEmbed, threadinfo);
             embedSuppresser(message);
           } else if (threadResp.data.thread.post.embed?.images.length == 1) {
-            messageSender(message, spoiler, blueskyEmbed, threadinfo);
+            messageSender(message, spoiler, iconURL, blueskyEmbed, threadinfo);
             embedSuppresser(message);
           } else if (threadResp.data.thread.post.embed?.images.length > 1) {
             const imageArray =[];
@@ -87,7 +88,7 @@ export async function handleBlueskyRegex( result, message, spoiler ) {
                 .forEach((image) => {
                   imageArray.push(image.fullsize);
                 });
-            messageSenderMore(message, spoiler, blueskyEmbed, threadinfo, imageArray);
+            messageSenderMore(message, spoiler, iconURL, blueskyEmbed, threadinfo, imageArray);
             embedSuppresser(message);
           }
         } catch {}

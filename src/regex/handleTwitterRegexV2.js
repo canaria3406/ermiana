@@ -7,6 +7,7 @@ import { backupLinkSender } from '../events/backupLinkSender.js';
 import { typingSender } from '../events/typingSender.js';
 
 export async function handleTwitterRegex( result, message, spoiler ) {
+  const iconURL = 'https://ermiana.canaria.cc/pic/twitter.png';
   typingSender(message);
   const tid = result[1];
 
@@ -65,7 +66,7 @@ export async function handleTwitterRegex( result, message, spoiler ) {
               (fxapiResp.data.tweet.text)||'',
               fxapiResp.data.tweet.media.mosaic.formats.jpeg,
               fxapiResp.data.tweet.created_timestamp * 1000);
-          messageSender(message, spoiler, fxapitwitterEmbed, fxapitweetinfo);
+          messageSender(message, spoiler, iconURL, fxapitwitterEmbed, fxapitweetinfo);
           embedSuppresser(message);
           fxapiRespVideo.forEach((url) => {
             videoLinkSender(message, spoiler, url);
@@ -78,7 +79,7 @@ export async function handleTwitterRegex( result, message, spoiler ) {
               (fxapiResp.data.tweet.text||''),
               fxapiResp.data.tweet.media.photos[0].url + '?name=large',
               fxapiResp.data.tweet.created_timestamp * 1000);
-          messageSender(message, spoiler, fxapitwitterEmbed, fxapitweetinfo);
+          messageSender(message, spoiler, iconURL, fxapitwitterEmbed, fxapitweetinfo);
           embedSuppresser(message);
           fxapiRespVideo.forEach((url) => {
             videoLinkSender(message, spoiler, url);
@@ -91,7 +92,7 @@ export async function handleTwitterRegex( result, message, spoiler ) {
               (fxapiResp.data.tweet.text||''),
               '',
               fxapiResp.data.tweet.created_timestamp * 1000);
-          messageSender(message, spoiler, fxapitwitterEmbed, fxapitweetinfo);
+          messageSender(message, spoiler, iconURL, fxapitwitterEmbed, fxapitweetinfo);
           embedSuppresser(message);
           videoLinkSender(message, spoiler, `https://d.vxtwitter.com/i/status/${result[1]}`);
           fxapiRespVideo.filter((_url, index) => index > 0)
@@ -107,7 +108,7 @@ export async function handleTwitterRegex( result, message, spoiler ) {
             (fxapiResp.data.tweet.text||''),
             '',
             fxapiResp.data.tweet.created_timestamp * 1000);
-        messageSender(message, spoiler, fxapitwitterEmbed, fxapitweetinfo);
+        messageSender(message, spoiler, iconURL, fxapitwitterEmbed, fxapitweetinfo);
         embedSuppresser(message);
       }
     } else {
@@ -145,7 +146,7 @@ export async function handleTwitterRegex( result, message, spoiler ) {
                 (vxapiResp.data.text||''),
                 vxapiRespImage[0] + '?name=large',
                 vxapiResp.data.date_epoch * 1000);
-            messageSender(message, spoiler, vxapitwitterEmbed, vxapitweetinfo);
+            messageSender(message, spoiler, iconURL, vxapitwitterEmbed, vxapitweetinfo);
             embedSuppresser(message);
             vxapiRespVideo.forEach((url) => {
               videoLinkSender(message, spoiler, url);
@@ -158,7 +159,7 @@ export async function handleTwitterRegex( result, message, spoiler ) {
                 (vxapiResp.data.text||''),
                 'https://convert.vxtwitter.com/rendercombined.jpg?imgs=' + vxapiRespImage.join(','),
                 vxapiResp.data.date_epoch * 1000);
-            messageSender(message, spoiler, vxapitwitterEmbed, vxapitweetinfo);
+            messageSender(message, spoiler, iconURL, vxapitwitterEmbed, vxapitweetinfo);
             embedSuppresser(message);
             vxapiRespVideo.forEach((url) => {
               videoLinkSender(message, spoiler, url);
@@ -179,7 +180,7 @@ export async function handleTwitterRegex( result, message, spoiler ) {
               (vxapiResp.data.text||''),
               '',
               vxapiResp.data.date_epoch * 1000);
-          messageSender(message, spoiler, vxapitwitterEmbed, vxapitweetinfo);
+          messageSender(message, spoiler, iconURL, vxapitwitterEmbed, vxapitweetinfo);
           embedSuppresser(message);
         }
       } else {

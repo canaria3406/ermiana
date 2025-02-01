@@ -7,6 +7,7 @@ import { typingSender } from '../events/typingSender.js';
 import { backupLinkSender } from '../events/backupLinkSender.js';
 
 export async function handlePttRegex( result, message, spoiler ) {
+  const iconURL = 'https://ermiana.canaria.cc/pic/ptt.png';
   const supportBoard = ['Gossiping', 'C_Chat', 'AC_In', 'H-GAME', 'sex', 'HatePolitics', 'Beauty', 'japanavgirls', 'DMM_GAMES'];
 
   function boardNameStandardization(boardName) {
@@ -120,7 +121,7 @@ export async function handlePttRegex( result, message, spoiler ) {
             }
           } catch {}
           try {
-            messageSender(message, spoiler, mopttEmbed, 'ermiana');
+            messageSender(message, spoiler, iconURL, mopttEmbed, 'ermiana');
             embedSuppresser(message);
           } catch {}
         } catch {
@@ -151,7 +152,7 @@ export async function handlePttRegex( result, message, spoiler ) {
               }
             } catch {}
             try {
-              messageSender(message, spoiler, pttEmbed, 'ermiana');
+              messageSender(message, spoiler, iconURL, pttEmbed, 'ermiana');
               embedSuppresser(message);
             } catch {}
           } catch {}
@@ -213,7 +214,7 @@ export async function handlePttRegex( result, message, spoiler ) {
               }
             } catch {}
             try {
-              messageSender(message, spoiler, mopttEmbed2, 'ermiana');
+              messageSender(message, spoiler, iconURL, mopttEmbed2, 'ermiana');
               embedSuppresser(message);
             } catch {}
           } catch {
@@ -244,7 +245,7 @@ export async function handlePttRegex( result, message, spoiler ) {
                 }
               } catch {}
               try {
-                messageSender(message, spoiler, pttEmbed2, 'ermiana');
+                messageSender(message, spoiler, iconURL, pttEmbed2, 'ermiana');
                 embedSuppresser(message);
               } catch {}
             } catch {}
