@@ -42,7 +42,7 @@ export async function handlePlurkRegex( result, message, spoiler ) {
       const rawPlurkIndex = $('script').text().indexOf('content_raw') || -1;
       const picPlurk = $('script').text().slice(rawPlurkIndex).match(/https:\/\/images\.plurk\.com\/[^\\"\s]+/g) || [];
 
-      const plurkId = $('script').text().match(/"id":\s*(\d+)/)?.[1] || '17527487';
+      const plurkId = $('script').text().match(/"page_user":\s*{"id":\s*(\d+),/)?.[1] || '17527487';
       const plurkAvatar = $('script').text().match(/"avatar":\s*(\d+)/)?.[1] || '79721750';
       const plurkNickName = $('script').text().match(/"nick_name":\s*"([^"]+)"/)?.[1] || 'plurkuser';
 
