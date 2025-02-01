@@ -2,7 +2,7 @@ import { handleEhRegex } from './handleEhRegex.js';
 import { handlePttRegex } from './handlePttRegex.js';
 import { handleBahaRegex } from './handleBahaRegex.js';
 import { handlePixivRegex } from './handlePixivRegex.js';
-import { handlePlurkRegex } from './handlePlurkRegex.js';
+import { handlePlurkRegex } from './handlePlurkRegexV2.js';
 import { handleTwitterRegex } from './handleTwitterRegexV2.js';
 import { handleMisskeyRegex } from './handleMisskeyRegex.js';
 import { handlePchomeRegex } from './handlePchomeRegex.js';
