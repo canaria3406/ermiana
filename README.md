@@ -64,6 +64,7 @@ A Discord bot that fixes sites with broken preview by providing more detailed im
   - [x] Weibo
   - [x] instagram
   - [x] tiktok
+  - [x] threads
 - [x] Image sharing service
   - [x] Pixiv
   - [x] ehentai
