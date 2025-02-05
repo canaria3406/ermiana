@@ -1,7 +1,6 @@
 import { PermissionsBitField, Client, GatewayIntentBits } from 'discord.js';
 import { currentTime } from './utils/currentTime.js';
 import { configManager } from './utils/configManager.js';
-import { runCronJob } from './utils/runCronJob.js';
 import { reloadLog, guildLog } from './utils/botLog.js';
 import { msgCommandsMap, btnCommandsMap } from './command/commandManager.js';
 import { regexsMap, matchRules } from './regex/regexManager.js';
@@ -84,5 +83,4 @@ client.on('interactionCreate', async (interaction) => {
 });
 
 const config = await configManager();
-runCronJob();
 client.login(config.DCTK);
