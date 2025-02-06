@@ -8,7 +8,7 @@ export async function handleInstagramRegex( result, message, spoiler ) {
     const igHTML = await axios.request({
       url: `https://www.ddinstagram.com/p/DD9yTv4SvWb/`,
       method: 'get',
-      timeout: 2000,
+      timeout: 3500,
     });
 
     if (igHTML.status == 200) {
@@ -20,7 +20,7 @@ export async function handleInstagramRegex( result, message, spoiler ) {
       const igHTML2 = await axios.request({
         url: `https://www.instagramez.com/p/DD9yTv4SvWb/`,
         method: 'get',
-        timeout: 2000,
+        timeout: 3500,
       });
 
       if (igHTML2.status == 200) {
