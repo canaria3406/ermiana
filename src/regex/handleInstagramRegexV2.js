@@ -6,7 +6,7 @@ import { typingSender } from '../events/typingSender.js';
 export async function handleInstagramRegex( result, message, spoiler ) {
   try {
     const igHTML = await axios.request({
-      url: `https://www.ddinstagram.com/p/DD9yTv4SvWb/`,
+      url: `https://www.ddinstagram.com/p/${result[1]}/`,
       method: 'get',
       timeout: 3500,
     });
@@ -18,7 +18,7 @@ export async function handleInstagramRegex( result, message, spoiler ) {
       embedSuppresser(message);
     } else {
       const igHTML2 = await axios.request({
-        url: `https://www.instagramez.com/p/DD9yTv4SvWb/`,
+        url: `https://www.instagramez.com/p/${result[1]}/`,
         method: 'get',
         timeout: 3500,
       });
