@@ -6,9 +6,9 @@ import { typingSender } from '../events/typingSender.js';
 export async function handleTiktokRegex( result, message, spoiler ) {
   try {
     const tkHTML = await axios.request({
-      url: `https://www.tnktok.com/@kyo_mo_hasunosora/video/7370694166558297362`,
+      url: result[0].replace(/tiktok\.com/, 'tnktok.com'),
       method: 'get',
-      timeout: 2000,
+      timeout: 3000,
     });
 
     if (tkHTML.status == 200) {
@@ -18,9 +18,9 @@ export async function handleTiktokRegex( result, message, spoiler ) {
       embedSuppresser(message);
     } else {
       const tkHTML2 = await axios.request({
-        url: `https://www.tiktokez.com/@kyo_mo_hasunosora/video/7370694166558297362`,
+        url: result[0].replace(/tiktok\.com/, 'tiktokez.com'),
         method: 'get',
-        timeout: 2000,
+        timeout: 3000,
       });
 
       if (tkHTML2.status == 200) {
