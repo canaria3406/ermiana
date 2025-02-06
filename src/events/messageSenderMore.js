@@ -3,7 +3,7 @@ import { ButtonBuilder, ActionRowBuilder, ButtonStyle } from 'discord.js';
 export async function messageSenderMore(message, spoiler, iconURL, embed, textinfo, linkArray) {
   try {
     const textinfo2 = textinfo || 'ermiana';
-    const iconURL2 = iconURL || 'https://cdn.discordapp.com/avatars/242927802557399040/14d549f14db4efece387552397433e6b.png';
+    const iconURL2 = iconURL || 'https://ermiana.canaria.cc/pic/canaria.png';
     embed.setFooter({ text: textinfo2, iconURL: iconURL2 });
     const button = new ButtonBuilder()
         .setCustomId('morePictureButton')

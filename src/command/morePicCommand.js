@@ -20,7 +20,7 @@ export async function morePicCommand(interaction) {
         const picEmbed = new EmbedBuilder();
         picEmbed.setColor(embedColor);
         picEmbed.setImage(image);
-        picEmbed.setFooter({ text: 'ermiana', iconURL: 'https://cdn.discordapp.com/avatars/242927802557399040/14d549f14db4efece387552397433e6b.png' });
+        picEmbed.setFooter({ text: 'ermiana', iconURL: 'https://ermiana.canaria.cc/pic/canaria.png' });
 
         if (index === 0) {
           await interaction.reply({ embeds: [picEmbed] });
