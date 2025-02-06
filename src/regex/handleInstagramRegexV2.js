@@ -6,35 +6,37 @@ import { typingSender } from '../events/typingSender.js';
 export async function handleInstagramRegex( result, message, spoiler ) {
   try {
     const igHTML = await axios.request({
-      url: `https://www.ddinstagram.com/p/${result[1]}/`,
+      url: `https://www.instagramez.com/p/${result[1]}/`,
       method: 'get',
       timeout: 3500,
     });
 
-    if (igHTML.status == 200) {
+    if (igHTML.status === 200) {
       await typingSender(message);
-      backupLinkSender(message, spoiler, `https://www.ddinstagram.com/p/${result[1]}/`);
+      backupLinkSender(message, spoiler, `https://www.instagramez.com/p/${result[1]}/`);
       await new Promise((resolve) => setTimeout(resolve, 1500));
       embedSuppresser(message);
     } else {
+      throw new Error();
+    }
+  } catch {
+    try {
       const igHTML2 = await axios.request({
-        url: `https://www.instagramez.com/p/${result[1]}/`,
+        url: `https://www.ddinstagram.com/p/${result[1]}/`,
         method: 'get',
         timeout: 3500,
       });
 
-      if (igHTML2.status == 200) {
+      if (igHTML2.status === 200) {
         await typingSender(message);
-        backupLinkSender(message, spoiler, `https://www.instagramez.com/p/${result[1]}/`);
+        backupLinkSender(message, spoiler, `https://www.ddinstagram.com/p/${result[1]}/`);
         await new Promise((resolve) => setTimeout(resolve, 1500));
         embedSuppresser(message);
       } else {
-        return;
+        throw new Error();
       }
+    } catch {
+      return;
     }
-  } catch {
-    // console.log('instagram error: '+ message.guild.name);
-    return;
   }
-  // }
 };
