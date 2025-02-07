@@ -10,6 +10,7 @@ import { handleBlueskyRegex } from './handleBlueskyRegex.js';
 import { handleWeiboRegex } from './handleWeiboRegex.js';
 import { handleInstagramRegex } from './handleInstagramRegexV2.js';
 import { handleTiktokRegex } from './handleTiktokRegexV2.js';
+import { handleBilibiliRegex } from './handleBilibiliRegex.js';
 // import { handleThreadsRegex } from './handleThreadsRegex.js';
 // [/https:\/\/www\.threads\.net\/@[A-Za-z0-9_.]+\/post\/[a-zA-Z0-9-_]+/, handleThreadsRegex],
 
@@ -31,6 +32,7 @@ export const regexsMap = new Map([
   [/https:\/\/bsky\.app\/profile\/([a-zA-Z0-9-.]+)\/post\/([a-zA-Z0-9]{10,16})/, handleBlueskyRegex],
   [/https:\/\/misskey\.io\/notes\/([a-zA-Z0-9]{10,16})/, handleMisskeyRegex],
   [/https:\/\/www\.tiktok\.com\/@[a-zA-Z0-9-_.]+\/video\/[0-9]+/, handleTiktokRegex],
+  [/https:\/\/www\.bilibili\.com\/opus\/([0-9]+)/, handleBilibiliRegex],
 ]);
 
 export function matchRules(content) {
