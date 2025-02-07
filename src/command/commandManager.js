@@ -1,5 +1,5 @@
 import { delMsgCommand } from './delMsgCommand.js';
-import { morePicCommand } from './morePicCommand.js';
+import { morePicCommand } from './morePicCommandV2.js';
 import { pagePicCommand } from './pagePicCommand.js';
 import { theAPicCommand } from './theAPicCommand.js';
 import { theBPicCommand } from './theBPicCommand.js';
