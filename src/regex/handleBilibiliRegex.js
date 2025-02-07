@@ -19,8 +19,8 @@ export async function handleBilibiliRegex( result, message, spoiler ) {
     });
 
     if (biliHTML.status === 200) {
-      const typeBilibili = biliHTML.data.data.item.modules.module_dynamic.major.type;
-      if (typeBilibili === 'MAJOR_TYPE_DRAW') {
+      const typeBilibili = biliHTML.data.data.item.type;
+      if (typeBilibili === 'DYNAMIC_TYPE_DRAW') {
         const picBilibili = biliHTML.data.data.item.modules.module_dynamic.major?.draw ? biliHTML.data.data.item.modules.module_dynamic.major.draw?.items : [];
         const bilibiliEmbed = new EmbedBuilder();
         bilibiliEmbed.setColor(0x00aeec);
@@ -67,7 +67,7 @@ export async function handleBilibiliRegex( result, message, spoiler ) {
             embedSuppresser(message);
           }
         } catch {}
-      } else if (typeBilibili === 'MAJOR_TYPE_ARTICLE') {
+      } else if (typeBilibili === 'DYNAMIC_TYPE_ARTICLE') {
         const picBilibili = biliHTML.data.data.item.modules.module_dynamic.major.article?.covers ? biliHTML.data.data.item.modules.module_dynamic.major.article?.covers[0] : '';
         const bilibiliEmbedA = new EmbedBuilder();
         bilibiliEmbedA.setColor(0x00aeec);
@@ -94,6 +94,27 @@ export async function handleBilibiliRegex( result, message, spoiler ) {
           }
         } catch {}
         messageSender(message, spoiler, iconURL, bilibiliEmbedA, 'ermiana');
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        embedSuppresser(message);
+      } else if (typeBilibili === 'DYNAMIC_TYPE_WORD') {
+        const bilibiliEmbedW = new EmbedBuilder();
+        bilibiliEmbedW.setColor(0x00aeec);
+        try {
+          bilibiliEmbedW.setAuthor({
+            name: biliHTML.data.data.item.modules.module_author.mid.toString(),
+            iconURL: biliHTML.data.data.item.modules.module_author.face,
+          });
+        } catch {}
+        try {
+          bilibiliEmbedW.setTitle(biliHTML.data.data.item.modules.module_author.name.toString());
+        } catch {}
+        bilibiliEmbedW.setURL(result[0]);
+        try {
+          if (biliHTML.data.data.item.modules.module_dynamic?.desc) {
+            bilibiliEmbedW.setDescription(biliHTML.data.data.item.modules.module_dynamic.desc.text.toString().substring(0, 600));
+          }
+        } catch {}
+        messageSender(message, spoiler, iconURL, bilibiliEmbedW, 'ermiana');
         await new Promise((resolve) => setTimeout(resolve, 500));
         embedSuppresser(message);
       } else {
