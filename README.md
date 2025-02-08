@@ -62,7 +62,7 @@ A Discord bot that fixes sites with broken preview by providing more detailed im
   - [x] Twitter
   - [x] Misskey
   - [x] Bluesky
-  - [x] Weibo
+  - [ ] Weibo
   - [x] instagram
   - [x] tiktok
   - [ ] threads
