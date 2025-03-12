@@ -1,4 +1,5 @@
 import { delMsgCommand } from './delMsgCommand.js';
+import { reloadPreviewCommand } from './reloadPreviewCommand.js';
 import { morePicCommand } from './morePicCommandV2.js';
 import { pagePicCommand } from './pagePicCommand.js';
 import { theAPicCommand } from './theAPicCommand.js';
@@ -17,6 +18,7 @@ export const btnCommandsMap = new Map([
 
 export const msgCommandsMap = new Map([
   ['removeMessage', delMsgCommand],
+  ['reloadPreview', reloadPreviewCommand],
 ]);
 
 

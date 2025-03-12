@@ -13,6 +13,16 @@ export async function refreshContextMenus() {
           'ja': 'ロボメセを削除',
         })
         .setType(ApplicationCommandType.Message),
+    new ContextMenuCommandBuilder()
+        .setName('reloadPreview')
+        .setNameLocalizations({
+          'en-GB': 'Reload Preview',
+          'en-US': 'Reload Preview',
+          'zh-TW': '重新載入預覽',
+          'zh-CN': '重新加载预览',
+          'ja': 'リンクをリロード',
+        })
+        .setType(ApplicationCommandType.Message),
   ];
 
   const config = await configManager();
