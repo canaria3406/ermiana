@@ -13,7 +13,15 @@ export async function handleBilibiliRegex( result, message, spoiler ) {
       url: 'https://api.bilibili.com/x/polymer/web-dynamic/v1/detail?id=' + result[1],
       method: 'get',
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:135.0) Gecko/20100101 Firefox/135.0',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Encoding': 'gzip, deflate, br, zstd',
+        'Accept-Language': 'zh-TW,zh;q=0.8,en-US;q=0.5,en;q=0.3',
+        'Connection': 'keep-alive',
+        'Host': 'api.bilibili.com',
+        'Upgrade-Insecure-Requests': '1',
+        'TE': 'Trailers',
+        'Priority': 'u=0, i',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:137.0) Gecko/20100101 Firefox/137.0',
       },
       timeout: 2500,
     });
