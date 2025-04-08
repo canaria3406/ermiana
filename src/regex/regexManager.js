@@ -1,5 +1,6 @@
 import { handleEhRegex } from './handleEhRegex.js';
-import { handlePttRegex } from './handlePttRegex.js';
+// import { handlePttRegex } from './handlePttRegex.js';
+// [/https?:\/\/www\.ptt\.cc\/bbs\/([a-zA-Z-_]+)\/(M\.[0-9]+\.A\.[0-9A-Z]+)\.html/, handlePttRegex],
 import { handleBahaRegex } from './handleBahaRegex.js';
 import { handlePixivRegex } from './handlePixivRegex.js';
 import { handlePlurkRegex } from './handlePlurkRegexV2.js';
@@ -7,7 +8,9 @@ import { handleTwitterRegex } from './handleTwitterRegexV2.js';
 import { handleMisskeyRegex } from './handleMisskeyRegex.js';
 import { handlePchomeRegex } from './handlePchomeRegex.js';
 import { handleBlueskyRegex } from './handleBlueskyRegex.js';
-import { handleInstagramRegex } from './handleInstagramRegexV2.js';
+// import { handleInstagramRegex } from './handleInstagramRegexV2.js';
+// [/https:\/\/www\.instagram\.com\/(?:p|reel)\/([a-zA-Z0-9-_]+)/, handleInstagramRegex],
+// [/https:\/\/www\.instagram\.com\/[A-Za-z0-9_.]+\/(?:p|reel)\/([a-zA-Z0-9-_]+)/, handleInstagramRegex],
 import { handleTiktokRegex } from './handleTiktokRegexV2.js';
 import { handleBilibiliRegex } from './handleBilibiliRegex.js';
 // import { handleThreadsRegex } from './handleThreadsRegex.js';
@@ -18,7 +21,6 @@ import { handleBilibiliRegex } from './handleBilibiliRegex.js';
 export const regexsMap = new Map([
   [/https:\/\/x\.com\/[A-Za-z0-9_]{1,15}\/status\/([0-9]+)/, handleTwitterRegex],
   [/https:\/\/twitter\.com\/[A-Za-z0-9_]{1,15}\/status\/([0-9]+)/, handleTwitterRegex],
-  [/https?:\/\/www\.ptt\.cc\/bbs\/([a-zA-Z-_]+)\/(M\.[0-9]+\.A\.[0-9A-Z]+)\.html/, handlePttRegex],
   [/https?:\/\/m\.gamer\.com\.tw\/forum\/((?:C|Co)\.php\?bsn=60076&(?:snA|sn)=[0-9]+)/, handleBahaRegex],
   [/https?:\/\/forum\.gamer\.com\.tw\/((?:C|Co)\.php\?bsn=60076&(?:snA|sn)=[0-9]+)/, handleBahaRegex],
   [/https:\/\/www\.pixiv\.net\/artworks\/([0-9]+)/, handlePixivRegex],
@@ -27,8 +29,6 @@ export const regexsMap = new Map([
   [/https:\/\/www\.plurk\.com\/m\/p\/([a-zA-Z0-9]{3,10})/, handlePlurkRegex],
   [/https:\/\/www\.plurk\.com\/p\/([a-zA-Z0-9]{3,10})/, handlePlurkRegex],
   [/https:\/\/24h\.pchome\.com\.tw\/prod\/([^?]+)/, handlePchomeRegex],
-  [/https:\/\/www\.instagram\.com\/(?:p|reel)\/([a-zA-Z0-9-_]+)/, handleInstagramRegex],
-  [/https:\/\/www\.instagram\.com\/[A-Za-z0-9_.]+\/(?:p|reel)\/([a-zA-Z0-9-_]+)/, handleInstagramRegex],
   [/https:\/\/bsky\.app\/profile\/([a-zA-Z0-9-.]+)\/post\/([a-zA-Z0-9]{10,16})/, handleBlueskyRegex],
   [/https:\/\/misskey\.io\/notes\/([a-zA-Z0-9]{10,16})/, handleMisskeyRegex],
   [/https:\/\/www\.tiktok\.com\/@[a-zA-Z0-9-_.]+\/video\/[0-9]+/, handleTiktokRegex],
