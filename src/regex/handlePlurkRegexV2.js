@@ -6,6 +6,14 @@ import { embedSuppresser } from '../events/embedSuppresser.js';
 import { typingSender } from '../events/typingSender.js';
 import { messageSenderMore } from '../events/messageSenderMore.js';
 
+function sanitizeHtmlContent(input) {
+  let previous;
+  do {
+    previous = input;
+    input = input.replace(/<br\s*\/?>/g, '\n').replace(/<[^>]+>/g, '');
+  } while (input !== previous);
+  return input;
+}
 export async function handlePlurkRegex( result, message, spoiler ) {
   const iconURL = 'https://ermiana.canaria.cc/pic/plurk.png';
   typingSender(message);
@@ -25,7 +33,7 @@ export async function handlePlurkRegex( result, message, spoiler ) {
       const plurkInfo = '💬' + respPlurk + ' 🔁' + rePlurk + ' ❤️' + favPlurk;
 
       const plurkName = $('.name').text() || '噗浪使用者';
-      const plurkContent = $('.text_holder').html().replace(/<br\s*\/?>/g, '\n').replace(/<[^>]+>/g, '') || '';
+      const plurkContent = sanitizeHtmlContent($('.text_holder').html()) || '';
       /*
       const plurkContent = (
         $('script')
