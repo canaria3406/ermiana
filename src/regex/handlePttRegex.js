@@ -66,11 +66,24 @@ export async function handlePttRegex( result, message, spoiler ) {
       const pttHTML = await axios.request({
         url: `https://www.ptt.cc/bbs/${boardNameStandardization(result[1])}/${result[2]}.html`,
         method: 'get',
-        headers: { Cookie: 'over18=1;' },
+        headers: {
+          'Host': 'www.ptt.cc',
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:137.0) Gecko/20100101 Firefox/137.0',
+          'Accept': 'text/html',
+          'Accept-Language': 'zh-TW,zh;q=0.8,en-US;q=0.5,en;q=0.3',
+          'Accept-Encoding': 'gzip, deflate, br, zstd',
+          'Referer': 'https://www.ptt.cc/bbs/Gossiping/search',
+          'Connection': 'keep-alive',
+          'Cookie': 'over18=1;',
+          'Upgrade-Insecure-Requests': '1',
+          'Priority': 'u=0, i',
+        },
         timeout: 2000,
       });
 
       typingSender(message);
+
+      // console.log(pttHTML.data);
 
       if (pttHTML.status === 200) {
         const $ = cheerio.load(pttHTML.data);
@@ -82,6 +95,11 @@ export async function handlePttRegex( result, message, spoiler ) {
           const pttResp = await axios.request({
             method: 'get',
             url: `https://moptt.tw/ptt/${boardNameStandardization(result[1])}.${result[2]}`,
+            headers: {
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:137.0) Gecko/20100101 Firefox/137.0',
+              'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+              'Connection': 'keep-alive',
+            },
             timeout: 2000,
           });
 
@@ -162,7 +180,22 @@ export async function handlePttRegex( result, message, spoiler ) {
         const pttHTML2 = await axios.request({
           url: `https://ptt-demo.canaria.cc/bbs/${boardNameStandardization(result[1])}/${result[2]}.html`,
           method: 'get',
-          headers: { Cookie: 'over18=1;' },
+          headers: {
+            'Host': 'www.ptt.cc',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:137.0) Gecko/20100101 Firefox/137.0',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Language': 'zh-TW,zh;q=0.8,en-US;q=0.5,en;q=0.3',
+            'Accept-Encoding': 'gzip, deflate, br, zstd',
+            'Referer': 'https://www.ptt.cc/bbs/Gossiping/search',
+            'Connection': 'keep-alive',
+            'Cookie': 'over18=1;',
+            'Upgrade-Insecure-Requests': '1',
+            'Sec-Fetch-Dest': 'document',
+            'Sec-Fetch-Mode': 'navigate',
+            'Sec-Fetch-Site': 'same-origin',
+            'Sec-Fetch-User': '?1',
+            'Priority': 'u=0, i',
+          },
           timeout: 3000,
         });
 
