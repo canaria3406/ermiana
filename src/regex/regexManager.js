@@ -28,7 +28,7 @@ export const regexsMap = new Map([
   [/https:\/\/e(?:x|-)hentai\.org\/g\/([0-9]+)\/([0-9a-z]+)/, handleEhRegex],
   [/https:\/\/www\.plurk\.com\/m\/p\/([a-zA-Z0-9]{3,10})/, handlePlurkRegex],
   [/https:\/\/www\.plurk\.com\/p\/([a-zA-Z0-9]{3,10})/, handlePlurkRegex],
-  [/https:\/\/24h\.pchome\.com\.tw\/prod\/([^?]+)/, handlePchomeRegex],
+  [/https:\/\/24h\.pchome\.com\.tw\/prod\/([A-Z0-9]{6}-[A-Z0-9]{9})/, handlePchomeRegex],
   [/https:\/\/bsky\.app\/profile\/([a-zA-Z0-9-.]+)\/post\/([a-zA-Z0-9]{10,16})/, handleBlueskyRegex],
   [/https:\/\/misskey\.io\/notes\/([a-zA-Z0-9]{10,16})/, handleMisskeyRegex],
   [/https:\/\/www\.tiktok\.com\/@[a-zA-Z0-9-_.]+\/video\/[0-9]+/, handleTiktokRegex],
