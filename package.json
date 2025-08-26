@@ -17,7 +17,7 @@
   "homepage": "https://github.com/canaria3406/ermiana",
   "dependencies": {
     "@discordjs/rest": "^2.3.0",
-    "@discordjs/ws": "^1.1.1",
+    "@discordjs/ws": "^2.0.3",
     "axios": "^1.7.2",
     "cheerio": "^1.0.0",
     "conf": "^12.0.0",
