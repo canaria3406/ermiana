@@ -77,7 +77,7 @@ export async function handleTwitterRegex( result, message, spoiler ) {
               (fxapiResp.data.tweet.author.name||'Twitter.com'),
               (fxapiResp.data.tweet.url||''),
               (fxapiResp.data.tweet.text||''),
-              fxapiResp.data.tweet.media.photos[0].url + '?name=large',
+              fxapiResp.data.tweet.media.photos[0].url,
               fxapiResp.data.tweet.created_timestamp * 1000);
           messageSender(message, spoiler, iconURL, fxapitwitterEmbed, fxapitweetinfo);
           embedSuppresser(message);
