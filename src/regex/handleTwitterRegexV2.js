@@ -77,7 +77,7 @@ export async function handleTwitterRegex( result, message, spoiler ) {
               (fxapiResp.data.tweet.author.name||'Twitter.com'),
               (fxapiResp.data.tweet.url||''),
               (fxapiResp.data.tweet.text||''),
-              fxapiResp.data.tweet.media.photos[0].url,
+              (fxapiResp.data.tweet.media.photos[0].url + '?name=large').replace(/\?.*$/, '')+ '?name=large',
               fxapiResp.data.tweet.created_timestamp * 1000);
           messageSender(message, spoiler, iconURL, fxapitwitterEmbed, fxapitweetinfo);
           embedSuppresser(message);
@@ -140,11 +140,11 @@ export async function handleTwitterRegex( result, message, spoiler ) {
           });
           if (vxapiRespImage.length === 1) {
             const vxapitwitterEmbed = twitterEmbedMaker(vxapiResp.data.user_screen_name,
-                '',
+                (vxapiResp.data.user_profile_image_url||''),
                 (vxapiResp.data.user_name||'Twitter.com'),
                 (vxapiResp.data.tweetURL||''),
                 (vxapiResp.data.text||''),
-                vxapiRespImage[0] + '?name=large',
+                (vxapiRespImage[0] + '?name=large').replace(/\?.*$/, '')+ '?name=large',
                 vxapiResp.data.date_epoch * 1000);
             messageSender(message, spoiler, iconURL, vxapitwitterEmbed, vxapitweetinfo);
             embedSuppresser(message);
@@ -153,11 +153,11 @@ export async function handleTwitterRegex( result, message, spoiler ) {
             });
           } else if (vxapiRespImage.length > 1) {
             const vxapitwitterEmbed = twitterEmbedMaker(vxapiResp.data.user_screen_name,
-                '',
+                (vxapiResp.data.user_profile_image_url||''),
                 (vxapiResp.data.user_name||'Twitter.com'),
                 (vxapiResp.data.tweetURL||''),
                 (vxapiResp.data.text||''),
-                'https://convert.vxtwitter.com/rendercombined.jpg?imgs=' + vxapiRespImage.join(','),
+                (vxapiResp.data.combinedMediaUrl||''),
                 vxapiResp.data.date_epoch * 1000);
             messageSender(message, spoiler, iconURL, vxapitwitterEmbed, vxapitweetinfo);
             embedSuppresser(message);
