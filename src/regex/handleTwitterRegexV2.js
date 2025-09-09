@@ -30,7 +30,7 @@ export async function handleTwitterRegex( result, message, spoiler ) {
       twitterEmbed.setURL('https://twitter.com/i/status/' + tid);
     }
     if (tweetText) {
-      twitterEmbed.setDescription(tweetText);
+      twitterEmbed.setDescription(tweetText.substring(0, 4080));
     }
     if (tweetImage) {
       twitterEmbed.setImage(tweetImage);
@@ -51,6 +51,10 @@ export async function handleTwitterRegex( result, message, spoiler ) {
 
     if (fxapiResp.status === 200) {
       const fxapitweetinfo = '💬' + (fxapiResp.data.tweet.replies?.toString() || '0') + ' 🔁' + (fxapiResp.data.tweet.retweets?.toString() || '0') + ' ❤️' + (fxapiResp.data.tweet.likes?.toString() || '0');
+      const fxquote = fxapiResp.data.tweet?.quote ? `\n> RT: [@${fxapiResp.data.tweet.quote.author.screen_name.toString()}](${fxapiResp.data.tweet.quote.url.toString()})\n` + (fxapiResp.data.tweet.quote?.text ? fxapiResp.data.tweet.quote.text.toString().replace(/^/gm, '> ') : '') : '';
+      const fxquoteMedia = fxapiResp.data.tweet?.quote ? (fxapiResp.data.tweet.quote?.media ? (fxapiResp.data.tweet.quote.media?.mosaic ? (fxapiResp.data.tweet.quote.media.mosaic.formats.jpeg.toString()+ '?name=large').replace(/\?.*$/, '')+ '?name=large' : (fxapiResp.data.tweet.quote.media?.photos ? (fxapiResp.data.tweet.quote.media.photos[0].url.toString()+ '?name=large').replace(/\?.*$/, '')+ '?name=large' : '')) : '') : '';
+      // Ninja Code !!!!!
+
       if (fxapiResp.data.tweet?.media) {
         const fxapiRespVideo = [];
         fxapiResp.data.tweet.media.all.forEach((element) => {
@@ -63,7 +67,7 @@ export async function handleTwitterRegex( result, message, spoiler ) {
               (fxapiResp.data.tweet.author.avatar_url||''),
               (fxapiResp.data.tweet.author.name||'Twitter.com'),
               (fxapiResp.data.tweet.url||''),
-              (fxapiResp.data.tweet.text)||'',
+              (fxapiResp.data.tweet.text + fxquote ||''),
               fxapiResp.data.tweet.media.mosaic.formats.jpeg,
               fxapiResp.data.tweet.created_timestamp * 1000);
           messageSender(message, spoiler, iconURL, fxapitwitterEmbed, fxapitweetinfo);
@@ -76,7 +80,7 @@ export async function handleTwitterRegex( result, message, spoiler ) {
               (fxapiResp.data.tweet.author.avatar_url||''),
               (fxapiResp.data.tweet.author.name||'Twitter.com'),
               (fxapiResp.data.tweet.url||''),
-              (fxapiResp.data.tweet.text||''),
+              (fxapiResp.data.tweet.text + fxquote ||''),
               (fxapiResp.data.tweet.media.photos[0].url + '?name=large').replace(/\?.*$/, '')+ '?name=large',
               fxapiResp.data.tweet.created_timestamp * 1000);
           messageSender(message, spoiler, iconURL, fxapitwitterEmbed, fxapitweetinfo);
@@ -89,8 +93,8 @@ export async function handleTwitterRegex( result, message, spoiler ) {
               (fxapiResp.data.tweet.author.avatar_url||''),
               (fxapiResp.data.tweet.author.name||'Twitter.com'),
               (fxapiResp.data.tweet.url||''),
-              (fxapiResp.data.tweet.text||''),
-              '',
+              (fxapiResp.data.tweet.text + fxquote ||''),
+              (fxquoteMedia || ''),
               fxapiResp.data.tweet.created_timestamp * 1000);
           messageSender(message, spoiler, iconURL, fxapitwitterEmbed, fxapitweetinfo);
           embedSuppresser(message);
@@ -105,8 +109,8 @@ export async function handleTwitterRegex( result, message, spoiler ) {
             (fxapiResp.data.tweet.author.avatar_url||''),
             (fxapiResp.data.tweet.author.name||'Twitter.com'),
             (fxapiResp.data.tweet.url||''),
-            (fxapiResp.data.tweet.text||''),
-            '',
+            (fxapiResp.data.tweet.text + fxquote ||''),
+            (fxquoteMedia || ''),
             fxapiResp.data.tweet.created_timestamp * 1000);
         messageSender(message, spoiler, iconURL, fxapitwitterEmbed, fxapitweetinfo);
         embedSuppresser(message);
@@ -125,6 +129,8 @@ export async function handleTwitterRegex( result, message, spoiler ) {
 
       if (vxapiResp.status === 200) {
         const vxapitweetinfo = '💬' + (vxapiResp.data.replies?.toString() || '0') + ' 🔁' + (vxapiResp.data.retweets?.toString() || '0') + ' ❤️' + (vxapiResp.data.likes?.toString() || '0');
+        const vxquote = vxapiResp.data?.qrt ? `\n> RT: [@${vxapiResp.data.qrt.user_screen_name}](${vxapiResp.data.qrt.tweetURL}) \n` + (vxapiResp.data.qrt?.text ? vxapiResp.data.qrt.text.replace(/^/gm, '> ') : '') : '';
+        // const vxquoteMedia = vxapiResp.data?.qrt ? (vxapiResp.data.qrt?.mediaURLs ? vxapiResp.data.qrt?.mediaURLs[0] : '' ) : '';
         if (vxapiResp.data?.media_extended) {
           const vxapiRespImage = [];
           vxapiResp.data.media_extended.forEach((element) => {
@@ -143,7 +149,7 @@ export async function handleTwitterRegex( result, message, spoiler ) {
                 (vxapiResp.data.user_profile_image_url||''),
                 (vxapiResp.data.user_name||'Twitter.com'),
                 (vxapiResp.data.tweetURL||''),
-                (vxapiResp.data.text||''),
+                (vxapiResp.data.text + vxquote ||''),
                 (vxapiRespImage[0] + '?name=large').replace(/\?.*$/, '')+ '?name=large',
                 vxapiResp.data.date_epoch * 1000);
             messageSender(message, spoiler, iconURL, vxapitwitterEmbed, vxapitweetinfo);
@@ -156,7 +162,7 @@ export async function handleTwitterRegex( result, message, spoiler ) {
                 (vxapiResp.data.user_profile_image_url||''),
                 (vxapiResp.data.user_name||'Twitter.com'),
                 (vxapiResp.data.tweetURL||''),
-                (vxapiResp.data.text||''),
+                (vxapiResp.data.text + vxquote ||''),
                 (vxapiResp.data.combinedMediaUrl||''),
                 vxapiResp.data.date_epoch * 1000);
             messageSender(message, spoiler, iconURL, vxapitwitterEmbed, vxapitweetinfo);
@@ -174,10 +180,10 @@ export async function handleTwitterRegex( result, message, spoiler ) {
           }
         } else {
           const vxapitwitterEmbed = twitterEmbedMaker(vxapiResp.data.user_screen_name,
-              '',
+              (vxapiResp.data.user_profile_image_url||''),
               (vxapiResp.data.user_name||'Twitter.com'),
               (vxapiResp.data.tweetURL||''),
-              (vxapiResp.data.text||''),
+              (vxapiResp.data.text + vxquote ||''),
               '',
               vxapiResp.data.date_epoch * 1000);
           messageSender(message, spoiler, iconURL, vxapitwitterEmbed, vxapitweetinfo);
