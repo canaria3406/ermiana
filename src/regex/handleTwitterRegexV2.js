@@ -129,9 +129,11 @@ export async function handleTwitterRegex( result, message, spoiler ) {
 
       if (vxapiResp.status === 200) {
         const vxapitweetinfo = '💬' + (vxapiResp.data.replies?.toString() || '0') + ' 🔁' + (vxapiResp.data.retweets?.toString() || '0') + ' ❤️' + (vxapiResp.data.likes?.toString() || '0');
-        const vxquote = vxapiResp.data?.qrt ? `\n> RT: [@${vxapiResp.data.qrt.user_screen_name}](${vxapiResp.data.qrt.tweetURL}) \n` + (vxapiResp.data.qrt?.text ? vxapiResp.data.qrt.text.replace(/^/gm, '> ') : '') : '';
-        // const vxquoteMedia = vxapiResp.data?.qrt ? (vxapiResp.data.qrt?.mediaURLs ? vxapiResp.data.qrt?.mediaURLs[0] : '' ) : '';
-        if (vxapiResp.data?.media_extended) {
+        const vxquote = vxapiResp.data?.qrt ? `\n> RT: [@${vxapiResp.data.qrt.user_screen_name.toString()}](${vxapiResp.data.qrt.tweetURL.toString()}) \n` + (vxapiResp.data.qrt?.text ? vxapiResp.data.qrt.text.toString().replace(/^/gm, '> ') : '') : '';
+        const vxquoteMedia = vxapiResp.data?.qrt ? (vxapiResp.data.qrt?.combinedMediaUrl ? vxapiResp.data.qrt?.combinedMediaUrl.toString() : (Array.isArray(vxapiResp.data.qrt?.media_extended) && vxapiResp.data.qrt?.media_extended.length ? (vxapiResp.data.qrt?.media_extended[0].type === 'image' ? vxapiResp.data.qrt?.media_extended[0].url.toString() : '' ) : '' ) ) : '';
+        // Ninja Code !!!!!
+
+        if (Array.isArray(vxapiResp.data?.media_extended) && vxapiResp.data?.media_extended.length) {
           const vxapiRespImage = [];
           vxapiResp.data.media_extended.forEach((element) => {
             if (element.type === 'image') {
@@ -184,7 +186,7 @@ export async function handleTwitterRegex( result, message, spoiler ) {
               (vxapiResp.data.user_name||'Twitter.com'),
               (vxapiResp.data.tweetURL||''),
               (vxapiResp.data.text + vxquote ||''),
-              '',
+              (vxquoteMedia || ''),
               vxapiResp.data.date_epoch * 1000);
           messageSender(message, spoiler, iconURL, vxapitwitterEmbed, vxapitweetinfo);
           embedSuppresser(message);
