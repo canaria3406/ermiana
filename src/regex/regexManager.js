@@ -2,6 +2,8 @@ import { handleEhRegex } from './handleEhRegex.js';
 // import { handlePttRegex } from './handlePttRegex.js';
 // [/https?:\/\/www\.ptt\.cc\/bbs\/([a-zA-Z-_]+)\/(M\.[0-9]+\.A\.[0-9A-Z]+)\.html/, handlePttRegex],
 import { handleBahaRegex } from './handleBahaRegex.js';
+import { handleGnnRegex } from './handleGnnRegex.js';
+import { handle4GamersRegex } from './handle4GamersRegex.js';
 import { handlePixivRegex } from './handlePixivRegex.js';
 import { handlePlurkRegex } from './handlePlurkRegexV2.js';
 import { handleTwitterRegex } from './handleTwitterRegexV2.js';
@@ -23,6 +25,8 @@ export const regexsMap = new Map([
   [/https:\/\/twitter\.com\/[A-Za-z0-9_]{1,15}\/status\/([0-9]+)/, handleTwitterRegex],
   [/https?:\/\/m\.gamer\.com\.tw\/forum\/((?:C|Co)\.php\?bsn=60076&(?:snA|sn)=[0-9]+)/, handleBahaRegex],
   [/https?:\/\/forum\.gamer\.com\.tw\/((?:C|Co)\.php\?bsn=60076&(?:snA|sn)=[0-9]+)/, handleBahaRegex],
+  [/https?:\/\/gnn\.gamer\.com\.tw\/detail\.php\?sn=[0-9]+/, handleGnnRegex],
+  [/https?:\/\/(?:www\.)?4gamers\.com\.tw\/[^\s]+/, handle4GamersRegex],
   [/https:\/\/www\.pixiv\.net\/artworks\/([0-9]+)/, handlePixivRegex],
   [/https:\/\/www\.pixiv\.net\/en\/artworks\/([0-9]+)/, handlePixivRegex],
   [/https:\/\/e(?:x|-)hentai\.org\/g\/([0-9]+)\/([0-9a-z]+)/, handleEhRegex],
