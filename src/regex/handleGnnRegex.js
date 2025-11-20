@@ -5,10 +5,6 @@ import { messageSender } from '../events/messageSender.js';
 import { embedSuppresser } from '../events/embedSuppresser.js';
 import { typingSender } from '../events/typingSender.js';
 
-// 是否啟用平台表情符號 (預設關閉 = 純文字平台)
-const ENABLE_PLATFORM_EMOJI = process.env.ENABLE_GNN_PLATFORM_EMOJI === '1' ||
-  process.env.ENABLE_GNN_PLATFORM_EMOJI === 'true';
-
 const PLATFORM_MAP = {
   'platform-anime': '動畫',
   'platform-olg': 'PC 線上',
@@ -22,39 +18,6 @@ const PLATFORM_MAP = {
   'platform-xbsx': 'Xbox SX',
   'platform-ns2': 'Switch 2',
 };
-
-// 平台表情符號 ID 從環境變數讀取，沒有設定就留空字串，代表不使用表情
-const PLATFORM_EMOJI = {
-  default: '',
-  pc: { id: process.env.GNN_EMOJI_PC || '', name: 'pc' },
-  ps: { id: process.env.GNN_EMOJI_PS || '', name: 'ps' },
-  switch: { id: process.env.GNN_EMOJI_SWITCH || '', name: 'switch' },
-  xbox: { id: process.env.GNN_EMOJI_XBOX || '', name: 'xbox' },
-};
-
-function getPlatformEmoji(platformName) {
-  if (!ENABLE_PLATFORM_EMOJI) {
-    return PLATFORM_EMOJI.default;
-  }
-  if (!platformName) {
-    return PLATFORM_EMOJI.default;
-  }
-  const lower = platformName.toLowerCase();
-  if (lower.includes('xbox') && PLATFORM_EMOJI.xbox.id) {
-    return PLATFORM_EMOJI.xbox;
-  }
-  if (lower.startsWith('ps') && PLATFORM_EMOJI.ps.id) {
-    return PLATFORM_EMOJI.ps;
-  }
-  if (lower.includes('switch') && PLATFORM_EMOJI.switch.id) {
-    return PLATFORM_EMOJI.switch;
-  }
-  if (lower.includes('pc') && PLATFORM_EMOJI.pc.id) {
-    return PLATFORM_EMOJI.pc;
-  }
-  // 沒有對應或沒設定 ID 就回傳空字串，後面會自動走純文字顯示
-  return PLATFORM_EMOJI.default;
-}
 
 export async function handleGnnRegex( result, message, spoiler ) {
   typingSender(message);
@@ -81,7 +44,6 @@ export async function handleGnnRegex( result, message, spoiler ) {
       }
     } catch {}
     gnnEmbed.setURL(url);
-    // 描述改為單一空白，避免完全空字串造成相容性問題
     gnnEmbed.setDescription(' ');
     try {
       const image = $('meta[property="og:image"]').attr('content');
@@ -106,16 +68,8 @@ export async function handleGnnRegex( result, message, spoiler ) {
         if (!platformName) {
           return;
         }
-        const emoji = getPlatformEmoji(platformName);
         let display = platformName;
-        if (emoji && href) {
-          // 只顯示表情 + URL
-          display = `[<:${emoji.name}:${emoji.id}>](${href})`;
-        } else if (emoji && !href) {
-          // 只顯示表情
-          display = `<:${emoji.name}:${emoji.id}>`;
-        } else if (!emoji && href) {
-          // 沒有表情則保留純文字 + URL
+        if (href) {
           display = `[${platformName}](${href})`;
         }
         if (!platforms.includes(display)) {
@@ -124,7 +78,7 @@ export async function handleGnnRegex( result, message, spoiler ) {
       });
       if (platforms.length > 0) {
         gnnEmbed.addFields({
-          name: '平台',
+          name: ':desktop: 平台',
           value: platforms.join('、 '),
           inline: true,
         });
@@ -153,7 +107,7 @@ export async function handleGnnRegex( result, message, spoiler ) {
         const hashText = tags.join(' ');
         const value = hashText.length > 1000 ? hashText.substring(0, 997) + '...' : hashText;
         gnnEmbed.addFields({
-          name: '標籤',
+          name: ':paperclip: 標籤',
           value: value,
           inline: true,
         });
