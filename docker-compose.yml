@@ -4,15 +4,15 @@ services:
     container_name: ermiana
     environment:
       # Discord Bot Token
-      - DCTK=ABCD123456789
+      - DCTK=YOUR_DISCORD_BOT_TOKEN_HERE
       # Discord Bot Application ID
-      - DCID=123456789
+      - DCID=YOUR_DISCORD_CLIENT_ID_HERE
       # Discord Private Webhook URL
-      - DCWH="https://discord.com/api/webhooks/123456789/ABCD123456789"
+      - DCWH=YOUR_DISCORD_WEBHOOK_URL_HERE
       # 巴哈帳號
-      - BHUD=abc123
+      - BHUD=YOUR_BAHA_USERNAME_HERE
       # 巴哈密碼
-      - BHPD=abc123
+      - BHPD=YOUR_BAHA_PASSWORD_HERE
       # 時區
       - TZ=Asia/Taipei
     restart: always

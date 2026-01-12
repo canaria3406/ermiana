@@ -13,7 +13,133 @@
 
 A Discord bot that fixes sites with broken preview by providing more detailed images and webpage content. Supports multiple popular sites in Taiwan, East Asia. 
 
+**🆕 Now with RESTful API!** All platform handlers have been extracted into independent API services that can be used by any application, not just Discord bots.
+
 ![demo](pic/demo20.png)
+
+## Features
+
+- 🤖 **Discord Bot** - Automatically enhance social media links with rich embeds
+- 🌐 **RESTful API** - Access platform data programmatically via HTTP endpoints
+- 🔧 **Modular Design** - Service-oriented architecture for easy maintenance
+- 🔒 **Secure** - Rate limiting, helmet security headers, CORS support
+- 📝 **Well Documented** - Comprehensive API documentation and examples
+- 🔄 **Dual Mode** - Choose between direct processing or API server architecture
+
+## Quick Start
+
+### Discord Bot Only (Direct Mode)
+```bash
+npm install
+npm start
+```
+
+## Getting Started
+
+This bot uses **API Mode** to process social media links through a centralized API server.
+
+### Setup
+
+1. Configure `.env`:
+```env
+API_URL=http://localhost:3000
+API_PORT=3000
+```
+
+2. Start both services:
+```bash
+npm install
+npm run start:all
+```
+
+Or start separately:
+```bash
+# Terminal 1 - API Server
+npm run start:api
+
+# Terminal 2 - Discord Bot
+npm start
+```
+
+### API Server Only
+```bash
+npm install
+npm run start:api
+```
+
+## Configuration
+
+Create a `.env` file based on `.env.example`:
+
+```env
+# Discord Bot Configuration
+DCTK="Your Discord Bot Token"
+DCID="Your Discord Bot Client ID"
+DCWH="Your Discord Webhook URL (optional)"
+BHUD="Baha User ID (optional)"
+BHPD="Baha Password (optional)"
+
+# API Server Configuration
+API_PORT=3000
+API_URL=http://localhost:3000
+
+# Environment
+NODE_ENV=development
+```
+
+### Architecture
+
+The bot operates in **API Mode** using a centralized API server:
+
+- ✅ Better modularity and maintainability
+- ✅ Independent testing and monitoring
+- ✅ Shared service layer across platforms
+- ✅ Professional API documentation interface
+- ✅ Easier to scale and extend
+
+See [API Integration Guide](doc/api-integration-guide.md) for detailed information.
+
+## API Documentation
+
+- 📖 [API Architecture](doc/api-architecture.md) - System design and architecture overview
+- 📚 [API Documentation](doc/api-documentation.md) - Complete API reference
+- 🧪 [API Testing Examples](doc/api-testing-examples.md) - curl and Postman examples
+- � [API Integration Guide](doc/api-integration-guide.md) - How to use API mode
+- 📋 [Migration Summary](API-MIGRATION-SUMMARY.md) - API migration details
+- ✅ [Completeness Report](API-COMPLETENESS-REPORT.md) - Feature verification
+
+### Example API Usage
+
+```bash
+# Get Twitter post data
+curl http://localhost:3000/api/v1/twitter/1234567890
+
+# Get Pixiv artwork data
+curl http://localhost:3000/api/v1/pixiv/123456789
+
+# Get Plurk post data
+curl http://localhost:3000/api/v1/plurk/abcd1234
+```
+
+**Available Endpoints:**
+- Twitter/X (`/api/v1/twitter/:statusId`)
+- Pixiv (`/api/v1/pixiv/:illustId`)
+- Plurk (`/api/v1/plurk/:plurkId`)
+- Bluesky (`/api/v1/bluesky/:handle/:postId`)
+- 巴哈姆特 (`/api/v1/baha/:postId`)
+- E-Hentai (`/api/v1/eh/:galleryId/:token`)
+- PChome (`/api/v1/pchome/:productId`)
+- Misskey (`/api/v1/misskey/:noteId`)
+- TikTok (`POST /api/v1/tiktok`)
+- Bilibili (`/api/v1/bilibili/:opusId`)
+- Instagram (`/api/v1/instagram/:postId`)
+- Threads (`POST /api/v1/threads`)
+- PTT (`/api/v1/ptt/:board/:postId`)
+- Weibo (`/api/v1/weibo/:statusId`)
+- PChome (`/api/v1/pchome/:productId`)
+- Misskey (`/api/v1/misskey/:noteId`)
+- TikTok (`POST /api/v1/tiktok`)
+- Bilibili (`/api/v1/bilibili/:opusId`)
 
 ## Invite BOT
 
@@ -62,10 +188,10 @@ A Discord bot that fixes sites with broken preview by providing more detailed im
   - [x] Twitter
   - [x] Misskey
   - [x] Bluesky
-  - [ ] Weibo
+  - [x] Weibo
   - [x] instagram
   - [x] tiktok
-  - [ ] threads
+  - [x] threads
 - [x] Image sharing service
   - [x] Pixiv
   - [x] ehentai
