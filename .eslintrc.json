@@ -1,8 +1,7 @@
 {
     "env": {
         "browser": true,
-        "es2021": true,
-        "node": true
+        "es2021": true
     },
     "extends": "google",
     "parserOptions": {
@@ -13,9 +12,6 @@
         "linebreak-style": 0,
         "require-jsdoc": 0,
         "max-len": 0,
-        "object-curly-spacing": ["error", "always"],
-        "new-cap": ["error", {
-            "capIsNewExceptions": ["Router"]
-        }]
+        "object-curly-spacing": ["error", "always"]
     }
 }
