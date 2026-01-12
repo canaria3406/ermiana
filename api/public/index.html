@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ermiana API Documentation</title>
+    <link rel="stylesheet" href="/public/styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>Ermiana API</h1>
+                <span class="version">v1.0.0</span>
+            </div>
+            
+            <div class="sidebar-section">
+                <div class="section-title">狀態監控</div>
+                <div class="server-status">
+                    <div class="status-indicator" id="serverStatus"></div>
+                    <span id="serverStatusText">檢查中...</span>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="section-title">統計資訊</div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalTests">0</div>
+                        <div class="stat-label">總測試數</div>
+                    </div>
+                    <div class="stat-card success">
+                        <div class="stat-value" id="successTests">0</div>
+                        <div class="stat-label">成功</div>
+                    </div>
+                    <div class="stat-card error">
+                        <div class="stat-value" id="errorTests">0</div>
+                        <div class="stat-label">失敗</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="section-title">API 端點 (14)</div>
+                <nav class="endpoint-nav">
+                    <a href="#twitter" class="nav-item" data-platform="twitter">Twitter/X</a>
+                    <a href="#pixiv" class="nav-item" data-platform="pixiv">Pixiv</a>
+                    <a href="#plurk" class="nav-item" data-platform="plurk">Plurk</a>
+                    <a href="#bluesky" class="nav-item" data-platform="bluesky">Bluesky</a>
+                    <a href="#tiktok" class="nav-item" data-platform="tiktok">TikTok</a>
+                    <a href="#bilibili" class="nav-item" data-platform="bilibili">Bilibili</a>
+                    <a href="#eh" class="nav-item" data-platform="eh">E-Hentai</a>
+                    <a href="#pchome" class="nav-item" data-platform="pchome">PChome</a>
+                    <a href="#baha" class="nav-item" data-platform="baha">巴哈姆特</a>
+                    <a href="#misskey" class="nav-item" data-platform="misskey">Misskey</a>
+                    <a href="#instagram" class="nav-item" data-platform="instagram">Instagram</a>
+                    <a href="#threads" class="nav-item" data-platform="threads">Threads</a>
+                    <a href="#ptt" class="nav-item" data-platform="ptt">PTT</a>
+                    <a href="#weibo" class="nav-item" data-platform="weibo">Weibo</a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-header">
+                <h2>API 測試工具</h2>
+                <p>專業的社交媒體平台 API 測試介面</p>
+            </div>
+
+            <div class="endpoints-container" id="endpointsContainer">
+                <!-- API endpoints will be dynamically generated here -->
+            </div>
+        </main>
+    </div>
+
+    <script src="/public/api-client.js"></script>
+</body>
+</html>

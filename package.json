@@ -5,6 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "start:api": "node api/server.js",
+    "start:all": "concurrently \"npm run start\" \"npm run start:api\"",
+    "test:api": "node test-api-integration.js",
     "lint": "eslint --fix src/*.js"
   },
   "repository": {
@@ -21,9 +24,13 @@
     "axios": "^1.7.2",
     "cheerio": "^1.0.0",
     "conf": "^12.0.0",
+    "cors": "^2.8.5",
     "cron": "^3.1.7",
     "discord.js": "^14.15.3",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "express": "^4.18.2",
+    "concurrently": "^8.2.2",
+    "helmet": "^7.1.0"
   },
   "devDependencies": {
     "eslint": "^9.13.0",
