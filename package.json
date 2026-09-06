@@ -1,32 +1,50 @@
 {
   "name": "ermiana",
-  "version": "1.1.0",
+  "version": "2.0.1",
   "description": "A discord bot that shows hidden description.",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "lint": "eslint --fix src/*.js"
+    "discord:register": "node src/scripts/register-commands.js",
+    "deploy:verify": "node test/discord-live/verify.js --preflight",
+    "pm2:start": "pm2 start ecosystem.config.cjs",
+    "pm2:stop": "pm2 stop ecosystem.config.cjs",
+    "pm2:status": "pm2 status",
+    "lint": "eslint .",
+    "test": "node --test \"test/unit/**/*.test.js\" \"test/process/**/*.test.js\"",
+    "test:redis": "node --test \"test/redis/**/*.test.js\"",
+    "test:verify-discord": "node test/discord-live/verify.js",
+    "test:smoke-discord": "node test/discord-live/smoke.js",
+    "test:smoke-webhook": "node test/discord-live/webhook.js",
+    "test:coverage": "node --experimental-test-coverage --test \"test/unit/**/*.test.js\" \"test/process/**/*.test.js\"",
+    "check": "npm run lint && npm run test:coverage && npm run test:redis"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/canaria3406/ermiana.git"
   },
   "type": "module",
+  "engines": {
+    "node": ">=24.0.0 <25"
+  },
   "author": "canaria3406",
   "license": "MIT",
   "homepage": "https://github.com/canaria3406/ermiana",
   "dependencies": {
-    "@discordjs/rest": "^2.3.0",
-    "@discordjs/ws": "^1.1.1",
-    "axios": "^1.7.2",
-    "cheerio": "^1.0.0",
-    "conf": "^12.0.0",
-    "cron": "^3.1.7",
-    "discord.js": "^14.15.3",
-    "dotenv": "^16.4.5"
+    "cheerio": "^1.1.2",
+    "discord.js": "^14.22.1",
+    "dotenv": "^17.2.3",
+    "pino": "^9.12.0",
+    "pm2": "^7.0.3",
+    "redis": "^5.8.2",
+    "undici": "^7.29.0"
   },
   "devDependencies": {
-    "eslint": "^9.13.0",
-    "eslint-config-google": "^0.14.0"
+    "@eslint/js": "^9.39.1",
+    "eslint": "^9.39.1",
+    "globals": "^16.5.0"
+  },
+  "overrides": {
+    "js-yaml": "4.3.1"
   }
 }

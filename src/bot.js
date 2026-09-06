@@ -1,86 +1,90 @@
-import { PermissionsBitField, Client, GatewayIntentBits } from 'discord.js';
-import { currentTime } from './utils/currentTime.js';
-import { configManager } from './utils/configManager.js';
-import { reloadLog, guildLog } from './utils/botLog.js';
-import { msgCommandsMap, btnCommandsMap } from './command/commandManager.js';
-import { regexsMap, matchRules } from './regex/regexManager.js';
+import { configureHttp } from './core/configure-http.js';
+import {
+  Events,
+} from 'discord.js';
+import { loadConfig } from './config.js';
+import { createDiscordClient } from './discord/client.js';
+import { createGuildCreateHandler } from './discord/guild-create-handler.js';
+import { createInteractionHandler } from './discord/interaction-handler.js';
+import { createMessageHandler } from './discord/message-handler.js';
+import { DiscordRenderer } from './discord/renderer.js';
+import { createEventDrain } from './core/event-drain.js';
+import { createLogger, flushLogger } from './core/logger.js';
+import { createRuntime } from './runtime.js';
 
-const client = new Client({
-  intents: [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent,
-  ],
+const config = loadConfig();
+configureHttp();
+const client = createDiscordClient();
+const logger = createLogger(config.logLevel, {
+  process: 'shard',
+  shardIds: client.shard?.ids?.join(',') ?? 'unassigned',
 });
+let runtime = null;
+let stopping = false;
+let requestedExitCode = 0;
+const eventDrain = createEventDrain({
+  onError(error, event) {
+    logger.fatal({ err: error, event }, 'unhandled Discord event handler rejection');
+    void shutdown('Discord event handler rejection', 1);
+  },
+});
+const EVENT_DRAIN_TIMEOUT_MS = 10000;
 
-client.on('ready', async () => {
-  console.log(`Ready! 以 ${client.user.tag} 身分登入`);
-  currentTime();
-  try {
-    await client.shard.broadcastEval((c) => c.readyAt !== null);
-    const promises = [
-      client.shard.fetchClientValues('guilds.cache.size'),
-      client.shard.broadcastEval((c) => c.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0)),
-    ];
-    Promise.all(promises)
-        .then((results) => {
-          const serverCount = results[0].reduce((acc, guildCount) => acc + guildCount, 0);
-          const totalUserCount = results[1].reduce((acc, memberCount) => acc + memberCount, 0);
-          console.log(`正在 ${serverCount} 個伺服器上運作中`);
-          console.log(`正在服務 ${totalUserCount} 位使用者`);
-          reloadLog(serverCount, totalUserCount);
-        })
-        .catch(console.error);
-  } catch {
-    return;
+async function shutdown(reason, exitCode = 0) {
+  requestedExitCode = Math.max(requestedExitCode, exitCode);
+  if (stopping) return;
+  stopping = true;
+  logger.info({ reason, exitCode: requestedExitCode }, 'shard shutdown started');
+  client.destroy();
+  const drain = await eventDrain.stopAndDrain(EVENT_DRAIN_TIMEOUT_MS);
+  if (!drain.drained) {
+    logger.warn(
+      { pendingHandlers: drain.pending, timeoutMs: EVENT_DRAIN_TIMEOUT_MS },
+      'Discord event handlers did not drain before shutdown; leaving runtime resources for process exit',
+    );
+  } else if (runtime) {
+    await runtime.close().catch((error) => logger.warn({ err: error }, 'runtime close failed'));
   }
+  logger.info({ exitCode: requestedExitCode }, 'shard shutdown complete');
+  await flushLogger(logger).catch((error) => process.stderr.write(`logger flush failed: ${error.stack ?? error}\n`));
+  process.exit(requestedExitCode);
+}
+process.on('SIGTERM', () => void shutdown('SIGTERM'));
+process.on('SIGINT', () => void shutdown('SIGINT'));
+process.on('message', (message) => {
+  if (message === 'shutdown') void shutdown('manager shutdown message');
 });
-
-client.on('messageCreate', async (message) => {
-  if (message.author.bot) return;
-  if (/http/.test(message.content)) {
-    for (const [regex, handler] of regexsMap) {
-      if (regex.test(message.content)) {
-        if (message.channel.permissionsFor(client.user).has([
-          PermissionsBitField.Flags.SendMessages,
-          PermissionsBitField.Flags.EmbedLinks,
-        ]) && !matchRules(message.content)) {
-          const result = message.content.match(regex);
-          const spoiler = (/\|\|[\s\S]*http[\s\S]*\|\|/).test(message.content) ? `||${result[0]}||` : '';
-          await handler(result, message, spoiler);
-          break;
-        } else {
-          break;
-        }
-      }
-    }
-  }
+process.on('unhandledRejection', (error) => {
+  logger.fatal({ err: error }, 'unhandled rejection');
+  void shutdown('unhandledRejection', 1);
 });
-
-client.on('guildCreate', async (guild) => {
-  guildLog(guild);
+process.on('uncaughtException', (error) => {
+  logger.fatal({ err: error }, 'uncaught exception');
+  void shutdown('uncaughtException', 1);
 });
+process.on('warning', (warning) => logger.warn({ err: warning }, 'Node.js process warning'));
 
-client.on('interactionCreate', async (interaction) => {
-  if (!interaction.isMessageContextMenuCommand() && !interaction.isButton()) return;
-  if (interaction.isMessageContextMenuCommand()) {
-    for (const [commandNames, handler] of msgCommandsMap) {
-      if (interaction.commandName === commandNames) {
-        await handler(interaction);
-        break;
-      }
-    }
-  } else if (interaction.isButton()) {
-    for (const [commandNames, handler] of btnCommandsMap) {
-      if (interaction.customId === commandNames) {
-        await handler(interaction);
-        break;
-      }
-    }
-  } else {
-    return;
-  }
+runtime = await createRuntime(config, logger);
+const renderer = new DiscordRenderer({ logger });
+
+client.on(Events.MessageCreate, eventDrain.track('messageCreate', createMessageHandler({
+  previewService: runtime.previewService,
+  renderer,
+  guildSettings: runtime.guildSettings,
+  logger,
+})));
+client.on(Events.InteractionCreate, eventDrain.track('interactionCreate', createInteractionHandler({
+  guildSettings: runtime.guildSettings,
+  previewService: runtime.previewService,
+  renderer,
+  logger,
+})));
+client.once(Events.ClientReady, (readyClient) => {
+  logger.info({ user: readyClient.user.tag, guilds: readyClient.guilds.cache.size }, 'Discord shard ready');
 });
-
-const config = await configManager();
-client.login(config.DCTK);
+client.on(Events.Error, (error) => logger.error({ err: error }, 'Discord client error'));
+client.on(Events.Warn, (warning) => logger.warn({ warning }, 'Discord client warning'));
+client.on(Events.ShardError, (error, shardId) => logger.error({ err: error, shardId }, 'Discord gateway error'));
+client.on(Events.ShardReconnecting, (shardId) => logger.warn({ shardId }, 'Discord shard reconnecting'));
+client.on(Events.GuildCreate, createGuildCreateHandler({ logger }));
+await client.login(config.discord.token);

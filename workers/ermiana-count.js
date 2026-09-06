@@ -2,7 +2,7 @@ addEventListener('fetch', (event) => {
   event.respondWith(handleRequest(event.request));
 });
 
-async function handleRequest(request) {
+async function handleRequest(_request) {
   const botID = '1078919650764652594';
   const response = await fetch('https://discord.com/api/v9/application-directory-static/applications/' + botID, {
     headers: {

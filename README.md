@@ -44,32 +44,22 @@ A Discord bot that fixes sites with broken preview by providing more detailed im
 
 - [x] Community
   - [x] PTT.cc
-    - [x] 八卦板
-    - [x] 希洽板
-    - [x] 裏洽板
-    - [x] 西斯板
-    - [x] 政黑板
-    - [x] 表特板
-    - [x] JAV板
-    - [x] HG板
-    - [x] DMMG板
   - [x] 巴哈姆特電玩資訊站
     - [x] 場外休憩區
-  - [x] Bilibili 專欄
-  - [ ] Dcard
+  - [x] Bilibili
 - [x] Social media
   - [x] Plurk
   - [x] Twitter
-  - [x] Misskey
+  - [x] Facebook
+  - [x] Instagram
+  - [x] Threads
   - [x] Bluesky
-  - [ ] Weibo
-  - [x] instagram
-  - [x] tiktok
-  - [ ] threads
+  - [x] Misskey
+  - [x] Tiktok
 - [x] Image sharing service
   - [x] Pixiv
   - [x] ehentai
   - [x] exhentai
-  - [ ] nhentai
+  - [x] nhentai
 - [x] E-commerce site
   - [x] PChome24h
