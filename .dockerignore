@@ -1,8 +1,0 @@
-node_modules/
-doc/
-pic/
-.git
-.gitignore
-.env
-Dockerfile
-docker-compose*
