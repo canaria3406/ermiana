@@ -1,38 +1,59 @@
-const botID = '1078919650764652594';
+const botID = "1078919650764652594";
+const kv = await Deno.openKv();
+
+const discordApplicationUrl =
+  `https://discord.com/api/v9/application-directory-static/applications/${botID}`;
 
 async function updateKV() {
-  const kv = await Deno.openKv();
-  const response = await fetch("https://discord.com/api/v9/application-directory-static/applications/" + botID, {
+  const response = await fetch(discordApplicationUrl, {
     headers: {
-      'Referer': 'https://discord.com/application-directory/' + botID,
-      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0',
-    }
+      Referer: `https://discord.com/application-directory/${botID}`,
+      "User-Agent":
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0",
+    },
   });
-  if (response.ok) {
-    const responseData = await response.json();
-    await kv.set(["name"], responseData.name);
-    await kv.set(["count"], responseData.directory_entry.guild_count.toString());
+
+  if (!response.ok) {
+    throw new Error(`Discord application lookup failed: ${response.status}`);
   }
-  kv.close();
+
+  const responseData = await response.json();
+  const name = responseData?.name;
+  const guildCount = responseData?.directory_entry?.guild_count;
+
+  if (typeof name !== "string" || !Number.isFinite(Number(guildCount))) {
+    throw new Error("Discord application response is missing badge data");
+  }
+
+  await kv.atomic()
+    .set(["name"], name)
+    .set(["count"], String(guildCount))
+    .commit();
 }
 
-Deno.cron('update','0 0 * * *', async () => {
+Deno.cron("update", "0 0 * * *", {
+  backoffSchedule: [1000, 5000, 30000],
+}, async () => {
   console.log("Running cron job to update KV...");
   await updateKV();
 });
 
 Deno.serve(async () => {
-  const kv = await Deno.openKv();
-  const name = await kv.get(["name"]) || "Deno";
-  const count = await kv.get(["count"]) || "0";
-  kv.close();
+  const [{ value: name }, { value: count }] = await Promise.all([
+    kv.get<string>(["name"]),
+    kv.get<string>(["count"]),
+  ]);
+
   const jsonData = {
     schemaVersion: 1,
-    label: name.value,
-    message: count.value + ' servers',
-    color: '7289DA',
+    label: name ?? "Deno",
+    message: `${count ?? "0"} servers`,
+    color: "7289DA",
   };
+
   return new Response(JSON.stringify(jsonData), {
-    headers: { "content-type": "application/json" },
+    headers: {
+      "content-type": "application/json; charset=utf-8",
+    },
   });
 });

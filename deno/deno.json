@@ -1,9 +1,13 @@
 {
+  "unstable": ["cron", "kv"],
   "tasks": {
-    "start": "deno run --allow-net --unstable-kv --unstable-cron counter.ts"
+    "start": "deno run --allow-net --allow-read --allow-write counter.ts",
+    "check": "deno check counter.ts"
   },
   "deploy": {
-    "project": "ermiana",
-    "entrypoint": "counter.ts"
+    "runtime": {
+      "type": "dynamic",
+      "entrypoint": "counter.ts"
+    }
   }
 }
