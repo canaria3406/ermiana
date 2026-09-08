@@ -10,7 +10,7 @@
     <img src="https://img.shields.io/github/forks/canaria3406/ermiana?style=flat-square">
     <img src="https://img.shields.io/github/languages/code-size/canaria3406/ermiana?style=flat-square">
     <a href="https://discord.com/application-directory/1078919650764652594"><img src="https://img.shields.io/badge/verified-%E2%9C%93%20BOT-7289da?style=flat-square&logo=discord&logoColor=white"></a>
-    <a href="https://discord.com/application-directory/1078919650764652594"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fermiana.deno.dev%2F&style=flat-square&logo=Discord&logoColor=white&cacheSeconds=86400"></a>
+    <a href="https://discord.com/application-directory/1078919650764652594"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fermiana.canaria.deno.net%2F&style=flat-square&logo=Discord&logoColor=white&cacheSeconds=86400"></a>
     <a href="https://discord.gg/QBwjpHcMyw"><img src="https://img.shields.io/discord/1172363356406042684?style=flat-square&logo=Discord&logoColor=white&label=support&color=yellow"></a>
 </p>
 

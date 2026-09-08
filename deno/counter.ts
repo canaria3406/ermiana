@@ -31,6 +31,18 @@ async function updateKV() {
     .commit();
 }
 
+async function initializeKV() {
+  const [{ value: name }, { value: count }] = await Promise.all([
+    kv.get<string>(["name"]),
+    kv.get<string>(["count"]),
+  ]);
+
+  if (name !== null && count !== null) return;
+
+  console.log("KV is empty; fetching initial badge data...");
+  await updateKV();
+}
+
 Deno.cron("update", "0 0 * * *", {
   backoffSchedule: [1000, 5000, 30000],
 }, async () => {
@@ -38,7 +50,13 @@ Deno.cron("update", "0 0 * * *", {
   await updateKV();
 });
 
+const initialUpdate = initializeKV().catch((error) => {
+  console.error("Initial KV update failed:", error);
+});
+
 Deno.serve(async () => {
+  await initialUpdate;
+
   const [{ value: name }, { value: count }] = await Promise.all([
     kv.get<string>(["name"]),
     kv.get<string>(["count"]),
@@ -46,7 +64,7 @@ Deno.serve(async () => {
 
   const jsonData = {
     schemaVersion: 1,
-    label: name ?? "Deno",
+    label: name ?? "api_error",
     message: `${count ?? "0"} servers`,
     color: "7289DA",
   };
