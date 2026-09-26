@@ -1,5 +1,17 @@
 import { createPreview, fallbackPreview, ICONS, proxyPixivUrl, truncate } from './helpers.js';
 
+const DEFAULT_PROFILE_IMAGE_URL = 'https://s.pximg.net/common/images/no_profile_s.png';
+
+function profileImageUrl(artwork, id) {
+  const userIllusts = artwork.userIllusts;
+  if (!userIllusts || typeof userIllusts !== 'object') return DEFAULT_PROFILE_IMAGE_URL;
+  const url = userIllusts[id]?.profileImageUrl
+    ?? Object.values(userIllusts).find((illust) => illust?.profileImageUrl)?.profileImageUrl;
+  return typeof url === 'string' && /^https?:\/\//.test(url)
+    ? proxyPixivUrl(url)
+    : DEFAULT_PROFILE_IMAGE_URL;
+}
+
 export const pixivProvider = {
   id: 'pixiv',
   patterns: [
@@ -24,22 +36,25 @@ export const pixivProvider = {
       const pageCount = Math.max(1, Number(artwork.pageCount) || 1);
       const images = firstImage ? [firstImage] : [];
       const tags = (artwork.tags?.tags ?? []).slice(0, 20).map(({ tag }) => `[${tag}](https://www.pixiv.net/tags/${encodeURIComponent(tag)}/artworks)`).join(', ');
-      const fields = [
-        { name: '作者', value: `[${artwork.userName}](https://www.pixiv.net/users/${artwork.userId})`, inline: true },
-        { name: '收藏', value: String(artwork.bookmarkCount ?? 0), inline: true },
-      ];
+      const fields = [];
       if (tags) fields.push({ name: '標籤', value: truncate(tags, 1024) });
       return createPreview({
         canonicalUrl,
         iconUrl: ICONS.pixiv,
         embed: {
           color: 0x0096fa,
+          author: artwork.userName ? {
+            name: truncate(artwork.userName, 256),
+            iconUrl: profileImageUrl(artwork, id),
+            url: artwork.userId ? `https://www.pixiv.net/users/${artwork.userId}` : undefined,
+          } : undefined,
           title: truncate(artwork.title, 256),
           url: canonicalUrl,
           description: truncate(artwork.extraData?.meta?.twitter?.description, 300),
           image: images[0],
           fields,
-          footer: 'ermiana',
+          timestamp: artwork.createDate,
+          footer: `⭐${artwork.likeCount ?? 0} ❤️${artwork.bookmarkCount ?? 0} 💬${artwork.commentCount ?? 0}`,
         },
         images,
         pagination: firstImage && pageCount > 1 && /_p0(?=[._])/.test(firstImage)

@@ -149,6 +149,34 @@ test('renderer keeps pagination stateless, sends media, and suppresses the origi
   assert.equal(suppressed, true);
 });
 
+test('renders Twitter media galleries only for the new Guild style', async () => {
+  let payload;
+  const renderer = new DiscordRenderer();
+  await renderer.send({
+    deletable: false,
+    async reply(value) { payload = value; return {}; },
+    channel: { async send() {} },
+  }, {
+    provider: 'twitter',
+    embed: {
+      title: 'Post',
+      url: 'https://x.com/example/status/1',
+      description: 'text',
+      author: { name: '@example' },
+      footer: 'stats',
+    },
+    images: ['https://img.test/1.jpg'],
+    twitterGalleryMedia: [
+      { type: 'image', url: 'https://img.test/1.jpg' },
+      { type: 'image', url: 'https://img.test/2.jpg' },
+    ],
+    suppressOriginal: false,
+  }, { twitterStyle: 'new' });
+  assert.equal(payload.flags, 32768);
+  assert.equal(payload.components[0].toJSON().type, 17);
+  assert.equal(payload.components[0].toJSON().components[2].type, 12);
+});
+
 test('a blank footer falls back to the default name instead of throwing', () => {
   for (const footer of ['   ', '\n\t', '', undefined, null]) {
     assert.equal(createEmbed({ title: 'x', footer }).data.footer.text, 'ermiana');

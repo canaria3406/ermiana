@@ -244,6 +244,26 @@ test('Bilibili provider rewrites opus URLs without calling the removed API', asy
   assert.equal(preview.content, 'https://www.vxbilibili.com/opus/123');
 });
 
+test('Bilibili provider resolves b23.tv short URLs through BiliFix', async () => {
+  const url = 'https://b23.tv/AbC_123?share=tracking';
+  const preview = await bilibiliProvider.resolve({
+    match: match(bilibiliProvider, url),
+    services: {
+      bilibiliPreviewSite: {
+        async resolveShortUrl(value) {
+          assert.equal(value, url);
+          return {
+            canonicalUrl: 'https://www.bilibili.com/video/BV1UmK36aED9',
+            previewUrl: 'https://www.vxbilibili.com/video/BV1UmK36aED9?p=1',
+          };
+        },
+      },
+    },
+  });
+  assert.equal(preview.canonicalUrl, 'https://www.bilibili.com/video/BV1UmK36aED9');
+  assert.equal(preview.content, 'https://www.vxbilibili.com/video/BV1UmK36aED9?p=1');
+});
+
 test('Bilibili provider returns no preview while vxbilibili is unavailable', async () => {
   const url = 'https://www.bilibili.com/video/BV1UmK36aED9';
   const preview = await bilibiliProvider.resolve({
@@ -593,6 +613,11 @@ test('Threads provider supports both current and legacy domains', async () => {
     assert.equal(preview.canonicalUrl, url);
     assert.equal(preview.content, 'https://threads.canaria.cc/@example/post/ABC_def-123');
   }
+});
+
+test('Threads provider supports share and legacy t URLs', () => {
+  assert.ok(match(threadsProvider, 'https://www.threads.com/share/ABC_def'));
+  assert.ok(match(threadsProvider, 'https://threads.net/t/ABC-def/'));
 });
 
 test('Instagram provider delegates post, reel, user-post, and story URLs', async () => {

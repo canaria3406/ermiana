@@ -12,6 +12,8 @@ export const ICONS = Object.freeze({
   ptt: 'https://ermiana.canaria.cc/pic/ptt.png',
 });
 
+export const MAX_DISCORD_STORED_MEDIA = 4;
+
 export function truncate(value, maxLength) {
   if (value === undefined || value === null) return undefined;
   const text = String(value).trim();
@@ -19,7 +21,12 @@ export function truncate(value, maxLength) {
   return text.length <= maxLength ? text : `${text.slice(0, maxLength - 1)}…`;
 }
 
-export function uniqueUrls(values, limit = 4) {
+export function twitterImageUrl(url, size = 'large') {
+  if (typeof url !== 'string' || !/^https?:\/\//.test(url)) return undefined;
+  return `${url.split(/[?#]/, 1)[0]}?name=${size}`;
+}
+
+export function uniqueUrls(values, limit = MAX_DISCORD_STORED_MEDIA) {
   return [...new Set(values.filter((value) => typeof value === 'string' && /^https?:\/\//.test(value)))].slice(0, limit);
 }
 
@@ -34,7 +41,7 @@ export function createPreview({ canonicalUrl, iconUrl, embed, images = [], media
     iconUrl,
     embed,
     images: normalizedImages,
-    media: uniqueUrls(media, 4),
+    media: uniqueUrls(media, MAX_DISCORD_STORED_MEDIA),
     content,
     pagination,
     suppressOriginal,

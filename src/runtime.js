@@ -46,7 +46,7 @@ export async function createRuntime(config, logger) {
   const ehentaiApi = new EhentaiApiService({ http, logger });
   const facebookPreviewSite = new FacebookPreviewSiteService({ http, logger });
   const tiktokPreviewSite = new TikTokPreviewSiteService();
-  const bilibiliPreviewSite = new BilibiliPreviewSiteService();
+  const bilibiliPreviewSite = new BilibiliPreviewSiteService({ http, logger });
   const threadsPreviewSite = new ThreadsPreviewSiteService();
   const instagramPreviewSite = new InstagramPreviewSiteService();
   const registry = new ProviderRegistry(providers);

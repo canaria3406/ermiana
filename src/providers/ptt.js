@@ -1,4 +1,5 @@
 import * as cheerio from 'cheerio';
+import { HttpError } from '../core/http-client.js';
 import { createPreview, ICONS, truncate, uniqueUrls } from './helpers.js';
 
 const PTT_PATTERN = /https?:\/\/(?:www\.)?ptt\.cc\/bbs\/(?<board>[A-Za-z0-9_-]+)\/(?<postId>M\.[0-9]+\.A\.[A-Za-z0-9]+)\.html(?![A-Za-z0-9])/i;
@@ -156,9 +157,14 @@ export const pttProvider = {
   async resolve({ match, http }) {
     const board = match.groups.board;
     const canonicalUrl = `https://www.ptt.cc/bbs/${board}/${match.groups.postId}.html`;
-    const page = parsePage(await http.getText(canonicalUrl, {
-      headers: { cookie: 'over18=1' },
-    }), board);
+    let html;
+    try {
+      html = await http.getText(canonicalUrl, { headers: { cookie: 'over18=1' } });
+    } catch (error) {
+      if (error instanceof HttpError && error.status === 404) return null;
+      throw error;
+    }
+    const page = parsePage(html, board);
     return createPreview({
       canonicalUrl,
       iconUrl: ICONS.ptt,

@@ -15,12 +15,14 @@ import {
   REMOVE_MESSAGE_COMMAND_NAME,
   REMOVE_MESSAGE_NAME_LOCALIZATIONS,
   RESET_PREVIEW_COMMAND_NAME,
+  TWITTER_STYLE_CHOICES,
+  TWITTER_STYLE_COMMAND_NAME,
 } from '../../../src/discord/commands.js';
 import { PREVIEW_PROVIDER_IDS } from '../../../src/providers/index.js';
 
 test('builds the legacy-compatible message context-menu command', () => {
   const commands = buildApplicationCommands();
-  assert.equal(commands.length, 6);
+  assert.equal(commands.length, 7);
   const removeMessage = commands.find(({ name }) => name === REMOVE_MESSAGE_COMMAND_NAME);
   assert.equal(removeMessage.type, ApplicationCommandType.Message);
   assert.equal(removeMessage.description, undefined);
@@ -70,6 +72,16 @@ test('builds the administrator-only Guild preview reset command', () => {
   assert.equal(command.dm_permission, false);
   assert.equal(command.default_member_permissions, '8');
   assert.deepEqual(command.options, []);
+});
+
+test('builds the administrator-only Twitter style command', () => {
+  const command = buildApplicationCommands().find(({ name }) => name === TWITTER_STYLE_COMMAND_NAME);
+  assert.equal(command.dm_permission, false);
+  assert.equal(command.default_member_permissions, '8');
+  assert.deepEqual(
+    command.options[0].choices.map(({ name, value }) => ({ name, value })),
+    TWITTER_STYLE_CHOICES,
+  );
 });
 
 test('builds the administrator-only Guild status command', () => {

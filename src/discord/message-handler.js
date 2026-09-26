@@ -27,7 +27,13 @@ export function createMessageHandler({ previewService, renderer, guildSettings, 
     ])) return;
 
     try {
-      if (guildSettings && await guildSettings.isPreviewDisabled(message.guildId, candidate.provider.id)) {
+      let previewSettings = { disabled: false, twitterStyle: 'old' };
+      if (guildSettings?.getPreviewSettings) {
+        previewSettings = await guildSettings.getPreviewSettings(message.guildId, candidate.provider.id);
+      } else if (guildSettings && await guildSettings.isPreviewDisabled(message.guildId, candidate.provider.id)) {
+        previewSettings = { disabled: true, twitterStyle: 'old' };
+      }
+      if (previewSettings.disabled) {
         logger?.debug?.({
           provider: candidate.provider.id,
           guildId: message.guildId,
@@ -40,6 +46,7 @@ export function createMessageHandler({ previewService, renderer, guildSettings, 
       if (!preview) return;
       await renderer.send(message, preview, {
         spoiler: isSpoiler(message.content, candidate.index),
+        twitterStyle: candidate.provider.id === 'twitter' ? previewSettings.twitterStyle : 'old',
       });
     } catch (error) {
       const details = {

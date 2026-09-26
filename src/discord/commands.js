@@ -9,6 +9,7 @@ import {
 
 export const REMOVE_MESSAGE_COMMAND_NAME = 'removeMessage';
 export const BAN_PREVIEW_COMMAND_NAME = 'banpreview';
+export const TWITTER_STYLE_COMMAND_NAME = 'twitter-style';
 export const RESET_PREVIEW_COMMAND_NAME = 'resetpreview';
 export const INFO_COMMAND_NAME = 'info';
 export const CHECK_COMMAND_NAME = 'check';
@@ -32,6 +33,11 @@ export const PREVIEW_PROVIDER_CHOICES = Object.freeze([
   { name: 'nhentai', value: 'nhentai' },
 ]);
 
+export const TWITTER_STYLE_CHOICES = Object.freeze([
+  { name: 'old', value: 'old' },
+  { name: 'new', value: 'new' },
+]);
+
 export const REMOVE_MESSAGE_NAME_LOCALIZATIONS = Object.freeze({
   'en-GB': 'Delete BOT Message',
   'en-US': 'Delete BOT Message',
@@ -52,6 +58,17 @@ export function buildApplicationCommands() {
         .setDescription('要停用或恢復預覽的網站')
         .setRequired(true)
         .addChoices(...PREVIEW_PROVIDER_CHOICES))
+      .toJSON(),
+    new SlashCommandBuilder()
+      .setName(TWITTER_STYLE_COMMAND_NAME)
+      .setDescription('設定 Twitter 預覽樣式')
+      .setDMPermission(false)
+      .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+      .addStringOption((option) => option
+        .setName('style')
+        .setDescription('Twitter 預覽樣式')
+        .setRequired(true)
+        .addChoices(...TWITTER_STYLE_CHOICES))
       .toJSON(),
     new SlashCommandBuilder()
       .setName(RESET_PREVIEW_COMMAND_NAME)

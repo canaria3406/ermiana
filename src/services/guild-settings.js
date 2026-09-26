@@ -14,6 +14,8 @@ export const DEFAULT_GUILD_CONFIG = Object.freeze({
   disabledPreviews: Object.freeze([]),
 });
 
+export const DEFAULT_TWITTER_STYLE = 'old';
+
 export class GuildCacheUnavailableError extends Error {
   constructor(message = 'Guild configuration cache is not ready', options) {
     super(message, options);
@@ -50,6 +52,7 @@ function normalizeCustomConfig(value, providerIds, context) {
       .sort();
     if (normalized.disabledPreviews.length === 0) delete normalized.disabledPreviews;
   }
+  if (parsed.twitterStyle !== undefined && parsed.twitterStyle !== 'new') delete normalized.twitterStyle;
   return normalized;
 }
 
@@ -321,6 +324,14 @@ export class GuildSettingsStore {
     return config.disabledPreviews.includes(providerId);
   }
 
+  async getPreviewSettings(guildId, providerId) {
+    const config = await this.getGuildConfig(guildId);
+    return {
+      disabled: config.disabledPreviews.includes(providerId),
+      twitterStyle: config.twitterStyle === 'new' ? 'new' : DEFAULT_TWITTER_STYLE,
+    };
+  }
+
   async #syncGuildCache(guildId, customConfig, errorDetails = {}) {
     if (!this.redis) return false;
     try {
@@ -387,6 +398,36 @@ export class GuildSettingsStore {
     );
 
     return { disabled, cacheUpdated, config: effectiveConfig(next) };
+  }
+
+  async setTwitterStyle(guildId, style) {
+    if (style !== 'old' && style !== 'new') throw new Error(`Unknown Twitter style: ${style}`);
+
+    let next;
+    let hasCustomConfig;
+    this.database.exec('BEGIN IMMEDIATE');
+    try {
+      const current = this.readCustomConfig(guildId) ?? {};
+      next = { ...current };
+      if (style === 'new') next.twitterStyle = 'new';
+      else delete next.twitterStyle;
+
+      hasCustomConfig = Object.keys(next).length > 0;
+      if (hasCustomConfig) this.upsertOne.run(String(guildId), JSON.stringify(next), Date.now());
+      else this.deleteOne.run(String(guildId));
+      this.database.exec('COMMIT');
+    } catch (error) {
+      this.database.exec('ROLLBACK');
+      throw error;
+    }
+
+    const cacheUpdated = await this.#syncGuildCache(
+      guildId,
+      hasCustomConfig ? next : null,
+      { setting: 'twitterStyle', twitterStyle: style },
+    );
+
+    return { twitterStyle: style, cacheUpdated, config: effectiveConfig(next) };
   }
 
   async resetPreviews(guildId) {

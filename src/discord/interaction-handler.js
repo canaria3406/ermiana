@@ -12,6 +12,8 @@ import {
   PREVIEW_PROVIDER_CHOICES,
   REMOVE_MESSAGE_COMMAND_NAME,
   RESET_PREVIEW_COMMAND_NAME,
+  TWITTER_STYLE_CHOICES,
+  TWITTER_STYLE_COMMAND_NAME,
 } from './commands.js';
 import {
   createNhentaiPaginationRow,
@@ -104,8 +106,13 @@ function templatePage(interaction) {
     : null;
 }
 
+async function editPaginationMessage(interaction, payload) {
+  if (typeof interaction.editReply === 'function') return interaction.editReply(payload);
+  return interaction.message.edit(payload);
+}
+
 async function paginationUnavailable(interaction) {
-  await interaction.message.edit({ components: [] });
+  await editPaginationMessage(interaction, { components: [] });
   await interaction.followUp({ content: '發生預期之外的錯誤。', flags: MessageFlags.Ephemeral });
 }
 
@@ -125,7 +132,7 @@ async function handleUrlStoragePagination(interaction) {
   }
   const targetIndex = (currentIndex + 1) % images.length;
   const embed = EmbedBuilder.from(interaction.message.embeds[0]).setImage(images[targetIndex]);
-  await interaction.message.edit({
+  await editPaginationMessage(interaction, {
     embeds: [embed],
     components: [createUrlStorageRow(images, targetIndex)],
   });
@@ -153,7 +160,7 @@ async function handleTemplatePagination(interaction) {
   if (target === page.current) return;
   const targetUrl = currentUrl.replace(/_p\d+(?=[._])/, `_p${target - 1}`);
   const embed = EmbedBuilder.from(interaction.message.embeds[0]).setImage(targetUrl);
-  await interaction.message.edit({
+  await editPaginationMessage(interaction, {
     embeds: [embed],
     components: [createPaginationRow(target, page.total)],
   });
@@ -197,7 +204,7 @@ async function handleNhentaiPagination(interaction) {
   if (target === page.current) return;
   url.pathname = `${currentImagePage[1]}${target}.${currentImagePage[3]}`;
   const embed = EmbedBuilder.from(interaction.message.embeds[0]).setImage(url.href);
-  await interaction.message.edit({
+  await editPaginationMessage(interaction, {
     embeds: [embed],
     components: [createNhentaiPaginationRow(target, page.total)],
   });
@@ -239,6 +246,7 @@ async function handleRemoveMessage(interaction, logger) {
 
 function isAdministratorCommand(interaction) {
   return interaction.commandName === BAN_PREVIEW_COMMAND_NAME
+    || interaction.commandName === TWITTER_STYLE_COMMAND_NAME
     || interaction.commandName === RESET_PREVIEW_COMMAND_NAME
     || interaction.commandName === INFO_COMMAND_NAME
     || interaction.commandName === CHECK_COMMAND_NAME;
@@ -251,7 +259,6 @@ async function requireGuildAdministrator(interaction, logger) {
   logger?.debug?.({
     command: interaction.commandName,
     guildId: interaction.guildId,
-    userId: interaction.user?.id,
   }, 'Administrator-only command denied');
   await interaction.reply({ content: '只有伺服器管理員可以使用此指令。' });
   return false;
@@ -272,8 +279,6 @@ async function handleBanPreview(interaction, guildSettings, logger) {
     command: BAN_PREVIEW_COMMAND_NAME,
     guildId: interaction.guildId,
     guildName: interaction.guild?.name,
-    userId: interaction.user?.id,
-    userName: interaction.user?.username,
     provider: providerId,
     previewDisabled: result.disabled,
     redisUpdated: result.cacheUpdated,
@@ -281,6 +286,22 @@ async function handleBanPreview(interaction, guildSettings, logger) {
   const action = result.disabled ? '已停用' : '已恢復';
   const cacheStatus = result.cacheUpdated ? '' : ' 設定已保存；快取恢復後會自動同步。';
   await interaction.editReply({ content: `${action}此伺服器的 ${provider.name} 預覽。${cacheStatus}` });
+}
+
+async function handleTwitterStyle(interaction, guildSettings, logger) {
+  if (interaction.commandName !== TWITTER_STYLE_COMMAND_NAME) return;
+  if (!await requireGuildAdministrator(interaction, logger)) return;
+  if (!guildSettings) throw new Error('Guild settings service is unavailable');
+
+  const style = interaction.options.getString('style', true);
+  if (!TWITTER_STYLE_CHOICES.some((choice) => choice.value === style)) {
+    throw new Error(`Unknown Twitter style: ${style}`);
+  }
+
+  await interaction.deferReply({});
+  const result = await guildSettings.setTwitterStyle(interaction.guildId, style);
+  const cacheStatus = result.cacheUpdated ? '' : ' 設定已保存；快取恢復後會自動同步。';
+  await interaction.editReply({ content: `已將此伺服器的 Twitter 預覽設定為 ${style}。${cacheStatus}` });
 }
 
 async function handleResetPreview(interaction, guildSettings, logger) {
@@ -294,8 +315,6 @@ async function handleResetPreview(interaction, guildSettings, logger) {
     command: RESET_PREVIEW_COMMAND_NAME,
     guildId: interaction.guildId,
     guildName: interaction.guild?.name,
-    userId: interaction.user?.id,
-    userName: interaction.user?.username,
     redisUpdated: result.cacheUpdated,
   }, 'Guild preview settings reset');
   const cacheStatus = result.cacheUpdated ? '' : ' 設定已清除；快取恢復後會自動同步。';
@@ -403,7 +422,7 @@ async function handleFix(interaction, previewService, renderer) {
         return interaction.followUp(payload);
       },
     },
-  }, preview);
+  }, preview, { twitterStyle: 'old' });
 }
 
 export function createInteractionHandler({ guildSettings, previewService, renderer, logger } = {}) {
@@ -415,6 +434,7 @@ export function createInteractionHandler({ guildSettings, previewService, render
         await paginationHandler(interaction);
       } else if (interaction.isChatInputCommand?.()) {
         await handleBanPreview(interaction, guildSettings, logger);
+        await handleTwitterStyle(interaction, guildSettings, logger);
         await handleResetPreview(interaction, guildSettings, logger);
         await handleInfo(interaction, guildSettings, logger);
         await handleCheck(interaction, logger);
@@ -428,7 +448,6 @@ export function createInteractionHandler({ guildSettings, previewService, render
         interactionId: interaction.id,
         command: interaction.commandName,
         guildId: interaction.guildId,
-        userId: interaction.user?.id,
       }, 'interaction handling failed');
       if ((isAdministratorCommand(interaction) || interaction.commandName === FIX_COMMAND_NAME)
         && interaction.deferred && !interaction.replied) {

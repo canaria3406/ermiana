@@ -164,7 +164,7 @@ test('matches real-world URL forms and keeps tracking parameters out of the cach
   const realWorld = [
     ['plurk', 'https://www.plurk.com/p/3j3cq0k381', '3j3cq0k381'],
     ['plurk', 'https://www.plurk.com/p/3j3ru67c6t', '3j3ru67c6t'],
-    ['twitter', 'https://x.com/only1centt/status/2094716943110414821?s=20', '2094716943110414821'],
+    ['twitter', 'https://x.com/only1centt/status/2094716943110414821?s=20', 'v4:2094716943110414821'],
     ['pchome', 'https://24h.pchome.com.tw/prod/DSBC7E-A900HPF6T', undefined],
     ['bahamut', 'https://forum.gamer.com.tw/C.php?bsn=60076&snA=5288773&tnum=13756', 'C.php?bsn=60076&snA=5288773'],
     ['bahamut', 'https://forum.gamer.com.tw/C.php?bsn=60076&snA=9208478&tnum=27', 'C.php?bsn=60076&snA=9208478'],
