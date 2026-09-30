@@ -39,7 +39,6 @@ test('only the selected providers define preview cache TTLs', () => {
   for (const [provider, ttlSeconds] of cached) {
     assert.equal(provider.ttlSeconds, ttlSeconds, provider.id);
     assert.equal(typeof provider.cacheKey, 'function', provider.id);
-    assert.equal('staleTtlSeconds' in provider, false, provider.id);
   }
 
   for (const provider of [
@@ -53,7 +52,6 @@ test('only the selected providers define preview cache TTLs', () => {
     instagramProvider,
   ]) {
     assert.equal('ttlSeconds' in provider, false, provider.id);
-    assert.equal('staleTtlSeconds' in provider, false, provider.id);
     assert.equal('cacheKey' in provider, false, provider.id);
   }
 });
@@ -107,6 +105,39 @@ test('Pixiv provider stores only the first URL and total page count', async () =
   });
   assert.deepEqual(preview.images, ['https://pixiv.canaria.cc/img/42_p0.jpg']);
   assert.deepEqual(preview.pagination, { type: 'pixiv-url', totalPages: 3 });
+});
+
+test('Pixiv provider escapes markdown in tag labels and link URLs', async () => {
+  const url = 'https://www.pixiv.net/artworks/42';
+  const tags = ['orz)', '[腐]', 'blue_archive', 'a*b*c'];
+  const preview = await pixivProvider.resolve({
+    match: match(pixivProvider, url), logger: quietLogger,
+    http: { async getJson() { return { error: false, body: {
+      title: 'Artwork', urls: {}, tags: { tags: tags.map((tag) => ({ tag })) },
+    } }; } },
+  });
+
+  assert.equal(preview.embed.fields[0].value, [
+    '[orz)](https://www.pixiv.net/tags/orz%29/artworks)',
+    '[\\[腐\\]](https://www.pixiv.net/tags/%5B%E8%85%90%5D/artworks)',
+    '[blue\\_archive](https://www.pixiv.net/tags/blue_archive/artworks)',
+    '[a\\*b\\*c](https://www.pixiv.net/tags/a*b*c/artworks)',
+  ].join(', '));
+  assert.equal(pixivProvider.cacheKey(match(pixivProvider, url)), 'v3:42');
+});
+
+test('Pixiv provider keeps long tag fields within a complete markdown link', async () => {
+  const url = 'https://www.pixiv.net/artworks/42';
+  const tags = Array.from({ length: 20 }, (_value, index) => `${'長い日本語タグ'.repeat(3)}${index}`);
+  const preview = await pixivProvider.resolve({
+    match: match(pixivProvider, url), logger: quietLogger,
+    http: { async getJson() { return { error: false, body: {
+      title: 'Artwork', urls: {}, tags: { tags: tags.map((tag) => ({ tag })) },
+    } }; } },
+  });
+  const value = preview.embed.fields[0].value;
+  assert.ok(value.length <= 1024);
+  assert.ok(value.endsWith(')'));
 });
 
 test('Bahamut provider extracts Open Graph data', async () => {

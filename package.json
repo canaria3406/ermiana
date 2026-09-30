@@ -1,6 +1,6 @@
 {
   "name": "ermiana",
-  "version": "2.2.0",
+  "version": "2.3.3",
   "description": "A discord bot that shows hidden description.",
   "main": "index.js",
   "scripts": {
@@ -37,7 +37,7 @@
     "pino": "^9.12.0",
     "pm2": "^7.0.3",
     "redis": "^5.8.2",
-    "undici": "^7.29.0"
+    "undici": "^7.30.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
@@ -45,6 +45,6 @@
     "globals": "^16.5.0"
   },
   "overrides": {
-    "js-yaml": "4.3.1"
+    "js-yaml": "4.3.2"
   }
 }

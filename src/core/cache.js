@@ -98,7 +98,7 @@ export class RedisCacheBackend {
   }
 
   async close() {
-    if (this.client.isOpen) await this.client.quit();
+    if (this.client.isOpen) await this.client.close();
   }
 }
 

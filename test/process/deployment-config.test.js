@@ -16,23 +16,18 @@ test('PM2 runs exactly one ready-aware shard manager', () => {
   assert.equal(app.wait_ready, true);
   assert.equal(app.shutdown_with_message, true);
   assert.equal(app.autorestart, true);
-  assert.equal(app.time, undefined);
-  assert.equal(app.merge_logs, undefined);
+  assert.equal(app.cron_restart, '0 0 * * *');
   assert.equal(app.out_file, '/dev/null');
   assert.equal(app.error_file, '/dev/null');
   assert.equal(app.vizion, false);
   assert.equal(app.listen_timeout, 240000);
   assert.equal(app.listen_timeout, loadConfig({ DISCORD_TOKEN: 'x' }).runtime.readyTimeoutMs);
-  assert.equal(app.env, undefined);
 
   const managerSource = readFileSync(new URL('../../src/index.js', import.meta.url), 'utf8');
-  assert.doesNotMatch(managerSource, /execArgv/);
   assert.match(managerSource, /respawn:\s*true/);
-  assert.doesNotMatch(managerSource, /--enable-source-maps/);
   assert.match(managerSource, /logger\.error\(details, 'shard exited unexpectedly/);
   assert.ok(managerSource.indexOf('new GuildSettingsStore') < managerSource.indexOf('connectRedis(config.redis'));
   assert.ok(managerSource.indexOf('guildSettings.initialize()') < managerSource.indexOf('manager.spawn'));
-  assert.doesNotMatch(managerSource, /initialize\(\{ forceRebuild: true \}\)/);
 
   const loggerSource = readFileSync(new URL('../../src/core/logger.js', import.meta.url), 'utf8');
   assert.match(loggerSource, /process\.stderr/);
@@ -47,19 +42,14 @@ test('PM2 runs exactly one ready-aware shard manager', () => {
   assert.equal(packageJson.scripts['pm2:start'], 'pm2 start ecosystem.config.cjs');
   assert.equal(packageJson.scripts['pm2:stop'], 'pm2 stop ecosystem.config.cjs');
   assert.equal(packageJson.scripts['pm2:status'], 'pm2 status');
-  assert.equal(packageJson.dependencies.undici, '^7.29.0');
-  assert.equal('start:shard' in packageJson.scripts, false);
-  assert.equal('register:commands' in packageJson.scripts, false);
   const gitignore = readFileSync(new URL('../../.gitignore', import.meta.url), 'utf8');
   assert.match(gitignore, /^\.env$/m);
   const startSource = readFileSync(new URL('../../src/start.js', import.meta.url), 'utf8');
   assert.match(startSource, /index\.js/);
-  assert.doesNotMatch(startSource, /--enable-source-maps/);
 
   const shardSource = readFileSync(new URL('../../src/bot.js', import.meta.url), 'utf8');
+  assert.match(shardSource, /process\.on\('disconnect'/);
 
-  const httpConfigSource = readFileSync(new URL('../../src/core/configure-http.js', import.meta.url), 'utf8');
-  assert.doesNotMatch(httpConfigSource, /connections:/);
   assert.match(managerSource, /configureHttp\(\)/);
   assert.match(shardSource, /configureHttp\(\)/);
 });

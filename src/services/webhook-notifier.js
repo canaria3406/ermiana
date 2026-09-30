@@ -30,14 +30,11 @@ export function createRestartWebhookPayload({ guildCount, memberCount, botAvatar
 }
 
 export function createGuildJoinWebhookPayload(guild, { timestamp = new Date() } = {}) {
-  const ownerDisplayName = guild.ownerDisplayName || '無法取得';
-  const ownerUsername = guild.ownerUsername ? `@${guild.ownerUsername}` : `ID: ${guild.ownerId || '無法取得'}`;
   const embed = new EmbedBuilder()
     .setColor(EMBED_COLOR)
     .setTitle('**【 ermiana 被新增至伺服器】**')
     .setDescription(
       `伺服器名稱：${guild.name}  (${guild.id})\n`
-      + `伺服器管理員：${ownerDisplayName}  (${ownerUsername})\n`
       + `伺服器總人數：${normalizedCount(guild.memberCount)}`,
     )
     .setTimestamp(timestamp);

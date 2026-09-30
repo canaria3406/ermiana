@@ -125,9 +125,17 @@ test('stores only customized Guilds and deletes the row after restoring every pr
   assert.strictEqual(await store.getGuildConfig('376829040637509652'), DEFAULT_GUILD_CONFIG);
 });
 
-test('stores the non-default Twitter style and returns it with preview settings', async (t) => {
+test('stores explicit Twitter styles and deletes them when restoring the default', async (t) => {
   const { store } = createFixture(t);
   await store.initialize({ forceRebuild: true });
+
+  const old = await store.setTwitterStyle('guild', 'old');
+  assert.equal(old.twitterStyle, 'old');
+  assert.deepEqual(store.readCustomConfig('guild'), { twitterStyle: 'old' });
+  assert.deepEqual(await store.getPreviewSettings('guild', 'twitter'), {
+    disabled: false,
+    twitterStyle: 'old',
+  });
 
   const result = await store.setTwitterStyle('guild', 'new');
   assert.equal(result.twitterStyle, 'new');
@@ -137,8 +145,12 @@ test('stores the non-default Twitter style and returns it with preview settings'
     twitterStyle: 'new',
   });
 
-  await store.setTwitterStyle('guild', 'old');
+  await store.setTwitterStyle('guild', 'default');
   assert.equal(store.readCustomConfig('guild'), null);
+  assert.deepEqual(await store.getPreviewSettings('guild', 'twitter'), {
+    disabled: false,
+    twitterStyle: 'default',
+  });
 });
 
 test('resetPreviews deletes every disabled provider from SQLite and Redis', async (t) => {

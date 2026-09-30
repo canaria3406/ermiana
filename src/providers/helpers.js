@@ -14,11 +14,20 @@ export const ICONS = Object.freeze({
 
 export const MAX_DISCORD_STORED_MEDIA = 4;
 
-export function truncate(value, maxLength) {
+function sliceWithoutBrokenSurrogate(text, maxLength) {
+  let end = Math.max(0, maxLength);
+  const lastCodeUnit = text.charCodeAt(end - 1);
+  if (lastCodeUnit >= 0xD800 && lastCodeUnit <= 0xDBFF) end -= 1;
+  return text.slice(0, end);
+}
+
+export function truncate(value, maxLength, suffix = '…') {
   if (value === undefined || value === null) return undefined;
   const text = String(value).trim();
   if (!text) return undefined;
-  return text.length <= maxLength ? text : `${text.slice(0, maxLength - 1)}…`;
+  if (text.length <= maxLength) return text;
+  if (maxLength <= suffix.length) return sliceWithoutBrokenSurrogate(text, maxLength);
+  return `${sliceWithoutBrokenSurrogate(text, maxLength - suffix.length)}${suffix}`;
 }
 
 export function twitterImageUrl(url, size = 'large') {
@@ -32,6 +41,14 @@ export function uniqueUrls(values, limit = MAX_DISCORD_STORED_MEDIA) {
 
 export function engagement({ replies = 0, reposts = 0, likes = 0 } = {}) {
   return `💬${replies ?? 0} 🔁${reposts ?? 0} ❤️${likes ?? 0}`;
+}
+
+export function escapeMarkdownLinkLabel(text) {
+  return String(text).replace(/[\\*_~`|[\]]/g, '\\$&');
+}
+
+export function markdownLinkUrl(url) {
+  return String(url).replaceAll('(', '%28').replaceAll(')', '%29');
 }
 
 export function createPreview({ canonicalUrl, iconUrl, embed, images = [], media = [], content, pagination, suppressOriginal = true }) {

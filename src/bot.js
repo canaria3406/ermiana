@@ -54,6 +54,7 @@ process.on('SIGINT', () => void shutdown('SIGINT'));
 process.on('message', (message) => {
   if (message === 'shutdown') void shutdown('manager shutdown message');
 });
+process.on('disconnect', () => void shutdown('manager IPC disconnected', 1));
 process.on('unhandledRejection', (error) => {
   logger.fatal({ err: error }, 'unhandled rejection');
   void shutdown('unhandledRejection', 1);

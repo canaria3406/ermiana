@@ -14,7 +14,7 @@ export const DEFAULT_GUILD_CONFIG = Object.freeze({
   disabledPreviews: Object.freeze([]),
 });
 
-export const DEFAULT_TWITTER_STYLE = 'old';
+export const DEFAULT_TWITTER_STYLE = 'default';
 
 export class GuildCacheUnavailableError extends Error {
   constructor(message = 'Guild configuration cache is not ready', options) {
@@ -52,7 +52,11 @@ function normalizeCustomConfig(value, providerIds, context) {
       .sort();
     if (normalized.disabledPreviews.length === 0) delete normalized.disabledPreviews;
   }
-  if (parsed.twitterStyle !== undefined && parsed.twitterStyle !== 'new') delete normalized.twitterStyle;
+  if (parsed.twitterStyle !== undefined
+    && parsed.twitterStyle !== 'old'
+    && parsed.twitterStyle !== 'new') {
+    delete normalized.twitterStyle;
+  }
   return normalized;
 }
 
@@ -328,7 +332,9 @@ export class GuildSettingsStore {
     const config = await this.getGuildConfig(guildId);
     return {
       disabled: config.disabledPreviews.includes(providerId),
-      twitterStyle: config.twitterStyle === 'new' ? 'new' : DEFAULT_TWITTER_STYLE,
+      twitterStyle: config.twitterStyle === 'old' || config.twitterStyle === 'new'
+        ? config.twitterStyle
+        : DEFAULT_TWITTER_STYLE,
     };
   }
 
@@ -401,7 +407,9 @@ export class GuildSettingsStore {
   }
 
   async setTwitterStyle(guildId, style) {
-    if (style !== 'old' && style !== 'new') throw new Error(`Unknown Twitter style: ${style}`);
+    if (style !== 'old' && style !== 'default' && style !== 'new') {
+      throw new Error(`Unknown Twitter style: ${style}`);
+    }
 
     let next;
     let hasCustomConfig;
@@ -409,8 +417,8 @@ export class GuildSettingsStore {
     try {
       const current = this.readCustomConfig(guildId) ?? {};
       next = { ...current };
-      if (style === 'new') next.twitterStyle = 'new';
-      else delete next.twitterStyle;
+      if (style === 'default') delete next.twitterStyle;
+      else next.twitterStyle = style;
 
       hasCustomConfig = Object.keys(next).length > 0;
       if (hasCustomConfig) this.upsertOne.run(String(guildId), JSON.stringify(next), Date.now());

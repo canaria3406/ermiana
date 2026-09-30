@@ -82,16 +82,15 @@ try {
   });
 
   const stored = await cache.get('interaction', reply.id);
+  const initialButtons = reply.components[0]?.components ?? [];
+  const initialButtonsStoredUrls = initialButtons.length === 2
+    && initialButtons[0].customId === PAGINATION_IDS.cycle
+    && initialButtons[0].label === '更多圖片'
+    && initialButtons[1].url === 'https://cdn.discordapp.com/embed/avatars/1.png';
   const handler = createInteractionHandler({ logger });
   const genericMessage = {
     embeds: reply.embeds,
     components: reply.components,
-    async edit(payload) {
-      const edited = await reply.edit(payload);
-      this.embeds = edited.embeds;
-      this.components = edited.components;
-      return edited;
-    },
   };
   await handler({
     id: 'local-smoke-interaction',
@@ -100,8 +99,16 @@ try {
     isButton() { return true; },
     isMessageContextMenuCommand() { return false; },
     async deferUpdate() {},
+    async editReply(payload) {
+      const edited = await reply.edit(payload);
+      genericMessage.embeds = edited.embeds;
+      genericMessage.components = edited.components;
+      return edited;
+    },
     async followUp() {},
   });
+  const secondPageButtons = genericMessage.components[0]?.components ?? [];
+  const secondPageImageUrl = genericMessage.embeds[0]?.image?.url;
 
   pixivReply = await renderer.send(source, {
     canonicalUrl: 'https://www.pixiv.net/artworks/42',
@@ -118,12 +125,6 @@ try {
   const pixivMessage = {
     embeds: pixivReply.embeds,
     components: pixivReply.components,
-    async edit(payload) {
-      const edited = await pixivReply.edit(payload);
-      this.embeds = edited.embeds;
-      this.components = edited.components;
-      return edited;
-    },
   };
   async function clickPixiv(customId) {
     await handler({
@@ -133,6 +134,12 @@ try {
       isButton() { return true; },
       isMessageContextMenuCommand() { return false; },
       async deferUpdate() {},
+      async editReply(payload) {
+        const edited = await pixivReply.edit(payload);
+        pixivMessage.embeds = edited.embeds;
+        pixivMessage.components = edited.components;
+        return edited;
+      },
       async followUp() {},
     });
     return pixivMessage.embeds[0]?.image?.url;
@@ -161,10 +168,12 @@ try {
     bilibiliProxyEmbed: bilibiliReply.embeds.length > 0,
     redisPaginationStateAbsent: stored === null && pixivStored === null,
     embedSent: reply.embeds.length === 1,
-    buttonsStoredUrls: reply.components[0]?.components.length === 2
-      && reply.components[0].components[0].label === '更多圖片'
-      && reply.components[0].components[1].url === 'https://cdn.discordapp.com/embed/avatars/1.png',
-    secondPageEdited: genericMessage.embeds[0]?.image?.url === 'https://cdn.discordapp.com/embed/avatars/1.png',
+    initialButtonsStoredUrls,
+    secondPageButtonsStoredUrls: secondPageButtons.length === 2
+      && secondPageButtons[0].url === 'https://cdn.discordapp.com/embed/avatars/0.png'
+      && secondPageButtons[1].customId === PAGINATION_IDS.cycle
+      && secondPageButtons[1].label === '更多圖片',
+    secondPageEdited: secondPageImageUrl === 'https://cdn.discordapp.com/embed/avatars/1.png',
     pixivFiveButtonDesign: pixivMessage.components[0]?.components.length === 5
       && pixivMessage.components[0].components[2].label === '1/4',
     pixivSpoilerContent: pixivReply.content === '||https://www.pixiv.net/artworks/42||',

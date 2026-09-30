@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { ComponentType } from 'discord.js';
 import {
   createEmbed,
   createNhentaiPaginationRow,
@@ -9,6 +10,20 @@ import {
   NHENTAI_PAGINATION_IDS,
   PAGINATION_IDS,
 } from '../../../src/discord/renderer.js';
+
+function hasUnpairedSurrogate(value) {
+  for (let index = 0; index < value.length; index += 1) {
+    const codeUnit = value.charCodeAt(index);
+    if (codeUnit >= 0xD800 && codeUnit <= 0xDBFF) {
+      const next = value.charCodeAt(index + 1);
+      if (next < 0xDC00 || next > 0xDFFF) return true;
+      index += 1;
+    } else if (codeUnit >= 0xDC00 && codeUnit <= 0xDFFF) {
+      return true;
+    }
+  }
+  return false;
+}
 
 test('builds a Discord-safe embed', () => {
   const json = createEmbed({
@@ -25,6 +40,37 @@ test('builds a Discord-safe embed', () => {
   assert.equal(json.fields[0].inline, true);
 });
 
+test('ignores invalid embed timestamps and preserves valid ISO timestamps', () => {
+  const invalid = createEmbed({ title: 't', timestamp: 'not a date' });
+  assert.equal(invalid.data.timestamp, undefined);
+
+  const valid = createEmbed({ title: 't', timestamp: '2025-04-24T15:13:16.000Z' });
+  assert.equal(valid.data.timestamp, '2025-04-24T15:13:16.000Z');
+});
+
+test('limits every preview description to 1024 characters', () => {
+  const description = createEmbed({ description: '漢'.repeat(4080) }).toJSON().description;
+  assert.equal(description.length, 1024);
+  assert.ok(description.endsWith('…'));
+});
+
+test('preserves a 1024-character description and truncates the next character', () => {
+  const exact = '字'.repeat(1024);
+  assert.equal(createEmbed({ description: exact }).toJSON().description, exact);
+
+  const truncated = createEmbed({ description: `${exact}字` }).toJSON().description;
+  assert.equal(truncated.length, 1024);
+  assert.ok(truncated.endsWith('…'));
+});
+
+test('description truncation never splits an emoji surrogate pair', () => {
+  const input = `${'a'.repeat(1022)}😀${'b'.repeat(10)}`;
+  const description = createEmbed({ description: input }).toJSON().description;
+  assert.ok(description.length <= 1024);
+  assert.ok(description.endsWith('…'));
+  assert.equal(hasUnpairedSurrogate(description), false);
+});
+
 test('limits all textual embed content to Discord\'s combined 6000 character cap', () => {
   const json = createEmbed({
     author: { name: 'a'.repeat(256) },
@@ -38,7 +84,8 @@ test('limits all textual embed content to Discord\'s combined 6000 character cap
     + (json.description?.length ?? 0)
     + (json.footer?.text.length ?? 0)
     + (json.fields ?? []).reduce((sum, field) => sum + field.name.length + field.value.length, 0);
-  assert.ok(total <= 6000);
+  assert.equal(json.description.length, 1024);
+  assert.equal(total, 6000);
 });
 
 test('Pixiv pagination preserves the legacy five-button design', () => {
@@ -175,6 +222,77 @@ test('renders Twitter media galleries only for the new Guild style', async () =>
   assert.equal(payload.flags, 32768);
   assert.equal(payload.components[0].toJSON().type, 17);
   assert.equal(payload.components[0].toJSON().components[2].type, 12);
+  assert.equal(payload.components[0].toJSON().components[1].content, 'text\n\n-# stats');
+  assert.equal(payload.components[0].toJSON().components.at(-1).content, '-# :bird: @example');
+});
+
+test('limits Twitter Components V2 preview descriptions to 1024 characters', async () => {
+  let payload;
+  await new DiscordRenderer().send({
+    deletable: false,
+    async reply(value) { payload = value; return {}; },
+    channel: { async send() {} },
+  }, {
+    provider: 'twitter',
+    embed: {
+      author: { name: '@example' },
+      title: 'Long post',
+      url: 'https://x.com/example/status/123',
+      description: `${'漢'.repeat(600)} ${'letter '.repeat(250)}`,
+      footer: '💬1 🔁2 ❤3',
+    },
+    twitterGalleryMedia: [
+      { type: 'image', url: 'https://img.test/1.jpg' },
+      { type: 'image', url: 'https://img.test/2.jpg' },
+    ],
+  }, { twitterStyle: 'new' });
+
+  const components = payload.components[0].toJSON().components;
+  const body = components.find((component) => component.type === ComponentType.TextDisplay
+    && component.content.includes('…')
+    && !component.content.includes('Long post'));
+  assert.ok(body);
+  const [description, engagement] = body.content.split('\n\n');
+  assert.equal(description.length, 1024);
+  assert.ok(description.endsWith('…'));
+  assert.equal(engagement, '-# 💬1 🔁2 ❤3');
+});
+
+test('renders Twitter default style with direct image embeds and a rewritten video link', async () => {
+  let payload;
+  const channelMessages = [];
+  const renderer = new DiscordRenderer();
+  await renderer.send({
+    deletable: false,
+    async reply(value) { payload = value; return {}; },
+    channel: { async send(value) { channelMessages.push(value); } },
+  }, {
+    provider: 'twitter',
+    embed: {
+      title: 'Post',
+      url: 'https://x.com/example/status/1',
+      image: 'https://mosaic.fxtwitter.com/jpeg/1/one/two',
+    },
+    images: ['https://mosaic.fxtwitter.com/jpeg/1/one/two'],
+    twitterGalleryMedia: [
+      { type: 'image', url: 'https://img.test/1.jpg?name=orig' },
+      { type: 'video', url: 'https://video.twimg.com/amplify_video/1/vid/avc1/640x360/example.mp4?tag=29' },
+      { type: 'image', url: 'https://img.test/2.jpg?name=orig' },
+    ],
+    media: ['https://video.twimg.com/amplify_video/1/vid/avc1/640x360/example.mp4?tag=29'],
+    suppressOriginal: false,
+  });
+
+  assert.equal(payload.flags, undefined);
+  assert.equal(payload.components, undefined);
+  assert.deepEqual(payload.embeds.map((embed) => embed.toJSON().image.url), [
+    'https://img.test/1.jpg?name=large',
+    'https://img.test/2.jpg?name=large',
+  ]);
+  assert.equal(
+    channelMessages[0].content,
+    '[連結](https://vxtwitter.com/tvid/amplify_video/1/vid/avc1/640x360/example)',
+  );
 });
 
 test('a blank footer falls back to the default name instead of throwing', () => {

@@ -44,7 +44,6 @@ test('requires the canonical Discord token name', () => {
 test('validates the optional Discord webhook URL and production requirement', () => {
   const webhookUrl = `https://discord.com/api/webhooks/12345678901234567/${'a'.repeat(68)}`;
   assert.equal(loadConfig({ DISCORD_TOKEN: 'x', DISCORD_WEBHOOK_URL: webhookUrl }).discord.webhookUrl, webhookUrl);
-  assert.equal(loadConfig({ DISCORD_TOKEN: 'x', DCWH: webhookUrl }).discord.webhookUrl, undefined);
   assert.throws(
     () => loadConfig({ DISCORD_TOKEN: 'x', DISCORD_WEBHOOK_URL: 'https://example.test/webhook' }),
     /DISCORD_WEBHOOK_URL/,

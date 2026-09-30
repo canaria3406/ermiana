@@ -35,6 +35,7 @@ export const PREVIEW_PROVIDER_CHOICES = Object.freeze([
 
 export const TWITTER_STYLE_CHOICES = Object.freeze([
   { name: 'old', value: 'old' },
+  { name: 'default', value: 'default' },
   { name: 'new', value: 'new' },
 ]);
 
@@ -51,7 +52,8 @@ export function buildApplicationCommands() {
     new SlashCommandBuilder()
       .setName(BAN_PREVIEW_COMMAND_NAME)
       .setDescription('開啟或關閉指定網站的預覽處理')
-      .setDMPermission(false)
+      .setContexts(InteractionContextType.Guild)
+      .setIntegrationTypes(ApplicationIntegrationType.GuildInstall)
       .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
       .addStringOption((option) => option
         .setName('site')
@@ -62,7 +64,8 @@ export function buildApplicationCommands() {
     new SlashCommandBuilder()
       .setName(TWITTER_STYLE_COMMAND_NAME)
       .setDescription('設定 Twitter 預覽樣式')
-      .setDMPermission(false)
+      .setContexts(InteractionContextType.Guild)
+      .setIntegrationTypes(ApplicationIntegrationType.GuildInstall)
       .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
       .addStringOption((option) => option
         .setName('style')
@@ -73,19 +76,22 @@ export function buildApplicationCommands() {
     new SlashCommandBuilder()
       .setName(RESET_PREVIEW_COMMAND_NAME)
       .setDescription('恢復此伺服器的所有網站預覽')
-      .setDMPermission(false)
+      .setContexts(InteractionContextType.Guild)
+      .setIntegrationTypes(ApplicationIntegrationType.GuildInstall)
       .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
       .toJSON(),
     new SlashCommandBuilder()
       .setName(INFO_COMMAND_NAME)
       .setDescription('查看 ermiana 的運作狀態')
-      .setDMPermission(false)
+      .setContexts(InteractionContextType.Guild)
+      .setIntegrationTypes(ApplicationIntegrationType.GuildInstall)
       .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
       .toJSON(),
     new SlashCommandBuilder()
       .setName(CHECK_COMMAND_NAME)
       .setDescription('檢查 ermiana 在此伺服器中的權限')
-      .setDMPermission(false)
+      .setContexts(InteractionContextType.Guild)
+      .setIntegrationTypes(ApplicationIntegrationType.GuildInstall)
       .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
       .toJSON(),
     new SlashCommandBuilder()

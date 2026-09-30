@@ -186,7 +186,7 @@ test('Redis backend prefixes and serializes values', async () => {
       return 0;
     },
     async ping() { return 'PONG'; },
-    async quit() { this.isOpen = false; },
+    async close() { this.isOpen = false; },
   };
   const backend = new RedisCacheBackend(fakeClient, 'test');
   await backend.set('key', { answer: 42 }, 1000);

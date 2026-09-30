@@ -33,6 +33,9 @@ export const NHENTAI_PAGINATION_IDS = Object.freeze({
   last: 'theZPictureN',
 });
 
+const PREVIEW_DESCRIPTION_MAX_CHARS = 1024;
+const PREVIEW_DESCRIPTION_SUFFIX = '…';
+
 function safeUrl(value) {
   return typeof value === 'string' && /^https?:\/\//.test(value) ? value : undefined;
 }
@@ -43,13 +46,17 @@ function discordTimestamp(value) {
   return `<t:${Math.floor(date.getTime() / 1000)}:f>`;
 }
 
-function twitterVideoFooter(data, emoji, handle) {
+function twitterMediaFooter(data, emoji, handle) {
   const parts = [];
   if (handle) parts.push(escapeMarkdown(handle));
-  parts.push(escapeMarkdown(truncate(data.footer, 256) ?? 'ermiana'));
   const timestamp = discordTimestamp(data.timestamp);
   if (timestamp) parts.push(timestamp);
-  return `-# ${emoji} ${parts.join(' • ')}`;
+  return `-# ${emoji}${parts.length > 0 ? ` ${parts.join(' | ')}` : ''}`;
+}
+
+function twitterEngagement(data) {
+  const engagement = truncate(data.footer, 256);
+  return engagement ? `-# ${escapeMarkdown(engagement)}` : undefined;
 }
 
 function twitterTitleLink(label, url) {
@@ -99,11 +106,32 @@ function isTwitterMediaGallery(preview, twitterStyle, mediaItems) {
     result[media.type] += 1;
     return result;
   }, { image: 0, video: 0 });
-  return twitterStyle !== 'old'
+  return twitterStyle === 'new'
     && preview.provider === 'twitter'
     && (counts.image >= 2 || counts.video >= 1)
     && Boolean(preview.embed)
     && !preview.content;
+}
+
+function twitterDefaultImageUrls(preview, twitterStyle, mediaItems) {
+  if (twitterStyle !== 'default' || preview.provider !== 'twitter' || !preview.embed || preview.content) {
+    return [];
+  }
+  const imageUrls = mediaItems
+    .filter((media) => media.type === 'image')
+    .map((media) => media.url);
+  return imageUrls.length >= 2 ? imageUrls : [];
+}
+
+function createTwitterDefaultEmbeds(preview, imageUrls) {
+  const firstEmbed = createEmbed({ ...preview.embed, image: imageUrls[0] }, preview.iconUrl);
+  const sharedUrl = safeUrl(preview.embed.url);
+  const imageEmbeds = imageUrls.slice(1).map((imageUrl) => {
+    const embed = new EmbedBuilder().setImage(imageUrl);
+    if (sharedUrl) embed.setURL(sharedUrl);
+    return embed;
+  });
+  return [firstEmbed, ...imageEmbeds];
 }
 
 function createTwitterMediaContainer(preview, mediaUrls, spoiler, footerEmoji) {
@@ -113,19 +141,23 @@ function createTwitterMediaContainer(preview, mediaUrls, spoiler, footerEmoji) {
     .setSpoiler(spoiler);
   const title = truncate(data.title, 256) ?? 'X / Twitter';
   const titleUrl = safeUrl(data.url);
-  const description = truncate(data.description, 1000);
+  const description = truncate(
+    data.description,
+    PREVIEW_DESCRIPTION_MAX_CHARS,
+    PREVIEW_DESCRIPTION_SUFFIX,
+  );
+  const engagement = twitterEngagement(data);
+  const body = [description, engagement].filter(Boolean).join('\n\n');
+  const footer = twitterMediaFooter(data, footerEmoji, data.author?.name);
   container.addTextDisplayComponents(new TextDisplayBuilder().setContent(
     `## ${twitterTitleLink(title, titleUrl)}`,
   ));
-  if (description) container.addTextDisplayComponents(new TextDisplayBuilder().setContent(description));
+  if (body) container.addTextDisplayComponents(new TextDisplayBuilder().setContent(body));
   const mediaItems = mediaUrls.map((url) => new MediaGalleryItemBuilder()
     .setURL(url)
     .setDescription(truncate(data.description ?? data.title, 128) ?? 'Twitter media'));
-  container
-    .addMediaGalleryComponents(new MediaGalleryBuilder().addItems(...mediaItems))
-    .addTextDisplayComponents(new TextDisplayBuilder().setContent(
-      twitterVideoFooter(data, footerEmoji, data.author?.name),
-    ));
+  container.addMediaGalleryComponents(new MediaGalleryBuilder().addItems(...mediaItems));
+  container.addTextDisplayComponents(new TextDisplayBuilder().setContent(footer));
   return container;
 }
 
@@ -133,9 +165,9 @@ export function createEmbed(data = {}, iconUrl) {
   const embed = new EmbedBuilder();
   const footerText = truncate(data.footer, 2048) ?? 'ermiana';
   let remainingCharacters = 6000 - footerText.length;
-  const consume = (value, maximum) => {
+  const consume = (value, maximum, suffix) => {
     if (!value || remainingCharacters <= 0) return '';
-    const text = truncate(String(value), Math.min(maximum, remainingCharacters));
+    const text = truncate(String(value), Math.min(maximum, remainingCharacters), suffix);
     remainingCharacters -= text.length;
     return text;
   };
@@ -151,10 +183,19 @@ export function createEmbed(data = {}, iconUrl) {
   }
   if (data.title) embed.setTitle(consume(data.title, 256));
   if (safeUrl(data.url)) embed.setURL(data.url);
-  if (data.description && remainingCharacters > 0) embed.setDescription(consume(data.description, 4096));
+  if (data.description && remainingCharacters > 0) {
+    embed.setDescription(consume(
+      data.description,
+      PREVIEW_DESCRIPTION_MAX_CHARS,
+      PREVIEW_DESCRIPTION_SUFFIX,
+    ));
+  }
   if (safeUrl(data.image)) embed.setImage(data.image);
   if (safeUrl(data.thumbnail)) embed.setThumbnail(data.thumbnail);
-  if (data.timestamp) embed.setTimestamp(new Date(data.timestamp));
+  if (data.timestamp) {
+    const timestamp = new Date(data.timestamp);
+    if (Number.isFinite(timestamp.getTime())) embed.setTimestamp(timestamp);
+  }
   const fields = [];
   for (const field of (data.fields ?? []).slice(0, 25)) {
     if (!field?.name || field?.value === undefined || field?.value === null || remainingCharacters < 2) continue;
@@ -222,10 +263,11 @@ export class DiscordRenderer {
     this.twitterFooterEmoji = ':bird:';
   }
 
-  async send(message, preview, { spoiler = false, twitterStyle = 'old' } = {}) {
+  async send(message, preview, { spoiler = false, twitterStyle = 'default' } = {}) {
     const images = (preview.images ?? []).slice(0, MAX_DISCORD_STORED_MEDIA);
     const twitterMediaItems = twitterGalleryMediaItems(preview);
     const useTwitterMediaGallery = isTwitterMediaGallery(preview, twitterStyle, twitterMediaItems);
+    const twitterDefaultImages = twitterDefaultImageUrls(preview, twitterStyle, twitterMediaItems);
     const templatePages = preview.pagination?.type === 'pixiv-url'
       ? Number(preview.pagination.totalPages)
       : 0;
@@ -247,7 +289,11 @@ export class DiscordRenderer {
         this.twitterFooterEmoji,
       )];
     } else {
-      if (embed) payload.embeds = [embed];
+      if (twitterDefaultImages.length > 0) {
+        payload.embeds = createTwitterDefaultEmbeds(preview, twitterDefaultImages);
+      } else if (embed) {
+        payload.embeds = [embed];
+      }
       if (preview.content) {
         payload.content = spoilerText(preview.content, spoiler);
       } else if (spoiler && safeUrl(preview.canonicalUrl)) {
@@ -257,7 +303,7 @@ export class DiscordRenderer {
         payload.components = [createPaginationRow(1, templatePages)];
       } else if (nhentaiPages > 1 && images[0]) {
         payload.components = [createNhentaiPaginationRow(1, nhentaiPages)];
-      } else if (images.length > 1) {
+      } else if (twitterDefaultImages.length === 0 && images.length > 1) {
         payload.components = [createUrlStorageRow(images)];
       }
     }
@@ -266,7 +312,7 @@ export class DiscordRenderer {
     const reply = await message.reply(payload);
     if (!useTwitterMediaGallery) {
       for (const mediaUrl of (preview.media ?? []).slice(0, MAX_DISCORD_STORED_MEDIA)) {
-        const renderedMediaUrl = preview.provider === 'twitter' && twitterStyle === 'old'
+        const renderedMediaUrl = preview.provider === 'twitter' && twitterStyle !== 'new'
           ? twitterVideoUrl(mediaUrl)
           : mediaUrl;
         const link = `[連結](${renderedMediaUrl})`;

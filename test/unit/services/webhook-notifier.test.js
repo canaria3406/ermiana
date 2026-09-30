@@ -19,9 +19,6 @@ test('builds restart and Guild join webhook payloads without mentions', () => {
     id: 'guild-id',
     name: 'Guild',
     memberCount: 4,
-    ownerId: 'owner-id',
-    ownerDisplayName: 'Owner',
-    ownerUsername: 'owner',
     iconUrl: 'https://cdn.discordapp.com/icon.png',
   }, { timestamp });
   assert.deepEqual(restart.allowedMentions, { parse: [] });
@@ -60,9 +57,7 @@ test('creates a validated Guild join IPC message and redacts webhook URLs', asyn
     id: 'guild-id',
     name: 'Guild',
     memberCount: 1,
-    ownerId: 'owner-id',
     shardId: 0,
-    members: { cache: new Map([['owner-id', { displayName: 'Owner', user: { username: 'owner' } }]]) },
     client: {
       guilds: { cache: { size: 1 } },
       user: { displayAvatarURL: () => 'avatar' },

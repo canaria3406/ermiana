@@ -1,4 +1,12 @@
-import { createPreview, fallbackPreview, ICONS, proxyPixivUrl, truncate } from './helpers.js';
+import {
+  createPreview,
+  escapeMarkdownLinkLabel,
+  fallbackPreview,
+  ICONS,
+  markdownLinkUrl,
+  proxyPixivUrl,
+  truncate,
+} from './helpers.js';
 
 const DEFAULT_PROFILE_IMAGE_URL = 'https://s.pximg.net/common/images/no_profile_s.png';
 
@@ -19,7 +27,7 @@ export const pixivProvider = {
     /https:\/\/www\.pixiv\.net\/en\/artworks\/([0-9]+)/i,
   ],
   ttlSeconds: 7200,
-  cacheKey: (match) => match[1],
+  cacheKey: (match) => `v3:${match[1]}`,
   async resolve({ match, http, logger }) {
     const id = match[1];
     const canonicalUrl = `https://www.pixiv.net/artworks/${id}`;
@@ -35,9 +43,18 @@ export const pixivProvider = {
       }
       const pageCount = Math.max(1, Number(artwork.pageCount) || 1);
       const images = firstImage ? [firstImage] : [];
-      const tags = (artwork.tags?.tags ?? []).slice(0, 20).map(({ tag }) => `[${tag}](https://www.pixiv.net/tags/${encodeURIComponent(tag)}/artworks)`).join(', ');
+      const tagLinks = [];
+      let tags = '';
+      for (const { tag } of (artwork.tags?.tags ?? []).slice(0, 20)) {
+        const url = markdownLinkUrl(`https://www.pixiv.net/tags/${encodeURIComponent(tag)}/artworks`);
+        const link = `[${escapeMarkdownLinkLabel(tag)}](${url})`;
+        const next = tagLinks.length > 0 ? `${tags}, ${link}` : link;
+        if (next.length > 1024) break;
+        tagLinks.push(link);
+        tags = next;
+      }
       const fields = [];
-      if (tags) fields.push({ name: '標籤', value: truncate(tags, 1024) });
+      if (tags) fields.push({ name: '標籤', value: tags });
       return createPreview({
         canonicalUrl,
         iconUrl: ICONS.pixiv,

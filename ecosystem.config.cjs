@@ -1,7 +1,5 @@
 'use strict';
 
-require('dotenv').config();
-
 module.exports = {
   apps: [
     {
@@ -13,6 +11,7 @@ module.exports = {
       instances: 1,
       autorestart: true,
       watch: false,
+      cron_restart: '0 0 * * *',
       wait_ready: true,
       listen_timeout: 240000,
       kill_timeout: 30000,

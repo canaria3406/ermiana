@@ -35,7 +35,9 @@ test('builds the legacy-compatible message context-menu command', () => {
 test('builds the administrator-only Guild preview toggle command', () => {
   const command = buildApplicationCommands().find(({ name }) => name === BAN_PREVIEW_COMMAND_NAME);
   assert.equal(command.type, ApplicationCommandType.ChatInput);
-  assert.equal(command.dm_permission, false);
+  assert.deepEqual(command.contexts, [InteractionContextType.Guild]);
+  assert.deepEqual(command.integration_types, [ApplicationIntegrationType.GuildInstall]);
+  assert.equal(command.dm_permission, undefined);
   assert.equal(command.default_member_permissions, '8');
   assert.equal(command.options[0].name, 'site');
   assert.equal(command.options[0].required, true);
@@ -69,14 +71,19 @@ test('builds the administrator-only Guild preview toggle command', () => {
 test('builds the administrator-only Guild preview reset command', () => {
   const command = buildApplicationCommands().find(({ name }) => name === RESET_PREVIEW_COMMAND_NAME);
   assert.equal(command.type, ApplicationCommandType.ChatInput);
-  assert.equal(command.dm_permission, false);
+  assert.deepEqual(command.contexts, [InteractionContextType.Guild]);
+  assert.deepEqual(command.integration_types, [ApplicationIntegrationType.GuildInstall]);
+  assert.equal(command.dm_permission, undefined);
   assert.equal(command.default_member_permissions, '8');
   assert.deepEqual(command.options, []);
 });
 
 test('builds the administrator-only Twitter style command', () => {
   const command = buildApplicationCommands().find(({ name }) => name === TWITTER_STYLE_COMMAND_NAME);
-  assert.equal(command.dm_permission, false);
+  assert.equal(command.type, ApplicationCommandType.ChatInput);
+  assert.deepEqual(command.contexts, [InteractionContextType.Guild]);
+  assert.deepEqual(command.integration_types, [ApplicationIntegrationType.GuildInstall]);
+  assert.equal(command.dm_permission, undefined);
   assert.equal(command.default_member_permissions, '8');
   assert.deepEqual(
     command.options[0].choices.map(({ name, value }) => ({ name, value })),
@@ -87,7 +94,9 @@ test('builds the administrator-only Twitter style command', () => {
 test('builds the administrator-only Guild status command', () => {
   const command = buildApplicationCommands().find(({ name }) => name === INFO_COMMAND_NAME);
   assert.equal(command.type, ApplicationCommandType.ChatInput);
-  assert.equal(command.dm_permission, false);
+  assert.deepEqual(command.contexts, [InteractionContextType.Guild]);
+  assert.deepEqual(command.integration_types, [ApplicationIntegrationType.GuildInstall]);
+  assert.equal(command.dm_permission, undefined);
   assert.equal(command.default_member_permissions, '8');
   assert.deepEqual(command.options, []);
 });
@@ -95,7 +104,9 @@ test('builds the administrator-only Guild status command', () => {
 test('builds the administrator-only Guild permission check command', () => {
   const command = buildApplicationCommands().find(({ name }) => name === CHECK_COMMAND_NAME);
   assert.equal(command.type, ApplicationCommandType.ChatInput);
-  assert.equal(command.dm_permission, false);
+  assert.deepEqual(command.contexts, [InteractionContextType.Guild]);
+  assert.deepEqual(command.integration_types, [ApplicationIntegrationType.GuildInstall]);
+  assert.equal(command.dm_permission, undefined);
   assert.equal(command.default_member_permissions, '8');
   assert.deepEqual(command.options, []);
 });

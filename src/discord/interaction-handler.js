@@ -52,7 +52,6 @@ const CHANNEL_PERMISSION_CHECKS = Object.freeze([
   { flag: PermissionFlagsBits.SendMessagesInThreads, label: '在討論串中傳送訊息' },
   { flag: PermissionFlagsBits.ManageMessages, label: '管理訊息' },
   { flag: PermissionFlagsBits.EmbedLinks, label: '嵌入連結' },
-  { flag: PermissionFlagsBits.AttachFiles, label: '附加檔案' },
   { flag: PermissionFlagsBits.ReadMessageHistory, label: '讀取訊息歷史' },
 ]);
 
@@ -245,11 +244,7 @@ async function handleRemoveMessage(interaction, logger) {
 }
 
 function isAdministratorCommand(interaction) {
-  return interaction.commandName === BAN_PREVIEW_COMMAND_NAME
-    || interaction.commandName === TWITTER_STYLE_COMMAND_NAME
-    || interaction.commandName === RESET_PREVIEW_COMMAND_NAME
-    || interaction.commandName === INFO_COMMAND_NAME
-    || interaction.commandName === CHECK_COMMAND_NAME;
+  return CHAT_INPUT_COMMANDS.get(interaction.commandName)?.administrator === true;
 }
 
 async function requireGuildAdministrator(interaction, logger) {
@@ -264,9 +259,7 @@ async function requireGuildAdministrator(interaction, logger) {
   return false;
 }
 
-async function handleBanPreview(interaction, guildSettings, logger) {
-  if (interaction.commandName !== BAN_PREVIEW_COMMAND_NAME) return;
-  if (!await requireGuildAdministrator(interaction, logger)) return;
+async function handleBanPreview(interaction, { guildSettings, logger }) {
   if (!guildSettings) throw new Error('Guild settings service is unavailable');
 
   const providerId = interaction.options.getString('site', true);
@@ -288,9 +281,7 @@ async function handleBanPreview(interaction, guildSettings, logger) {
   await interaction.editReply({ content: `${action}此伺服器的 ${provider.name} 預覽。${cacheStatus}` });
 }
 
-async function handleTwitterStyle(interaction, guildSettings, logger) {
-  if (interaction.commandName !== TWITTER_STYLE_COMMAND_NAME) return;
-  if (!await requireGuildAdministrator(interaction, logger)) return;
+async function handleTwitterStyle(interaction, { guildSettings }) {
   if (!guildSettings) throw new Error('Guild settings service is unavailable');
 
   const style = interaction.options.getString('style', true);
@@ -304,9 +295,7 @@ async function handleTwitterStyle(interaction, guildSettings, logger) {
   await interaction.editReply({ content: `已將此伺服器的 Twitter 預覽設定為 ${style}。${cacheStatus}` });
 }
 
-async function handleResetPreview(interaction, guildSettings, logger) {
-  if (interaction.commandName !== RESET_PREVIEW_COMMAND_NAME) return;
-  if (!await requireGuildAdministrator(interaction, logger)) return;
+async function handleResetPreview(interaction, { guildSettings, logger }) {
   if (!guildSettings) throw new Error('Guild settings service is unavailable');
 
   await interaction.deferReply({});
@@ -321,9 +310,7 @@ async function handleResetPreview(interaction, guildSettings, logger) {
   await interaction.editReply({ content: `已恢復此伺服器的所有網站預覽。${cacheStatus}` });
 }
 
-async function handleInfo(interaction, guildSettings, logger) {
-  if (interaction.commandName !== INFO_COMMAND_NAME) return;
-  if (!await requireGuildAdministrator(interaction, logger)) return;
+async function handleInfo(interaction, { guildSettings }) {
   if (!guildSettings) throw new Error('Guild settings service is unavailable');
   if (!Number.isInteger(interaction.guild?.shardId)) {
     throw new Error('Guild shard ID is unavailable');
@@ -338,9 +325,7 @@ async function handleInfo(interaction, guildSettings, logger) {
   });
 }
 
-async function handleCheck(interaction, logger) {
-  if (interaction.commandName !== CHECK_COMMAND_NAME) return;
-  if (!await requireGuildAdministrator(interaction, logger)) return;
+async function handleCheck(interaction) {
   const guild = interaction.guild;
   const botMember = guild?.members?.me;
   if (!guild?.channels?.cache || !botMember) {
@@ -388,8 +373,7 @@ async function handleCheck(interaction, logger) {
   });
 }
 
-async function handleFix(interaction, previewService, renderer) {
-  if (interaction.commandName !== FIX_COMMAND_NAME) return;
+async function handleFix(interaction, { previewService, renderer }) {
   if (!previewService || !renderer) throw new Error('Preview service or renderer is unavailable');
 
   const content = interaction.options.getString('url', true);
@@ -414,7 +398,7 @@ async function handleFix(interaction, previewService, renderer) {
     deletable: false,
     async reply(payload) {
       const replyPayload = { ...payload };
-      delete replyPayload.components;
+      if ((payload.flags & MessageFlags.IsComponentsV2) === 0) delete replyPayload.components;
       return interaction.editReply(replyPayload);
     },
     channel: {
@@ -422,8 +406,17 @@ async function handleFix(interaction, previewService, renderer) {
         return interaction.followUp(payload);
       },
     },
-  }, preview, { twitterStyle: 'old' });
+  }, preview, { twitterStyle: 'default' });
 }
+
+const CHAT_INPUT_COMMANDS = new Map([
+  [BAN_PREVIEW_COMMAND_NAME, { administrator: true, run: handleBanPreview }],
+  [TWITTER_STYLE_COMMAND_NAME, { administrator: true, run: handleTwitterStyle }],
+  [RESET_PREVIEW_COMMAND_NAME, { administrator: true, run: handleResetPreview }],
+  [INFO_COMMAND_NAME, { administrator: true, run: handleInfo }],
+  [CHECK_COMMAND_NAME, { administrator: true, run: handleCheck }],
+  [FIX_COMMAND_NAME, { administrator: false, run: handleFix }],
+]);
 
 export function createInteractionHandler({ guildSettings, previewService, renderer, logger } = {}) {
   return async function handleInteraction(interaction) {
@@ -433,12 +426,10 @@ export function createInteractionHandler({ guildSettings, previewService, render
         await interaction.deferUpdate();
         await paginationHandler(interaction);
       } else if (interaction.isChatInputCommand?.()) {
-        await handleBanPreview(interaction, guildSettings, logger);
-        await handleTwitterStyle(interaction, guildSettings, logger);
-        await handleResetPreview(interaction, guildSettings, logger);
-        await handleInfo(interaction, guildSettings, logger);
-        await handleCheck(interaction, logger);
-        await handleFix(interaction, previewService, renderer);
+        const command = CHAT_INPUT_COMMANDS.get(interaction.commandName);
+        if (!command) return;
+        if (command.administrator && !await requireGuildAdministrator(interaction, logger)) return;
+        await command.run(interaction, { guildSettings, previewService, renderer, logger });
       } else if (interaction.isMessageContextMenuCommand()) {
         await handleRemoveMessage(interaction, logger);
       }

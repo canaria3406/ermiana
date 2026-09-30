@@ -22,9 +22,6 @@ try {
     id: '00000000000000000',
     name: '[TEST] ermiana webhook smoke test',
     memberCount: 1,
-    ownerId: '00000000000000000',
-    ownerDisplayName: 'Automated smoke test',
-    ownerUsername: 'smoke-test',
   }));
 } catch (error) {
   operationError = error;
