@@ -59,11 +59,12 @@ function twitterEngagement(data) {
   return engagement ? `-# ${escapeMarkdown(engagement)}` : undefined;
 }
 
-function twitterTitleLink(label, url) {
+function twitterTitleLink(label, url, handle) {
   const escaped = escapeMarkdown(label);
   if (!url) return escaped;
   const emojiIndex = label.search(/\p{Extended_Pictographic}/u);
-  const link = `[開啟推文](${url.replaceAll(')', '%29')})`;
+  const linkLabel = handle ? `(${handle})` : '開啟推文';
+  const link = `[${escapeMarkdown(linkLabel)}](${url.replaceAll(')', '%29')})`;
   if (emojiIndex < 0) return `[${escaped}](${url.replaceAll(')', '%29')})`;
   if (emojiIndex === 0) return `${escaped} ${link}`;
   const prefix = label.slice(0, emojiIndex).trimEnd();
@@ -102,19 +103,17 @@ function twitterGalleryMediaItems(preview) {
 }
 
 function isTwitterMediaGallery(preview, twitterStyle, mediaItems) {
-  const counts = mediaItems.reduce((result, media) => {
-    result[media.type] += 1;
-    return result;
-  }, { image: 0, video: 0 });
   return twitterStyle === 'new'
     && preview.provider === 'twitter'
-    && (counts.image >= 2 || counts.video >= 1)
+    && mediaItems.some((media) => media.type === 'video')
     && Boolean(preview.embed)
     && !preview.content;
 }
 
 function twitterDefaultImageUrls(preview, twitterStyle, mediaItems) {
-  if (twitterStyle !== 'default' || preview.provider !== 'twitter' || !preview.embed || preview.content) {
+  const usesMultiImageEmbeds = twitterStyle === 'default'
+    || (twitterStyle === 'new' && !mediaItems.some((media) => media.type === 'video'));
+  if (!usesMultiImageEmbeds || preview.provider !== 'twitter' || !preview.embed || preview.content) {
     return [];
   }
   const imageUrls = mediaItems
@@ -150,7 +149,7 @@ function createTwitterMediaContainer(preview, mediaUrls, spoiler, footerEmoji) {
   const body = [description, engagement].filter(Boolean).join('\n\n');
   const footer = twitterMediaFooter(data, footerEmoji, data.author?.name);
   container.addTextDisplayComponents(new TextDisplayBuilder().setContent(
-    `## ${twitterTitleLink(title, titleUrl)}`,
+    `## ${twitterTitleLink(title, titleUrl, data.author?.name)}`,
   ));
   if (body) container.addTextDisplayComponents(new TextDisplayBuilder().setContent(body));
   const mediaItems = mediaUrls.map((url) => new MediaGalleryItemBuilder()

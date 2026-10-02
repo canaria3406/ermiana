@@ -1,13 +1,13 @@
 import { RewritePreviewSiteService } from './rewrite-preview-site.js';
 
 const SITE = Object.freeze({
-  hostname: 'threads.canaria.cc',
+  hostname: 'vxthreads.com',
   rewrite: (originalUrl) => originalUrl.replace(
     /^https:\/\/(?:www\.)?threads\.(?:com|net)/i,
-    'https://threads.canaria.cc',
+    'https://www.vxthreads.com',
   ),
   probeUrl: (candidateUrl) => candidateUrl,
-  originHosts: Object.freeze(['threads.canaria.cc']),
+  originHosts: Object.freeze(['vxthreads.com', 'www.vxthreads.com']),
 });
 
 export class ThreadsPreviewSiteService extends RewritePreviewSiteService {

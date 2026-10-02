@@ -196,7 +196,7 @@ test('renderer keeps pagination stateless, sends media, and suppresses the origi
   assert.equal(suppressed, true);
 });
 
-test('renders Twitter media galleries only for the new Guild style', async () => {
+test('renders Twitter video media galleries only for the new Guild style', async () => {
   let payload;
   const renderer = new DiscordRenderer();
   await renderer.send({
@@ -212,11 +212,11 @@ test('renders Twitter media galleries only for the new Guild style', async () =>
       author: { name: '@example' },
       footer: 'stats',
     },
-    images: ['https://img.test/1.jpg'],
+    images: [],
     twitterGalleryMedia: [
-      { type: 'image', url: 'https://img.test/1.jpg' },
-      { type: 'image', url: 'https://img.test/2.jpg' },
+      { type: 'video', url: 'https://video.twimg.com/ext_tw_video/example.mp4' },
     ],
+    media: ['https://video.twimg.com/ext_tw_video/example.mp4'],
     suppressOriginal: false,
   }, { twitterStyle: 'new' });
   assert.equal(payload.flags, 32768);
@@ -224,6 +224,56 @@ test('renders Twitter media galleries only for the new Guild style', async () =>
   assert.equal(payload.components[0].toJSON().components[2].type, 12);
   assert.equal(payload.components[0].toJSON().components[1].content, 'text\n\n-# stats');
   assert.equal(payload.components[0].toJSON().components.at(-1).content, '-# :bird: @example');
+});
+
+test('Twitter new style uses the handle link when the display name starts with emoji', async () => {
+  const url = 'https://x.com/example/status/123';
+  const cases = [
+    ['😀', `## 😀 [(@example)](${url})`],
+    ['😀 User', `## 😀 User [(@example)](${url})`],
+    ['User 😀', `## [User](${url}) 😀`],
+    ['User', `## [User](${url})`],
+  ];
+
+  for (const [title, expected] of cases) {
+    let replyPayload;
+    await new DiscordRenderer().send({
+      deletable: false,
+      async reply(payload) { replyPayload = payload; return {}; },
+      channel: { async send() { throw new Error('new gallery must not send follow-up links'); } },
+    }, {
+      provider: 'twitter',
+      embed: { title, url, author: { name: '@example' } },
+      twitterGalleryMedia: [
+        { type: 'video', url: 'https://video.twimg.com/ext_tw_video/example.mp4' },
+      ],
+      media: ['https://video.twimg.com/ext_tw_video/example.mp4'],
+    }, { twitterStyle: 'new' });
+
+    assert.equal(replyPayload.components[0].toJSON().components[0].content, expected);
+  }
+});
+
+test('Twitter new style falls back to the open-post link when an emoji title has no handle', async () => {
+  let replyPayload;
+  const url = 'https://x.com/i/status/123';
+  await new DiscordRenderer().send({
+    deletable: false,
+    async reply(payload) { replyPayload = payload; return {}; },
+    channel: { async send() { throw new Error('new gallery must not send follow-up links'); } },
+  }, {
+    provider: 'twitter',
+    embed: { title: '😀', url },
+    twitterGalleryMedia: [
+      { type: 'video', url: 'https://video.twimg.com/ext_tw_video/example.mp4' },
+    ],
+    media: ['https://video.twimg.com/ext_tw_video/example.mp4'],
+  }, { twitterStyle: 'new' });
+
+  assert.equal(
+    replyPayload.components[0].toJSON().components[0].content,
+    `## 😀 [開啟推文](${url})`,
+  );
 });
 
 test('limits Twitter Components V2 preview descriptions to 1024 characters', async () => {
@@ -243,8 +293,9 @@ test('limits Twitter Components V2 preview descriptions to 1024 characters', asy
     },
     twitterGalleryMedia: [
       { type: 'image', url: 'https://img.test/1.jpg' },
-      { type: 'image', url: 'https://img.test/2.jpg' },
+      { type: 'video', url: 'https://video.twimg.com/ext_tw_video/example.mp4' },
     ],
+    media: ['https://video.twimg.com/ext_tw_video/example.mp4'],
   }, { twitterStyle: 'new' });
 
   const components = payload.components[0].toJSON().components;
@@ -292,6 +343,47 @@ test('renders Twitter default style with direct image embeds and a rewritten vid
   assert.equal(
     channelMessages[0].content,
     '[連結](https://vxtwitter.com/tvid/amplify_video/1/vid/avc1/640x360/example)',
+  );
+});
+
+test('Twitter new style matches the default multi-embed layout for image-only galleries', async () => {
+  const render = async (twitterStyle) => {
+    let replyPayload;
+    await new DiscordRenderer().send({
+      deletable: false,
+      async reply(payload) { replyPayload = payload; return {}; },
+      channel: { async send() { throw new Error('image-only galleries must not send follow-up links'); } },
+    }, {
+      provider: 'twitter',
+      canonicalUrl: 'https://x.com/example/status/123',
+      iconUrl: 'https://example.test/twitter.png',
+      embed: {
+        title: 'Three photos',
+        url: 'https://x.com/example/status/123',
+        description: 'individual images',
+        image: 'https://mosaic.fxtwitter.com/jpeg/123/one/two/three',
+        footer: '💬1 🔁1 ❤1',
+      },
+      images: ['https://mosaic.fxtwitter.com/jpeg/123/one/two/three'],
+      twitterGalleryMedia: [
+        { type: 'image', url: 'https://pbs.twimg.com/media/one.jpg?name=orig' },
+        { type: 'image', url: 'https://pbs.twimg.com/media/two.jpg?name=orig' },
+        { type: 'image', url: 'https://pbs.twimg.com/media/three.jpg?name=orig' },
+      ],
+    }, { twitterStyle });
+    return replyPayload;
+  };
+
+  const defaultPayload = await render('default');
+  const newPayload = await render('new');
+
+  assert.equal(newPayload.flags, undefined);
+  assert.equal(newPayload.components, undefined);
+  assert.equal(newPayload.embeds.length, 3);
+  assert.equal(newPayload.embeds[0].toJSON().title, 'Three photos');
+  assert.deepEqual(
+    newPayload.embeds.map((embed) => embed.toJSON()),
+    defaultPayload.embeds.map((embed) => embed.toJSON()),
   );
 });
 

@@ -15,6 +15,7 @@ import { pttProvider } from '../../../src/providers/ptt.js';
 import { threadsProvider } from '../../../src/providers/threads.js';
 import { tiktokProvider } from '../../../src/providers/tiktok.js';
 import { twitterProvider } from '../../../src/providers/twitter.js';
+import { ThreadsPreviewSiteService } from '../../../src/services/mirrors/threads-preview-site.js';
 
 function match(provider, url) {
   for (const pattern of provider.patterns) {
@@ -633,16 +634,15 @@ test('PTT provider starts Gossiping news previews after the full-body marker', a
 });
 
 test('Threads provider supports both current and legacy domains', async () => {
+  const threadsPreviewSite = new ThreadsPreviewSiteService();
   for (const domain of ['threads.com', 'threads.net']) {
     const url = `https://www.${domain}/@example/post/ABC_def-123`;
     const preview = await threadsProvider.resolve({
       match: match(threadsProvider, url),
-      services: { threadsPreviewSite: { async getPreviewUrl() {
-        return 'https://threads.canaria.cc/@example/post/ABC_def-123';
-      } } },
+      services: { threadsPreviewSite },
     });
     assert.equal(preview.canonicalUrl, url);
-    assert.equal(preview.content, 'https://threads.canaria.cc/@example/post/ABC_def-123');
+    assert.equal(preview.content, 'https://www.vxthreads.com/@example/post/ABC_def-123');
   }
 });
 
