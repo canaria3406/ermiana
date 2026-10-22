@@ -56,8 +56,12 @@ export class BilibiliPreviewSiteService {
     this.logger = logger;
   }
 
+  async getPreviewUrls(candidateUrl) {
+    return { previewUrl: candidateUrl, fallbackUrl: null };
+  }
+
   async getPreviewUrl(candidateUrl) {
-    return candidateUrl;
+    return (await this.getPreviewUrls(candidateUrl)).previewUrl;
   }
 
   async resolveShortUrl(originalUrl) {

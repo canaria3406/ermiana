@@ -10,6 +10,7 @@ module.exports = {
       exec_mode: 'fork',
       instances: 1,
       autorestart: true,
+      stop_exit_codes: [78],
       watch: false,
       cron_restart: '0 0 * * *',
       wait_ready: true,

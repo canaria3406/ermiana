@@ -41,8 +41,10 @@ export const pchomeProvider = {
   async resolve({ match, http }) {
     const id = match[1].toUpperCase();
     const canonicalUrl = `https://24h.pchome.com.tw/prod/${id}`;
-    const productText = await http.getText(`https://ecapi-cdn.pchome.com.tw/ecshop/prodapi/v2/prod/${id}&fields=Name,Nick,Price,Pic&_callback=jsonp_prod`);
-    const descriptionText = await http.getText(`https://ecapi-cdn.pchome.com.tw/cdn/ecshop/prodapi/v2/prod/${id}/desc&fields=Meta,SloganInfo&_callback=jsonp_desc`);
+    const [productText, descriptionText] = await Promise.all([
+      http.getText(`https://ecapi-cdn.pchome.com.tw/ecshop/prodapi/v2/prod/${id}&fields=Name,Nick,Price,Pic&_callback=jsonp_prod`),
+      http.getText(`https://ecapi-cdn.pchome.com.tw/cdn/ecshop/prodapi/v2/prod/${id}/desc&fields=Meta,SloganInfo&_callback=jsonp_desc`),
+    ]);
     const product = firstProduct(parseJsonp(productText), id);
     const description = firstProduct(parseJsonp(descriptionText), id);
     if (!product) throw new Error('PChome response has no product');

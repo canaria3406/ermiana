@@ -2,7 +2,6 @@ import process from 'node:process';
 import { setTimeout as delay } from 'node:timers/promises';
 import { config as loadEnv } from 'dotenv';
 import { PermissionsBitField } from 'discord.js';
-import { CacheService, connectRedis, MemoryCacheBackend } from '../../src/core/cache.js';
 import { createDiscordClient } from '../../src/discord/client.js';
 import { REMOVE_MESSAGE_COMMAND_NAME } from '../../src/discord/commands.js';
 import { createInteractionHandler } from '../../src/discord/interaction-handler.js';
@@ -14,9 +13,6 @@ const { loadConfig } = await import('../../src/config.js');
 const config = loadConfig();
 const interactionErrors = [];
 const logger = { debug() {}, info() {}, warn() {}, error(details) { interactionErrors.push(details); } };
-const fallback = new MemoryCacheBackend();
-const redisBackend = await connectRedis({ ...config.redis, required: true }, logger);
-const cache = new CacheService({ backend: redisBackend, fallback, ...config.cache, logger });
 const client = createDiscordClient();
 let source;
 let reply;
@@ -61,7 +57,7 @@ try {
     content: 'ermiana automated pagination smoke test (temporary)',
     allowedMentions: { parse: [] },
   });
-  const renderer = new DiscordRenderer({ cache, logger });
+  const renderer = new DiscordRenderer({ logger });
   bilibiliReply = await renderer.send(source, {
     canonicalUrl: 'https://www.bilibili.com/video/BV1UmK36aED9',
     content: 'https://www.vxbilibili.com/video/BV1UmK36aED9?p=1',
@@ -81,7 +77,6 @@ try {
     suppressOriginal: false,
   });
 
-  const stored = await cache.get('interaction', reply.id);
   const initialButtons = reply.components[0]?.components ?? [];
   const initialButtonsStoredUrls = initialButtons.length === 2
     && initialButtons[0].customId === PAGINATION_IDS.cycle
@@ -121,7 +116,6 @@ try {
     pagination: { type: 'pixiv-url', totalPages: 4 },
     suppressOriginal: false,
   }, { spoiler: true });
-  const pixivStored = await cache.get('interaction', pixivReply.id);
   const pixivMessage = {
     embeds: pixivReply.embeds,
     components: pixivReply.components,
@@ -166,7 +160,6 @@ try {
     gatewayReady: client.isReady(),
     guilds: client.guilds.cache.size,
     bilibiliProxyEmbed: bilibiliReply.embeds.length > 0,
-    redisPaginationStateAbsent: stored === null && pixivStored === null,
     embedSent: reply.embeds.length === 1,
     initialButtonsStoredUrls,
     secondPageButtonsStoredUrls: secondPageButtons.length === 2
@@ -227,11 +220,6 @@ if (source) {
   }
 }
 client.destroy();
-try {
-  await cache.close();
-} catch (error) {
-  cleanupErrors.push(error);
-}
 
 if (operationError) throw operationError;
 if (cleanupErrors.length > 0) throw new AggregateError(cleanupErrors, 'Discord smoke-test cleanup failed');

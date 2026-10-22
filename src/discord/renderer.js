@@ -40,6 +40,13 @@ function safeUrl(value) {
   return typeof value === 'string' && /^https?:\/\//.test(value) ? value : undefined;
 }
 
+function isDiscordPayloadTooLarge(error) {
+  return error?.code === 40005
+    || error?.rawError?.code === 40005
+    || error?.status === 413
+    || error?.httpStatus === 413;
+}
+
 function discordTimestamp(value) {
   const date = new Date(value);
   if (!Number.isFinite(date.getTime())) return undefined;
@@ -59,17 +66,20 @@ function twitterEngagement(data) {
   return engagement ? `-# ${escapeMarkdown(engagement)}` : undefined;
 }
 
+function maskedLink(label, url) {
+  const escapedLabel = escapeMarkdown(label).replaceAll('[', '\\[').replaceAll(']', '\\]');
+  return url ? `[${escapedLabel}](${url.replaceAll(')', '%29')})` : escapedLabel;
+}
+
 function twitterTitleLink(label, url, handle) {
-  const escaped = escapeMarkdown(label);
-  if (!url) return escaped;
   const emojiIndex = label.search(/\p{Extended_Pictographic}/u);
   const linkLabel = handle ? `(${handle})` : '開啟推文';
-  const link = `[${escapeMarkdown(linkLabel)}](${url.replaceAll(')', '%29')})`;
-  if (emojiIndex < 0) return `[${escaped}](${url.replaceAll(')', '%29')})`;
-  if (emojiIndex === 0) return `${escaped} ${link}`;
+  if (emojiIndex < 0) return maskedLink(label, url);
+  if (emojiIndex === 0) return `${escapeMarkdown(label)} ${maskedLink(linkLabel, url)}`;
   const prefix = label.slice(0, emojiIndex).trimEnd();
   const suffix = label.slice(emojiIndex);
-  return `[${escapeMarkdown(prefix)}](${url.replaceAll(')', '%29')})${escapeMarkdown(label.slice(prefix.length)) || suffix}`;
+  const trailingWhitespace = label.slice(prefix.length, emojiIndex);
+  return `${maskedLink(prefix, url)}${escapeMarkdown(trailingWhitespace + suffix)}`;
 }
 
 function twitterVideoUrl(sourceMediaUrl) {
@@ -308,7 +318,22 @@ export class DiscordRenderer {
     }
     if (!payload.content && !payload.embeds && !payload.components) throw new Error('Preview has no renderable content');
 
-    const reply = await message.reply(payload);
+    let reply;
+    try {
+      reply = await message.reply(payload);
+    } catch (error) {
+      const retryContent = safeUrl(preview.discordRetryContent);
+      if (!retryContent || !isDiscordPayloadTooLarge(error)) throw error;
+      this.logger?.warn({
+        code: error?.code ?? error?.rawError?.code,
+        status: error?.status ?? error?.httpStatus,
+        retryHostname: URL.parse(retryContent)?.hostname,
+      }, 'Discord rejected preview payload; retrying fallback URL');
+      reply = await message.reply({
+        ...payload,
+        content: spoilerText(retryContent, spoiler),
+      });
+    }
     if (!useTwitterMediaGallery) {
       for (const mediaUrl of (preview.media ?? []).slice(0, MAX_DISCORD_STORED_MEDIA)) {
         const renderedMediaUrl = preview.provider === 'twitter' && twitterStyle !== 'new'

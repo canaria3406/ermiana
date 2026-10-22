@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { isAbsolute } from 'node:path';
 import test from 'node:test';
 import { loadConfig } from '../../src/config.js';
 
@@ -16,10 +17,17 @@ test('loads required variables and typed defaults', () => {
   assert.equal(config.redis.retryInitialDelayMs, 1000);
   assert.equal(config.redis.retryMaxDelayMs, 30000);
   assert.equal(config.redis.retryBudgetMs, 90000);
-  assert.equal(config.cache.waitTimeoutMs, 13000);
+  assert.equal(config.redis.keyPrefix, 'ermiana');
+  assert.equal(config.cache.lockTtlMs, 30000);
+  assert.equal(config.cache.waitTimeoutMs, 16000);
+  assert.equal(config.http.timeoutMs, 5000);
   assert.equal(config.http.retries, 1);
   assert.equal(config.http.userAgent, 'GoogleBot (+https://github.com/)');
-  assert.equal(config.guild.databasePath, 'data/ermiana.db');
+  assert.equal(isAbsolute(config.guild.databasePath), true);
+  assert.equal(config.guild.databasePath.endsWith('data\\ermiana.db'), true);
+  assert.equal(config.runtime.shardSpawnTimeoutMs, 120000);
+  assert.equal(config.runtime.readyTimeoutMs, 240000);
+  assert.equal(config.runtime.startupMarginMs, 15000);
   assert.equal(config.logLevel, 'error');
 });
 
@@ -57,19 +65,5 @@ test('validates the optional Discord webhook URL and production requirement', ()
 test('rejects incomplete or invalid configuration', () => {
   assert.throws(() => loadConfig({}), /DISCORD_TOKEN/);
   assert.throws(() => loadConfig({ DISCORD_TOKEN: 'x', BAHA_USER_ID: 'user' }), /configured together/);
-  assert.throws(() => loadConfig({ DISCORD_TOKEN: 'x', HTTP_RETRIES: '99' }), /HTTP_RETRIES/);
-  assert.throws(() => loadConfig({ DISCORD_TOKEN: 'x', HTTP_RETRIES: '2times' }), /HTTP_RETRIES/);
   assert.throws(() => loadConfig({ DISCORD_TOKEN: 'x', DISCORD_TOTAL_SHARDS: '6.5' }), /DISCORD_TOTAL_SHARDS/);
-  assert.equal(loadConfig({ DISCORD_TOKEN: 'x', REDIS_RETRY_BUDGET_MS: '0' }).redis.retryBudgetMs, 0);
-  assert.throws(() => loadConfig({ DISCORD_TOKEN: 'x', REDIS_RETRY_BUDGET_MS: '300001' }), /REDIS_RETRY_BUDGET_MS/);
-  assert.equal(loadConfig({ DISCORD_TOKEN: 'x' }).runtime.shardSpawnTimeoutMs, 120000);
-  assert.throws(
-    () => loadConfig({ DISCORD_TOKEN: 'x', REDIS_RETRY_BUDGET_MS: '110000' }),
-    /REDIS_RETRY_BUDGET_MS must be at least 15000 ms below SHARD_SPAWN_TIMEOUT_MS \(120000\)/,
-  );
-  assert.equal(loadConfig({ DISCORD_TOKEN: 'x' }).runtime.readyTimeoutMs, 240000);
-  assert.throws(
-    () => loadConfig({ DISCORD_TOKEN: 'x', REDIS_RETRY_INITIAL_DELAY_MS: '5000', REDIS_RETRY_MAX_DELAY_MS: '1000' }),
-    /REDIS_RETRY_MAX_DELAY_MS/,
-  );
 });

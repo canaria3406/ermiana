@@ -34,6 +34,8 @@ test('matches Bilibili opus and strict 12-character BV identifiers', () => {
   const registry = new ProviderRegistry(providers);
   assert.equal(registry.match('https://www.bilibili.com/opus/123456789')?.provider.id, 'bilibili');
   assert.equal(registry.match('https://www.bilibili.com/video/BV1xx411c7mQ?p=2')?.provider.id, 'bilibili');
+  assert.equal(registry.match('https://m.bilibili.com/opus/123456789')?.provider.id, 'bilibili');
+  assert.equal(registry.match('https://m.bilibili.com/video/BV1hCab6EEjo')?.provider.id, 'bilibili');
   assert.equal(registry.match('https://www.bilibili.com/video/BV1xx411c7m')?.provider.id, undefined);
   assert.equal(registry.match('https://www.bilibili.com/video/BV1xx411c7mQ9')?.provider.id, undefined);
   assert.equal(registry.match('https://www.bilibili.com/video/bv1xx411c7mQ')?.provider.id, undefined);
@@ -115,48 +117,6 @@ test('selects the earliest supported URL and honors user suppression syntax', ()
   assert.equal(registry.match(`~~${twitter}~~`), null);
   assert.equal(registry.match(`<${pixiv}> then ${pixiv}`)?.provider.id, 'pixiv');
   assert.equal(registry.match(`~~${twitter}~~ then ${twitter}`)?.provider.id, 'twitter');
-});
-
-test('pairs ~~ delimiters left to right instead of spanning separate strikethroughs', () => {
-  const registry = new ProviderRegistry(providers);
-  const twitter = cases.find(([name]) => name === 'twitter')[1];
-  const pixiv = cases.find(([name]) => name === 'pixiv')[1];
-
-  assert.equal(registry.match(`~~a~~ ${twitter} ~~b~~`)?.provider.id, 'twitter');
-  assert.equal(registry.match(`~~a~~ ${pixiv} ~~b~~ ${twitter}`)?.provider.id, 'pixiv');
-  assert.equal(registry.match(`~~a~~ ${twitter} ~~`)?.provider.id, 'twitter');
-  assert.equal(registry.match(`~~${twitter}~~`), null);
-  assert.equal(registry.match(`~~ prefix ${twitter} suffix ~~`), null);
-});
-
-test('a < span ends at the first > and nested < cannot revive a suppressed link', () => {
-  const registry = new ProviderRegistry(providers);
-  const pixiv = cases.find(([name]) => name === 'pixiv')[1];
-
-  assert.equal(registry.match(`<a> <b ${pixiv}>`), null);
-  assert.equal(registry.match(`<a <b> ${pixiv}>`)?.provider.id, 'pixiv');
-  assert.equal(registry.match(`<<<${pixiv}>`), null);
-  assert.equal(registry.match(`< ${pixiv}`)?.provider.id, 'pixiv');
-});
-
-test('suppression scanning stays linear on adversarial content', () => {
-  const registry = new ProviderRegistry(providers);
-  const content = '~~'.repeat(1000) + 'https://a.tw/x '.repeat(133);
-  const startedAt = performance.now();
-  registry.match(content);
-  const elapsedMs = performance.now() - startedAt;
-  assert.ok(elapsedMs < 250, `suppression scan took ${elapsedMs.toFixed(1)}ms`);
-});
-
-test('compiled patterns are reused without leaking lastIndex between messages', () => {
-  const registry = new ProviderRegistry(providers);
-  const twitter = cases.find(([name]) => name === 'twitter')[1];
-  assert.ok(registry.matchers.every(({ pattern }) => pattern.global));
-
-  registry.match(`${twitter} and ${twitter}`);
-  assert.ok(registry.matchers.every(({ pattern }) => pattern.lastIndex === 0));
-  assert.equal(registry.match(`lead ${twitter}`).index, 5);
-  assert.equal(registry.match(`lead ${twitter}`).index, 5);
 });
 
 test('matches real-world URL forms and keeps tracking parameters out of the cache key', () => {

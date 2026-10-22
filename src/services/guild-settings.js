@@ -9,6 +9,7 @@ const READY_KEY = 'guild-cache:v1:ready';
 const REBUILD_LOCK_KEY = 'guild-cache:v1:rebuild-lock';
 const REBUILD_LOCK_TTL_MS = 15000;
 const REBUILD_WAIT_MS = 20000;
+const CACHE_CHECK_INTERVAL_MS = 15000;
 
 export const DEFAULT_GUILD_CONFIG = Object.freeze({
   disabledPreviews: Object.freeze([]),
@@ -20,6 +21,13 @@ export class GuildCacheUnavailableError extends Error {
   constructor(message = 'Guild configuration cache is not ready', options) {
     super(message, options);
     this.name = 'GuildCacheUnavailableError';
+  }
+}
+
+export class GuildDatabaseEmptyError extends Error {
+  constructor() {
+    super('SQLite guild database is empty while Redis still contains guild settings');
+    this.name = 'GuildDatabaseEmptyError';
   }
 }
 
@@ -69,14 +77,26 @@ function effectiveConfig(customConfig) {
 }
 
 export class GuildSettingsStore {
-  constructor({ databasePath, redis, providerIds, logger }) {
+  constructor({
+    databasePath,
+    redis,
+    providerIds,
+    logger,
+    cacheOwner = false,
+    rebuildWaitMs = REBUILD_WAIT_MS,
+    onDatabaseEmpty = () => {},
+  }) {
     this.databasePath = databasePath === ':memory:' ? databasePath : resolve(databasePath);
     this.redis = null;
     this.providerIds = new Set(providerIds);
     this.logger = logger;
+    this.cacheOwner = cacheOwner;
+    this.rebuildWaitMs = rebuildWaitMs;
+    this.onDatabaseEmpty = onDatabaseEmpty;
     this.cacheReady = false;
-    this.needsRebuild = false;
     this.rebuildPromise = null;
+    this.cacheCheckTimer = null;
+    this.recoveryErrorReported = false;
     this.readingFromDatabase = false;
     this.closed = false;
 
@@ -103,12 +123,13 @@ export class GuildSettingsStore {
         updated_at = excluded.updated_at
     `);
     this.deleteOne = this.database.prepare('DELETE FROM guilds WHERE guild_id = ?');
+    this.countGuilds = this.database.prepare('SELECT COUNT(*) AS count FROM guilds');
 
     this.onRedisUnavailable = () => {
       this.cacheReady = false;
     };
     this.onRedisReady = () => {
-      if (!this.closed) void this.recoverGuildCache();
+      if (this.cacheOwner && !this.closed) void this.recoverGuildCache({ forceRebuild: true });
     };
     this.attachRedis(redis);
   }
@@ -123,7 +144,7 @@ export class GuildSettingsStore {
     this.redis?.client?.on('error', this.onRedisUnavailable);
     this.redis?.client?.on('end', this.onRedisUnavailable);
     this.redis?.client?.on('reconnecting', this.onRedisUnavailable);
-    this.redis?.client?.on('ready', this.onRedisReady);
+    if (this.cacheOwner) this.redis?.client?.on('ready', this.onRedisReady);
   }
 
   readCustomConfig(guildId) {
@@ -141,36 +162,67 @@ export class GuildSettingsStore {
     });
   }
 
-  async initialize({ forceRebuild = false } = {}) {
-    if (forceRebuild) return this.rebuildGuildCache({ force: true });
-    const recovered = await this.recoverGuildCache();
-    if (!recovered) throw new GuildCacheUnavailableError();
-    return recovered;
-  }
-
-  async recoverGuildCache() {
-    if (!this.redis || this.closed) {
+  async recoverGuildCache({ forceRebuild = false } = {}) {
+    if (!this.cacheOwner || !this.redis || this.closed) {
+      this.cacheReady = false;
+      return false;
+    }
+    if (this.redis.client?.isReady !== true) {
       this.cacheReady = false;
       return false;
     }
     try {
-      if (this.needsRebuild) return await this.rebuildGuildCache({ force: true });
-      const marker = await this.redis.get(READY_KEY);
-      if (marker?.version === 1) {
-        this.cacheReady = true;
-        this.logger?.debug?.({ rebuiltAt: marker.rebuiltAt }, 'Guild cache found in Redis; rebuild skipped');
-        return true;
+      let recovered;
+      if (forceRebuild) {
+        recovered = await this.rebuildGuildCache({ force: true });
+      } else {
+        const marker = await this.redis.get(READY_KEY);
+        if (marker?.version === 1) {
+          this.cacheReady = true;
+          recovered = true;
+        } else {
+          recovered = await this.rebuildGuildCache({ force: true });
+        }
       }
-      return await this.rebuildGuildCache({ force: this.needsRebuild });
+      if (recovered && this.recoveryErrorReported) {
+        this.recoveryErrorReported = false;
+        this.logger?.info?.('guild cache recovery succeeded');
+      }
+      return recovered;
     } catch (error) {
       this.cacheReady = false;
-      this.needsRebuild = true;
-      this.logger?.error({ err: error }, 'guild cache recovery failed');
+      if (error instanceof GuildDatabaseEmptyError) {
+        this.stopCacheMonitor();
+        this.onDatabaseEmpty(error);
+        return false;
+      }
+      if (!this.recoveryErrorReported) {
+        this.recoveryErrorReported = true;
+        this.logger?.error({ err: error }, 'guild cache recovery failed');
+      }
       return false;
     }
   }
 
+  startCacheMonitor({ intervalMs = CACHE_CHECK_INTERVAL_MS } = {}) {
+    if (!this.cacheOwner || this.closed || this.cacheCheckTimer) return false;
+    this.cacheCheckTimer = setInterval(() => {
+      void this.recoverGuildCache();
+    }, intervalMs);
+    this.cacheCheckTimer.unref?.();
+    return true;
+  }
+
+  stopCacheMonitor() {
+    if (!this.cacheCheckTimer) return;
+    clearInterval(this.cacheCheckTimer);
+    this.cacheCheckTimer = null;
+  }
+
   async rebuildGuildCache({ force = false } = {}) {
+    if (!this.cacheOwner) {
+      throw new GuildCacheUnavailableError('Only the manager process may rebuild the guild cache');
+    }
     if (!this.redis) throw new GuildCacheUnavailableError('Redis is unavailable for guild cache rebuild');
     if (this.rebuildPromise) return this.rebuildPromise;
     this.rebuildPromise = this.#rebuildGuildCache(force).finally(() => {
@@ -192,13 +244,12 @@ export class GuildSettingsStore {
     const token = randomUUID();
     let acquired = await this.redis.acquire(REBUILD_LOCK_KEY, token, REBUILD_LOCK_TTL_MS);
     if (!acquired) {
-      const deadline = Date.now() + REBUILD_WAIT_MS;
+      const deadline = Date.now() + this.rebuildWaitMs;
       while (Date.now() < deadline) {
         await delay(100);
         const marker = await this.redis.get(READY_KEY);
         if (marker?.version === 1 && (!force || marker.rebuiltAt >= rebuildStartedAt)) {
           this.cacheReady = true;
-          this.needsRebuild = false;
           return true;
         }
         acquired = await this.redis.acquire(REBUILD_LOCK_KEY, token, REBUILD_LOCK_TTL_MS);
@@ -209,8 +260,6 @@ export class GuildSettingsStore {
 
     this.cacheReady = false;
     try {
-      await this.redis.delete(READY_KEY);
-      const guilds = this.readAllCustomConfigs();
       const existingKeys = [];
       for await (const batch of this.redis.client.scanIterator({
         MATCH: this.redis.key(`${GUILD_KEY_PREFIX}*`),
@@ -218,6 +267,12 @@ export class GuildSettingsStore {
       })) {
         existingKeys.push(...batch);
       }
+      if (this.countGuilds.get().count === 0 && existingKeys.length > 0) {
+        throw new GuildDatabaseEmptyError();
+      }
+
+      await this.redis.delete(READY_KEY);
+      const guilds = this.readAllCustomConfigs();
 
       const transaction = this.redis.client.multi();
       for (const key of existingKeys) transaction.del(key);
@@ -232,7 +287,6 @@ export class GuildSettingsStore {
       const results = await transaction.exec();
       const commandError = results.find((result) => result instanceof Error);
       if (commandError) throw commandError;
-      this.needsRebuild = false;
       this.cacheReady = true;
       this.logger?.info({ records: guilds.length }, 'guild cache rebuilt from SQLite');
       return true;
@@ -243,28 +297,23 @@ export class GuildSettingsStore {
     }
   }
 
-  scheduleRecovery() {
-    if (this.closed || this.rebuildPromise) return;
-    void this.recoverGuildCache();
-  }
-
   async probeCacheReady() {
     if (!this.redis || this.closed) return false;
     try {
       const marker = await this.redis.get(READY_KEY);
-      return this.cacheReady && !this.needsRebuild && marker?.version === 1;
+      this.cacheReady = marker?.version === 1;
+      return this.cacheReady;
     } catch {
+      this.cacheReady = false;
       return false;
     }
   }
 
   async invalidateReadyMarker() {
     this.cacheReady = false;
-    this.needsRebuild = true;
     await this.redis.delete(READY_KEY).catch((deleteError) => {
       this.logger?.warn({ err: deleteError }, 'could not invalidate the Guild cache ready marker');
     });
-    this.scheduleRecovery();
   }
 
   configWithoutCache(guildId, reason, cause) {
@@ -301,9 +350,8 @@ export class GuildSettingsStore {
       return this.configWithoutCache(guildId, 'Could not read guild configuration from Redis', error);
     }
 
-    if (marker?.version !== 1 || this.needsRebuild) {
+    if (marker?.version !== 1) {
       this.cacheReady = false;
-      this.scheduleRecovery();
       return this.configWithoutCache(guildId, 'Guild configuration cache is not ready');
     }
 
@@ -323,11 +371,6 @@ export class GuildSettingsStore {
     return config;
   }
 
-  async isPreviewDisabled(guildId, providerId) {
-    const config = await this.getGuildConfig(guildId);
-    return config.disabledPreviews.includes(providerId);
-  }
-
   async getPreviewSettings(guildId, providerId) {
     const config = await this.getGuildConfig(guildId);
     return {
@@ -343,19 +386,18 @@ export class GuildSettingsStore {
     try {
       const markerBeforeUpdate = await this.redis.get(READY_KEY);
       if (markerBeforeUpdate?.version !== 1) {
-        await this.rebuildGuildCache();
+        return await this.#waitForRebuildAndSync(guildId);
       }
       if (customConfig === null) await this.redis.delete(guildKey(guildId));
       else await this.redis.set(guildKey(guildId), customConfig);
       const marker = await this.redis.get(READY_KEY);
-      const cacheUpdated = marker?.version === 1;
-      this.cacheReady = cacheUpdated;
-      this.needsRebuild = !cacheUpdated;
-      if (!cacheUpdated) this.scheduleRecovery();
-      return cacheUpdated;
+      if (marker?.version === 1) {
+        this.cacheReady = true;
+        return true;
+      }
+      return await this.#waitForRebuildAndSync(guildId);
     } catch (error) {
       this.cacheReady = false;
-      this.needsRebuild = true;
       this.logger?.error(
         { err: error, guildId, ...errorDetails },
         'SQLite guild setting committed but Redis update failed',
@@ -363,9 +405,28 @@ export class GuildSettingsStore {
       await this.redis.delete(READY_KEY).catch((deleteError) => {
         this.logger?.warn({ err: deleteError }, 'could not invalidate the Guild cache ready marker');
       });
-      this.scheduleRecovery();
       return false;
     }
+  }
+
+  async #waitForRebuildAndSync(guildId) {
+    const deadline = Date.now() + this.rebuildWaitMs;
+    this.cacheReady = false;
+    while (Date.now() < deadline) {
+      await delay(100);
+      const marker = await this.redis.get(READY_KEY);
+      if (marker?.version !== 1) continue;
+
+      const latestConfig = this.readCustomConfig(guildId);
+      if (latestConfig === null) await this.redis.delete(guildKey(guildId));
+      else await this.redis.set(guildKey(guildId), latestConfig);
+      const markerAfterUpdate = await this.redis.get(READY_KEY);
+      if (markerAfterUpdate?.version === 1) {
+        this.cacheReady = true;
+        return true;
+      }
+    }
+    return false;
   }
 
   async togglePreview(guildId, providerId) {
@@ -455,6 +516,7 @@ export class GuildSettingsStore {
 
   close() {
     this.closed = true;
+    this.stopCacheMonitor();
     this.redis?.client?.off('error', this.onRedisUnavailable);
     this.redis?.client?.off('end', this.onRedisUnavailable);
     this.redis?.client?.off('reconnecting', this.onRedisUnavailable);

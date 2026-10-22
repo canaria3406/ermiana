@@ -1,26 +1,21 @@
 import 'dotenv/config';
+import {
+  CACHE_LOCK_TTL_MS,
+  CACHE_WAIT_TIMEOUT_MS,
+  GUILD_DATABASE_PATH,
+  HTTP_RETRIES,
+  HTTP_TIMEOUT_MS,
+  PM2_READY_TIMEOUT_MS,
+  REDIS_KEY_PREFIX,
+  REDIS_RETRY_BUDGET_MS,
+  REDIS_RETRY_INITIAL_DELAY_MS,
+  REDIS_RETRY_MAX_DELAY_MS,
+  SHARD_SPAWN_TIMEOUT_MS,
+  STARTUP_MARGIN_MS,
+} from './constants.js';
 
 function readString(env, name, defaultValue = undefined) {
   return env[name]?.trim() || defaultValue;
-}
-
-function readInteger(env, name, defaultValue, { min = 0, max = Number.MAX_SAFE_INTEGER } = {}) {
-  const raw = env[name];
-  if (raw === undefined || raw === '') return defaultValue;
-  const normalized = String(raw).trim();
-  const value = /^\d+$/.test(normalized) ? Number(normalized) : Number.NaN;
-  if (!Number.isInteger(value) || value < min || value > max) {
-    throw new Error(`${name} must be an integer between ${min} and ${max}`);
-  }
-  return value;
-}
-
-function readBoolean(env, name, defaultValue) {
-  const raw = env[name];
-  if (raw === undefined || raw === '') return defaultValue;
-  if (/^(true|1|yes)$/i.test(raw)) return true;
-  if (/^(false|0|no)$/i.test(raw)) return false;
-  throw new Error(`${name} must be true or false`);
 }
 
 function readLogLevel(env, nodeEnv) {
@@ -30,9 +25,6 @@ function readLogLevel(env, nodeEnv) {
   }
   return level;
 }
-
-const STARTUP_MARGIN_MS = 15000;
-const READY_TIMEOUT_MS = 240000;
 
 function readShards(env) {
   const raw = readString(env, 'DISCORD_TOTAL_SHARDS', 'auto');
@@ -54,26 +46,8 @@ function readDiscordWebhookUrl(env) {
   return value;
 }
 
-function readRedisRetry(env, { shardSpawnTimeoutMs }) {
-  const initialDelayMs = readInteger(env, 'REDIS_RETRY_INITIAL_DELAY_MS', 1000, { min: 100, max: 60000 });
-  const maxDelayMs = readInteger(env, 'REDIS_RETRY_MAX_DELAY_MS', 30000, { min: 100, max: 120000 });
-  if (maxDelayMs < initialDelayMs) {
-    throw new Error('REDIS_RETRY_MAX_DELAY_MS must be greater than or equal to REDIS_RETRY_INITIAL_DELAY_MS');
-  }
-  const budgetMs = readInteger(env, 'REDIS_RETRY_BUDGET_MS', 90000, { min: 0, max: 300000 });
-  if (budgetMs > shardSpawnTimeoutMs - STARTUP_MARGIN_MS) {
-    throw new Error(
-      `REDIS_RETRY_BUDGET_MS must be at least ${STARTUP_MARGIN_MS} ms below `
-      + `SHARD_SPAWN_TIMEOUT_MS (${shardSpawnTimeoutMs})`,
-    );
-  }
-  return { initialDelayMs, maxDelayMs, budgetMs };
-}
-
 export function loadConfig(env = process.env) {
   const nodeEnv = readString(env, 'NODE_ENV', 'development');
-  const shardSpawnTimeoutMs = readInteger(env, 'SHARD_SPAWN_TIMEOUT_MS', 120000, { min: 30000, max: 600000 });
-  const redisRetry = readRedisRetry(env, { shardSpawnTimeoutMs });
   const discordToken = readString(env, 'DISCORD_TOKEN');
   const discordClientId = readString(env, 'DISCORD_CLIENT_ID');
   const discordWebhookUrl = readDiscordWebhookUrl(env);
@@ -101,28 +75,28 @@ export function loadConfig(env = process.env) {
     }),
     redis: Object.freeze({
       url: readString(env, 'REDIS_URL', 'redis://127.0.0.1:6379/0'),
-      required: readBoolean(env, 'REDIS_REQUIRED', nodeEnv === 'production'),
-      keyPrefix: readString(env, 'REDIS_KEY_PREFIX', 'ermiana'),
-      retryInitialDelayMs: redisRetry.initialDelayMs,
-      retryMaxDelayMs: redisRetry.maxDelayMs,
-      retryBudgetMs: redisRetry.budgetMs,
+      required: nodeEnv === 'production',
+      keyPrefix: REDIS_KEY_PREFIX,
+      retryInitialDelayMs: REDIS_RETRY_INITIAL_DELAY_MS,
+      retryMaxDelayMs: REDIS_RETRY_MAX_DELAY_MS,
+      retryBudgetMs: REDIS_RETRY_BUDGET_MS,
     }),
     cache: Object.freeze({
-      lockTtlMs: readInteger(env, 'CACHE_LOCK_TTL_MS', 30000, { min: 1000, max: 120000 }),
-      waitTimeoutMs: readInteger(env, 'CACHE_WAIT_TIMEOUT_MS', 13000, { min: 100, max: 120000 }),
+      lockTtlMs: CACHE_LOCK_TTL_MS,
+      waitTimeoutMs: CACHE_WAIT_TIMEOUT_MS,
     }),
     http: Object.freeze({
-      timeoutMs: readInteger(env, 'HTTP_TIMEOUT_MS', 5000, { min: 250, max: 30000 }),
-      retries: readInteger(env, 'HTTP_RETRIES', 1, { min: 0, max: 5 }),
+      timeoutMs: HTTP_TIMEOUT_MS,
+      retries: HTTP_RETRIES,
       userAgent: 'GoogleBot (+https://github.com/)',
     }),
     runtime: Object.freeze({
-      shardSpawnTimeoutMs,
-      readyTimeoutMs: READY_TIMEOUT_MS,
+      shardSpawnTimeoutMs: SHARD_SPAWN_TIMEOUT_MS,
+      readyTimeoutMs: PM2_READY_TIMEOUT_MS,
       startupMarginMs: STARTUP_MARGIN_MS,
     }),
     guild: Object.freeze({
-      databasePath: readString(env, 'GUILD_DATABASE_PATH', 'data/ermiana.db'),
+      databasePath: GUILD_DATABASE_PATH,
     }),
     baha: Object.freeze({ userId: bahaUserId, password: bahaPassword }),
   });

@@ -28,7 +28,6 @@ export async function createRuntime(config, logger) {
     throw error;
   }
   guildSettings.attachRedis(redisBackend);
-  if (redisBackend) await guildSettings.initialize();
   const cache = new CacheService({
     backend: redisBackend ?? fallback,
     fallback,
@@ -67,9 +66,7 @@ export async function createRuntime(config, logger) {
   });
 
   return {
-    cache,
     guildSettings,
-    http,
     previewService,
     async close() {
       guildSettings.close();

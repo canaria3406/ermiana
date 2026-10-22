@@ -135,14 +135,6 @@ export class CacheService {
     }
   }
 
-  async get(namespace, key) {
-    const cacheKey = this.formatKey(namespace, key);
-    const selected = await this.selectBackend(cacheKey);
-    let cached = selected.cached;
-    if (!cached && selected.backend !== this.fallback) cached = await this.fallback.get(cacheKey);
-    return cached?.staleUntil > Date.now() ? cached.value : null;
-  }
-
   async set(namespace, key, value, { ttlSeconds = this.ttlSeconds, staleTtlSeconds = 0 } = {}) {
     const cacheKey = this.formatKey(namespace, key);
     const now = Date.now();

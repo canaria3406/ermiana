@@ -69,6 +69,13 @@ export function fallbackPreview(canonicalUrl, content = canonicalUrl) {
   return createPreview({ canonicalUrl, content, suppressOriginal: true });
 }
 
+export async function rewrittenLinkPreview(previewSite, canonicalUrl, rewriteUrl = canonicalUrl) {
+  const { previewUrl, fallbackUrl } = await previewSite.getPreviewUrls(rewriteUrl);
+  return previewUrl
+    ? { ...fallbackPreview(canonicalUrl, previewUrl), discordRetryContent: fallbackUrl }
+    : null;
+}
+
 export function proxyPixivUrl(url) {
   return typeof url === 'string' ? url.replace('i.pximg.net', 'pixiv.canaria.cc') : url;
 }

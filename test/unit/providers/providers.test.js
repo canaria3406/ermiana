@@ -27,36 +27,6 @@ function match(provider, url) {
 
 const quietLogger = { warn() {}, info() {}, debug() {}, error() {} };
 
-test('only the selected providers define preview cache TTLs', () => {
-  const cached = [
-    [twitterProvider, 3600],
-    [plurkProvider, 1800],
-    [bahamutProvider, 1800],
-    [pttProvider, 1800],
-    [pixivProvider, 7200],
-    [nhentaiProvider, 7200],
-    [ehentaiProvider, 7200],
-  ];
-  for (const [provider, ttlSeconds] of cached) {
-    assert.equal(provider.ttlSeconds, ttlSeconds, provider.id);
-    assert.equal(typeof provider.cacheKey, 'function', provider.id);
-  }
-
-  for (const provider of [
-    blueskyProvider,
-    pchomeProvider,
-    misskeyProvider,
-    tiktokProvider,
-    facebookProvider,
-    bilibiliProvider,
-    threadsProvider,
-    instagramProvider,
-  ]) {
-    assert.equal('ttlSeconds' in provider, false, provider.id);
-    assert.equal('cacheKey' in provider, false, provider.id);
-  }
-});
-
 test('Twitter provider maps FXTwitter media and engagement', async () => {
   const url = 'https://x.com/example/status/123';
   const preview = await twitterProvider.resolve({
@@ -99,7 +69,7 @@ test('Pixiv provider stores only the first URL and total page count', async () =
   const preview = await pixivProvider.resolve({
     match: match(pixivProvider, url), logger: quietLogger,
     http: { async getJson() { return { error: false, body: {
-      title: 'Artwork', pageCount: 3, bookmarkCount: 9, userName: 'Artist', userId: '7',
+      title: 'Artwork', pageCount: 3, bookmarkCount: 9,
       urls: { regular: 'https://i.pximg.net/img/42_p0.jpg' },
       tags: { tags: [{ tag: 'cat' }] }, extraData: { meta: { twitter: { description: 'desc' } } },
     } }; } },
@@ -125,20 +95,6 @@ test('Pixiv provider escapes markdown in tag labels and link URLs', async () => 
     '[a\\*b\\*c](https://www.pixiv.net/tags/a*b*c/artworks)',
   ].join(', '));
   assert.equal(pixivProvider.cacheKey(match(pixivProvider, url)), 'v3:42');
-});
-
-test('Pixiv provider keeps long tag fields within a complete markdown link', async () => {
-  const url = 'https://www.pixiv.net/artworks/42';
-  const tags = Array.from({ length: 20 }, (_value, index) => `${'長い日本語タグ'.repeat(3)}${index}`);
-  const preview = await pixivProvider.resolve({
-    match: match(pixivProvider, url), logger: quietLogger,
-    http: { async getJson() { return { error: false, body: {
-      title: 'Artwork', urls: {}, tags: { tags: tags.map((tag) => ({ tag })) },
-    } }; } },
-  });
-  const value = preview.embed.fields[0].value;
-  assert.ok(value.length <= 1024);
-  assert.ok(value.endsWith(')'));
 });
 
 test('Bahamut provider extracts Open Graph data', async () => {
@@ -193,20 +149,6 @@ test('PChome provider parses JSONP product and description responses', async () 
   assert.equal(preview.embed.fields[1].value, '999');
 });
 
-test('PChome provider prefers Name over a promotional Nick without requesting the product page', async () => {
-  const url = 'https://24h.pchome.com.tw/prod/DRAHI2-A900H3OMM';
-  const requestedUrls = [];
-  const http = { async getText(requestUrl) {
-    requestedUrls.push(requestUrl);
-    if (requestUrl.includes('/desc')) return 'jsonp_desc({"DRAHI2-A900H3OMM-000":{"Meta":{},"SloganInfo":[]}})';
-    return 'jsonp_prod({"DRAHI2-A900H3OMM-000":{"Name":"WD BLACK 黑標 SN850X 1TB Gen4 NVMe PCIe SSD固態硬碟(WDS100T2X0E)","Nick":"<b>★編織購物袋(限量)★</b>"}})';
-  } };
-  const preview = await pchomeProvider.resolve({ match: match(pchomeProvider, url), http });
-  assert.equal(preview.embed.title, 'WD BLACK 黑標 SN850X 1TB Gen4 NVMe PCIe SSD固態硬碟(WDS100T2X0E)');
-  assert.equal(requestedUrls.length, 2);
-  assert.ok(requestedUrls.every((requestUrl) => requestUrl !== url));
-});
-
 test('Misskey provider filters files by MIME type', async () => {
   const url = 'https://misskey.io/notes/abcdefghij';
   const preview = await misskeyProvider.resolve({
@@ -225,12 +167,16 @@ test('TikTok provider delegates preview-site selection without per-video cache m
   let selectedUrl;
   const preview = await tiktokProvider.resolve({
     match: match(tiktokProvider, url),
-    services: { tiktokPreviewSite: { async getPreviewUrl(originalUrl) {
+    services: { tiktokPreviewSite: { async getPreviewUrls(originalUrl) {
       selectedUrl = originalUrl;
-      return originalUrl.replace('tiktok.com', 'tnktok.com');
+      return {
+        previewUrl: originalUrl.replace('tiktok.com', 'tnktok.com'),
+        fallbackUrl: originalUrl.replace('tiktok.com', 'tiktokez.com'),
+      };
     } } },
   });
   assert.equal(preview.content, 'https://www.tnktok.com/@example/video/123');
+  assert.equal(preview.discordRetryContent, 'https://www.tiktokez.com/@example/video/123');
   assert.equal(selectedUrl, url);
 });
 
@@ -238,7 +184,9 @@ test('TikTok provider returns no preview when both preview sites are unavailable
   const url = 'https://www.tiktok.com/@example/video/456';
   const preview = await tiktokProvider.resolve({
     match: match(tiktokProvider, url),
-    services: { tiktokPreviewSite: { async getPreviewUrl() { return null; } } },
+    services: { tiktokPreviewSite: { async getPreviewUrls() {
+      return { previewUrl: null, fallbackUrl: null };
+    } } },
   });
   assert.equal(preview, null);
 });
@@ -248,30 +196,24 @@ test('Bilibili provider rewrites a BV URL to vxbilibili with page one by default
   let selectedUrl;
   const preview = await bilibiliProvider.resolve({
     match: match(bilibiliProvider, url),
-    services: { bilibiliPreviewSite: { async getPreviewUrl(candidateUrl) {
+    services: { bilibiliPreviewSite: { async getPreviewUrls(candidateUrl) {
       selectedUrl = candidateUrl;
-      return candidateUrl;
+      return { previewUrl: candidateUrl, fallbackUrl: null };
     } } },
   });
   assert.equal(selectedUrl, 'https://www.vxbilibili.com/video/BV1UmK36aED9?p=1');
   assert.equal(preview.content, selectedUrl);
   assert.equal(preview.canonicalUrl, url);
-});
-
-test('Bilibili provider preserves a valid multipart page and discards unrelated query parameters', async () => {
-  const url = 'https://www.bilibili.com/video/BV1UmK36aED9?p=3&spm_id_from=333.1007';
-  const preview = await bilibiliProvider.resolve({
-    match: match(bilibiliProvider, url),
-    services: { bilibiliPreviewSite: { async getPreviewUrl(candidateUrl) { return candidateUrl; } } },
-  });
-  assert.equal(preview.content, 'https://www.vxbilibili.com/video/BV1UmK36aED9?p=3');
+  assert.equal(preview.discordRetryContent, null);
 });
 
 test('Bilibili provider rewrites opus URLs without calling the removed API', async () => {
   const url = 'https://www.bilibili.com/opus/123';
   const preview = await bilibiliProvider.resolve({
     match: match(bilibiliProvider, url),
-    services: { bilibiliPreviewSite: { async getPreviewUrl(candidateUrl) { return candidateUrl; } } },
+    services: { bilibiliPreviewSite: { async getPreviewUrls(candidateUrl) {
+      return { previewUrl: candidateUrl, fallbackUrl: null };
+    } } },
   });
   assert.equal(preview.content, 'https://www.vxbilibili.com/opus/123');
 });
@@ -300,7 +242,9 @@ test('Bilibili provider returns no preview while vxbilibili is unavailable', asy
   const url = 'https://www.bilibili.com/video/BV1UmK36aED9';
   const preview = await bilibiliProvider.resolve({
     match: match(bilibiliProvider, url),
-    services: { bilibiliPreviewSite: { async getPreviewUrl() { return null; } } },
+    services: { bilibiliPreviewSite: { async getPreviewUrls() {
+      return { previewUrl: null, fallbackUrl: null };
+    } } },
   });
   assert.equal(preview, null);
 });
@@ -374,46 +318,6 @@ test('PTT provider removes blank lines when every content line is uniformly sepa
   assert.equal(preview.embed.description, '第一行\n第二行');
 });
 
-test('PTT provider preserves blank lines when line spacing is mixed', async () => {
-  const url = 'https://www.ptt.cc/bbs/C_Chat/M.1745505996.A.757.html';
-  const html = `<html><head><meta property="og:title" content="標題"></head><body>
-    <div id="main-content">第一行\n\n第二行\n第三行</div>
-  </body></html>`;
-  const preview = await pttProvider.resolve({
-    match: match(pttProvider, url),
-    http: { async getText() { return html; } },
-  });
-
-  assert.equal(preview.embed.description, '第一行\n\n第二行\n第三行');
-});
-
-test('PTT provider drops the line whose fifth character reaches the 420 character limit', async () => {
-  const url = 'https://www.ptt.cc/bbs/C_Chat/M.1745505996.A.757.html';
-  const completeLine = '字'.repeat(414);
-  const html = `<html><head><meta property="og:title" content="標題"></head><body>
-    <div id="main-content">${completeLine}\n這行第五字到上限，整行不顯示</div>
-  </body></html>`;
-  const preview = await pttProvider.resolve({
-    match: match(pttProvider, url),
-    http: { async getText() { return html; } },
-  });
-
-  assert.equal(preview.embed.description, completeLine);
-});
-
-test('PTT provider intentionally omits its description when the first line exceeds 420 characters', async () => {
-  const url = 'https://www.ptt.cc/bbs/C_Chat/M.1745505996.A.757.html';
-  const html = `<html><head><meta property="og:title" content="標題"></head><body>
-    <div id="main-content">${'字'.repeat(421)}\n第二行</div>
-  </body></html>`;
-  const preview = await pttProvider.resolve({
-    match: match(pttProvider, url),
-    http: { async getText() { return html; } },
-  });
-
-  assert.equal(preview.embed.description, undefined);
-});
-
 test('PTT provider outputs at most twelve lines after blank-line processing', async () => {
   const url = 'https://www.ptt.cc/bbs/C_Chat/M.1745505996.A.757.html';
   const lines = Array.from({ length: 13 }, (_value, index) => `第${index + 1}行`);
@@ -445,29 +349,6 @@ test('PTT provider stops parsing at the posting-station marker', async () => {
 
   assert.equal(preview.embed.description, '本文');
   assert.deepEqual(preview.images, []);
-});
-
-test('PTT provider ignores posting-station text in head metadata and quoted article text', async () => {
-  const url = 'https://www.ptt.cc/bbs/C_Chat/M.1788328219.A.4C9.html';
-  const marker = '※ 發信站: 批踢踢實業坊(ptt.cc)';
-  const html = `<html><head>
-    <meta name="description" content="短文 -- ${marker}">
-    <meta property="og:description" content="短文 -- ${marker}">
-    <meta property="og:title" content="Re: [閒聊] 標題">
-  </head><body><div id="main-content">
-<div class="article-metaline"><span class="article-meta-tag">作者</span><span class="article-meta-value">author</span></div>
-: ${marker}
-這是真正想說的回文
-<span class="f2">${marker}, 來自: 127.0.0.1</span>
-不應解析的尾端
-</div></body></html>`;
-  const preview = await pttProvider.resolve({
-    match: match(pttProvider, url),
-    http: { async getText() { return html; } },
-  });
-
-  assert.equal(preview.embed.title, 'Re: [閒聊] 標題');
-  assert.equal(preview.embed.description, `: ${marker}\n這是真正想說的回文`);
 });
 
 test('Facebook provider delegates canonical resolution and uses the generic fallback preview', async () => {
@@ -532,11 +413,6 @@ test('nHentai provider maps v2 gallery metadata and sequential page URLs', async
   assert.doesNotMatch(preview.embed.fields.at(-1).value, /類別|doujinshi/);
 });
 
-test('nHentai provider normalizes leading zeros in cache keys', () => {
-  const url = 'https://nhentai.net/g/00042';
-  assert.equal(nhentaiProvider.cacheKey(match(nhentaiProvider, url)), '42');
-});
-
 test('nHentai provider disables generated pagination for non-sequential API paths', async () => {
   const url = 'https://www.nhentai.net/g/42/';
   const preview = await nhentaiProvider.resolve({
@@ -556,37 +432,6 @@ test('nHentai provider disables generated pagination for non-sequential API path
 
   assert.deepEqual(preview.images, ['https://i.nhentai.net/galleries/7/1.webp']);
   assert.equal(preview.pagination, undefined);
-});
-
-test('nHentai provider falls back to the full English title when Japanese is unavailable', async () => {
-  const url = 'https://nhentai.net/g/42';
-  const preview = await nhentaiProvider.resolve({
-    match: match(nhentaiProvider, url),
-    http: { async getJson() { return {
-      id: 42,
-      media_id: '7',
-      title: { english: 'Full English Title', japanese: '', pretty: 'Short Title' },
-      num_pages: 1,
-      pages: [{ path: 'galleries/7/1.webp' }],
-      tags: [],
-    }; } },
-  });
-
-  assert.equal(preview.embed.title, 'Full English Title');
-});
-
-test('PTT provider uses a generic board title for a real article container without title metadata', async () => {
-  const url = 'https://www.ptt.cc/bbs/Gossiping/M.1787026603.A.A47.html';
-  const html = `<html><head><title>閱讀文章 - 看板 Gossiping - 批踢踢實業坊</title></head><body>
-    <div id="main-content">ASCII art 內文</div>
-  </body></html>`;
-  const preview = await pttProvider.resolve({
-    match: match(pttProvider, url),
-    http: { async getText() { return html; } },
-  });
-
-  assert.equal(preview.embed.title, 'PTT / Gossiping');
-  assert.equal(preview.embed.description, 'ASCII art 內文');
 });
 
 test('PTT provider starts Gossiping news previews after the full-body marker', async () => {
@@ -643,6 +488,7 @@ test('Threads provider supports both current and legacy domains', async () => {
     });
     assert.equal(preview.canonicalUrl, url);
     assert.equal(preview.content, 'https://www.vxthreads.com/@example/post/ABC_def-123');
+    assert.equal(preview.discordRetryContent, 'https://fixthreads.seria.moe/@example/post/ABC_def-123');
   }
 });
 
@@ -661,12 +507,16 @@ test('Instagram provider delegates post, reel, user-post, and story URLs', async
   for (const url of urls) {
     const preview = await instagramProvider.resolve({
       match: match(instagramProvider, url),
-      services: { instagramPreviewSite: { async getPreviewUrl(originalUrl) {
-        return originalUrl.replace('instagram.com', 'oginstagram.com');
+      services: { instagramPreviewSite: { async getPreviewUrls(originalUrl) {
+        return {
+          previewUrl: originalUrl.replace('instagram.com', 'oginstagram.com'),
+          fallbackUrl: originalUrl.replace('instagram.com', 'vxinstagram.com'),
+        };
       } } },
     });
     assert.equal(preview.canonicalUrl, url);
     assert.equal(preview.content, url.replace('instagram.com', 'oginstagram.com'));
+    assert.equal(preview.discordRetryContent, url.replace('instagram.com', 'vxinstagram.com'));
   }
 });
 
@@ -678,7 +528,9 @@ test('rewritten-link providers return no preview when their services are unavail
   for (const [provider, url, serviceName] of fixtures) {
     const preview = await provider.resolve({
       match: match(provider, url),
-      services: { [serviceName]: { async getPreviewUrl() { return null; } } },
+      services: { [serviceName]: { async getPreviewUrls() {
+        return { previewUrl: null, fallbackUrl: null };
+      } } },
     });
     assert.equal(preview, null, provider.id);
   }

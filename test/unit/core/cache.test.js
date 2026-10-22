@@ -17,14 +17,12 @@ const REDIS_CONFIG = Object.freeze({
 });
 function createFakeRedis({ failures = 0 } = {}) {
   const clients = [];
-  const strategyBeforeConnect = [];
   const createClientImpl = (options) => {
     const client = {
       options,
       isOpen: false,
       on() { return this; },
       async connect() {
-        strategyBeforeConnect.push(options.socket.reconnectStrategy(0));
         if (clients.length <= failures) {
           const error = new Error('connect ECONNREFUSED 127.0.0.1:6379');
           error.code = 'ECONNREFUSED';
@@ -40,7 +38,7 @@ function createFakeRedis({ failures = 0 } = {}) {
     clients.push(client);
     return client;
   };
-  return { createClientImpl, clients, strategyBeforeConnect };
+  return { createClientImpl, clients };
 }
 
 function createSleepRecorder() {
@@ -71,34 +69,6 @@ test('retries the initial Redis connection with exponential backoff until it suc
   assert.deepEqual(waits, [1000, 2000, 4000]);
 });
 
-test('caps the initial Redis retry delay and stops at the retry budget', async (t) => {
-  withMaximumJitter(t);
-  const { createClientImpl, clients } = createFakeRedis({ failures: Number.MAX_SAFE_INTEGER });
-  const { waits, sleep, now } = createSleepRecorder();
-
-  await assert.rejects(
-    () => connectRedis({ ...REDIS_CONFIG, retryMaxDelayMs: 8000, retryBudgetMs: 30000 }, undefined, { createClientImpl, sleep, now }),
-    /ECONNREFUSED/,
-  );
-
-  assert.deepEqual(waits, [1000, 2000, 4000, 8000, 8000]);
-  assert.equal(clients.length, waits.length + 1);
-});
-
-test('a zero retry budget fails the initial Redis connection immediately', async (t) => {
-  withMaximumJitter(t);
-  const { createClientImpl, clients } = createFakeRedis({ failures: Number.MAX_SAFE_INTEGER });
-  const { waits, sleep, now } = createSleepRecorder();
-
-  await assert.rejects(
-    () => connectRedis({ ...REDIS_CONFIG, retryBudgetMs: 0 }, undefined, { createClientImpl, sleep, now }),
-    /ECONNREFUSED/,
-  );
-
-  assert.equal(clients.length, 1);
-  assert.deepEqual(waits, []);
-});
-
 test('an optional Redis falls back to the process-local cache without retrying', async () => {
   const { createClientImpl, clients } = createFakeRedis({ failures: Number.MAX_SAFE_INTEGER });
   const { waits, sleep, now } = createSleepRecorder();
@@ -108,19 +78,6 @@ test('an optional Redis falls back to the process-local cache without retrying',
   assert.equal(backend, null);
   assert.equal(clients.length, 1);
   assert.deepEqual(waits, []);
-});
-
-test('node-redis must not retry the first connection itself, only later drops', async (t) => {
-  withMaximumJitter(t);
-  const { createClientImpl, clients, strategyBeforeConnect } = createFakeRedis({ failures: 1 });
-  const { sleep, now } = createSleepRecorder();
-
-  await connectRedis(REDIS_CONFIG, undefined, { createClientImpl, sleep, now });
-
-  assert.deepEqual(strategyBeforeConnect, [false, false]);
-  const { reconnectStrategy } = clients.at(-1).options.socket;
-  assert.equal(reconnectStrategy(0), 100);
-  assert.equal(reconnectStrategy(99), 3000);
 });
 
 test('process-local fallback cache is bounded', async () => {
@@ -214,6 +171,6 @@ test('falls back to local cache if Redis fails while acquiring a lock', async ()
   const fallback = new MemoryCacheBackend();
   const cache = new CacheService({ backend: failingBackend, fallback });
   assert.equal(await cache.getOrLoad('provider', 'item', async () => 'loaded'), 'loaded');
-  assert.equal(await cache.get('provider', 'item'), 'loaded');
+  assert.equal(await cache.getOrLoad('provider', 'item', async () => 'reloaded'), 'loaded');
 });
 

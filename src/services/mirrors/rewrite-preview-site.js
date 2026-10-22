@@ -3,7 +3,15 @@ export class RewritePreviewSiteService {
     this.sites = sites;
   }
 
+  async getPreviewUrls(originalUrl) {
+    const [preferred, fallback] = this.sites;
+    return {
+      previewUrl: preferred?.rewrite(originalUrl) ?? null,
+      fallbackUrl: fallback?.rewrite(originalUrl) ?? null,
+    };
+  }
+
   async getPreviewUrl(originalUrl) {
-    return this.sites[0]?.rewrite(originalUrl) ?? null;
+    return (await this.getPreviewUrls(originalUrl)).previewUrl;
   }
 }

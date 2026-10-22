@@ -28,10 +28,8 @@ export function createMessageHandler({ previewService, renderer, guildSettings, 
 
     try {
       let previewSettings = { disabled: false, twitterStyle: 'default' };
-      if (guildSettings?.getPreviewSettings) {
+      if (guildSettings) {
         previewSettings = await guildSettings.getPreviewSettings(message.guildId, candidate.provider.id);
-      } else if (guildSettings && await guildSettings.isPreviewDisabled(message.guildId, candidate.provider.id)) {
-        previewSettings = { disabled: true, twitterStyle: 'default' };
       }
       if (previewSettings.disabled) {
         logger?.debug?.({

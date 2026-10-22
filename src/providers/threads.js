@@ -1,4 +1,4 @@
-import { fallbackPreview } from './helpers.js';
+import { rewrittenLinkPreview } from './helpers.js';
 
 const THREADS_ORIGIN = String.raw`https:\/\/(?:www\.)?threads\.(?:com|net)`;
 const THREADS_ID = String.raw`[A-Za-z0-9_-]+`;
@@ -11,7 +11,6 @@ export const threadsProvider = {
     new RegExp(String.raw`${THREADS_ORIGIN}\/t\/${THREADS_ID}\/?`, 'i'),
   ],
   async resolve({ match, services }) {
-    const previewUrl = await services.threadsPreviewSite.getPreviewUrl(match[0]);
-    return previewUrl ? fallbackPreview(match[0], previewUrl) : null;
+    return rewrittenLinkPreview(services.threadsPreviewSite, match[0]);
   },
 };

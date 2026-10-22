@@ -1,4 +1,4 @@
-import { fallbackPreview } from './helpers.js';
+import { rewrittenLinkPreview } from './helpers.js';
 
 const MEDIA_PATH = String.raw`(?:[A-Za-z0-9_.]+\/)?(?:p|reels?)\/[A-Za-z0-9_-]+(?:\/[1-9][0-9]*)?\/?`;
 const STORY_PATH = String.raw`stories\/[A-Za-z0-9_.]+\/[0-9]+\/?`;
@@ -11,7 +11,6 @@ export const instagramProvider = {
     new RegExp(`${INSTAGRAM_ORIGIN}${STORY_PATH}`, 'i'),
   ],
   async resolve({ match, services }) {
-    const previewUrl = await services.instagramPreviewSite.getPreviewUrl(match[0]);
-    return previewUrl ? fallbackPreview(match[0], previewUrl) : null;
+    return rewrittenLinkPreview(services.instagramPreviewSite, match[0]);
   },
 };

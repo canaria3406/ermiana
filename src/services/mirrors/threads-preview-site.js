@@ -1,17 +1,24 @@
 import { RewritePreviewSiteService } from './rewrite-preview-site.js';
 
-const SITE = Object.freeze({
-  hostname: 'vxthreads.com',
-  rewrite: (originalUrl) => originalUrl.replace(
-    /^https:\/\/(?:www\.)?threads\.(?:com|net)/i,
-    'https://www.vxthreads.com',
-  ),
-  probeUrl: (candidateUrl) => candidateUrl,
-  originHosts: Object.freeze(['vxthreads.com', 'www.vxthreads.com']),
-});
+function site(hostname, baseUrl) {
+  return Object.freeze({
+    hostname,
+    rewrite: (originalUrl) => originalUrl.replace(
+      /^https:\/\/(?:www\.)?threads\.(?:com|net)/i,
+      baseUrl,
+    ),
+    probeUrl: (candidateUrl) => candidateUrl,
+    originHosts: Object.freeze([hostname, `www.${hostname}`]),
+  });
+}
+
+const SITES = Object.freeze([
+  site('vxthreads.com', 'https://www.vxthreads.com'),
+  site('fixthreads.seria.moe', 'https://fixthreads.seria.moe'),
+]);
 
 export class ThreadsPreviewSiteService extends RewritePreviewSiteService {
   constructor() {
-    super({ sites: Object.freeze([SITE]) });
+    super({ sites: SITES });
   }
 }

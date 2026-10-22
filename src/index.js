@@ -4,7 +4,7 @@ import { ShardingManager } from 'discord.js';
 import { CacheService, connectRedis, MemoryCacheBackend } from './core/cache.js';
 import { loadConfig } from './config.js';
 import { createLogger, flushLogger } from './core/logger.js';
-import { GuildSettingsStore } from './services/guild-settings.js';
+import { GuildDatabaseEmptyError, GuildSettingsStore } from './services/guild-settings.js';
 import { PREVIEW_PROVIDER_IDS } from './providers/index.js';
 import {
   collectDiscordStats,
@@ -16,6 +16,7 @@ import {
 const config = loadConfig();
 configureHttp();
 const logger = createLogger(config.logLevel, { process: 'manager' });
+const EX_CONFIG_EXIT_CODE = 78;
 
 const startupDeadline = Date.now() + config.runtime.readyTimeoutMs - config.runtime.startupMarginMs;
 
@@ -34,6 +35,11 @@ const guildSettings = new GuildSettingsStore({
   redis: null,
   providerIds: PREVIEW_PROVIDER_IDS,
   logger,
+  cacheOwner: true,
+  onDatabaseEmpty: () => {
+    logger.fatal('SQLite guild database is empty while Redis still contains guild settings; refusing to continue');
+    void shutdown('guild database empty', EX_CONFIG_EXIT_CODE);
+  },
 });
 let redisBackend;
 try {
@@ -43,7 +49,19 @@ try {
   throw error;
 }
 guildSettings.attachRedis(redisBackend);
-if (redisBackend) await guildSettings.initialize();
+if (redisBackend) {
+  try {
+    await guildSettings.rebuildGuildCache({ force: true });
+  } catch (error) {
+    if (!(error instanceof GuildDatabaseEmptyError)) throw error;
+    logger.fatal('SQLite guild database is empty while Redis still contains guild settings; refusing to start');
+    guildSettings.close();
+    await redisBackend.close().catch(() => {});
+    await flushLogger(logger).catch(() => {});
+    process.exit(EX_CONFIG_EXIT_CODE);
+  }
+  guildSettings.startCacheMonitor();
+}
 const cache = new CacheService({ backend: redisBackend ?? fallback, fallback, ...config.cache, logger });
 const webhookNotifier = new DiscordWebhookNotifier({ url: config.discord.webhookUrl });
 const manager = new ShardingManager(fileURLToPath(new URL('./bot.js', import.meta.url)), {
