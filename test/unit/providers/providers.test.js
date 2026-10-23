@@ -98,8 +98,9 @@ test('Pixiv provider escapes markdown in tag labels and link URLs', async () => 
 });
 
 test('Bahamut provider extracts Open Graph data', async () => {
-  const url = 'https://forum.gamer.com.tw/C.php?bsn=60076&snA=12';
+  const url = 'https://home.gamer.com.tw/artwork.php?sn=6117279';
   const cookieCalls = [];
+  const requestedUrls = [];
   let requests = 0;
   const preview = await bahamutProvider.resolve({
     match: match(bahamutProvider, url), logger: quietLogger,
@@ -107,13 +108,16 @@ test('Bahamut provider extracts Open Graph data', async () => {
       cookieCalls.push(Boolean(options.force));
       return 'BAHAENUR=a; BAHARUNE=b';
     } } },
-    http: { async getText() {
+    http: { async getText(requestUrl) {
+      requestedUrls.push(requestUrl);
       requests += 1;
       if (requests === 1) return '<html>expired session</html>';
       return '<meta property="og:title" content="Title"><meta property="og:description" content="Desc"><meta property="og:image" content="https://img.test/baha.jpg">';
     } },
   });
   assert.equal(preview.embed.title, 'Title');
+  assert.equal(preview.canonicalUrl, url);
+  assert.deepEqual(requestedUrls, [url, url]);
   assert.equal(preview.images[0], 'https://img.test/baha.jpg');
   assert.deepEqual(cookieCalls, [false, true]);
 });
@@ -163,7 +167,7 @@ test('Misskey provider filters files by MIME type', async () => {
 });
 
 test('TikTok provider delegates preview-site selection without per-video cache metadata', async () => {
-  const url = 'https://www.tiktok.com/@example/video/123';
+  const url = 'https://www.tiktok.com/@/video/123';
   let selectedUrl;
   const preview = await tiktokProvider.resolve({
     match: match(tiktokProvider, url),
@@ -175,8 +179,8 @@ test('TikTok provider delegates preview-site selection without per-video cache m
       };
     } } },
   });
-  assert.equal(preview.content, 'https://www.tnktok.com/@example/video/123');
-  assert.equal(preview.discordRetryContent, 'https://www.tiktokez.com/@example/video/123');
+  assert.equal(preview.content, 'https://www.tnktok.com/@/video/123');
+  assert.equal(preview.discordRetryContent, 'https://www.tiktokez.com/@/video/123');
   assert.equal(selectedUrl, url);
 });
 
@@ -189,6 +193,33 @@ test('TikTok provider returns no preview when both preview sites are unavailable
     } } },
   });
   assert.equal(preview, null);
+});
+
+test('TikTok provider expands vm and vt short links to canonical videos', async () => {
+  for (const host of ['vm.tiktok.com', 'vt.tiktok.com']) {
+    const url = `https://${host}/ABC123/`;
+    let selectedUrl;
+    const preview = await tiktokProvider.resolve({
+      match: match(tiktokProvider, url),
+      services: {
+        http: { async request(requestUrl, options, consume) {
+          assert.equal(requestUrl, url);
+          assert.equal(options.redirect, 'manual');
+          return consume({
+            status: 302,
+            headers: new Headers({ location: 'https://www.tiktok.com/@/video/789' }),
+            body: { async cancel() {} },
+          });
+        } },
+        tiktokPreviewSite: { async getPreviewUrls(canonicalUrl) {
+          selectedUrl = canonicalUrl;
+          return { previewUrl: canonicalUrl.replace('tiktok.com', 'tnktok.com'), fallbackUrl: null };
+        } },
+      },
+    });
+    assert.equal(selectedUrl, 'https://www.tiktok.com/@/video/789');
+    assert.equal(preview.canonicalUrl, selectedUrl);
+  }
 });
 
 test('Bilibili provider rewrites a BV URL to vxbilibili with page one by default', async () => {

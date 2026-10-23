@@ -54,6 +54,7 @@ export async function createRuntime(config, logger) {
     cache,
     http,
     services: {
+      http,
       bahaSession,
       ehentaiApi,
       facebookPreviewSite,

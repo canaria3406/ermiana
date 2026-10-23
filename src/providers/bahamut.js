@@ -1,8 +1,11 @@
 import * as cheerio from 'cheerio';
 import { createPreview, ICONS, truncate } from './helpers.js';
 
-async function fetchPage(http, path, cookie) {
-  return http.getText(`https://forum.gamer.com.tw/${path}`, {
+const HOME_HOST = 'home.gamer.com.tw';
+const FORUM_HOST = 'forum.gamer.com.tw';
+
+async function fetchPage(http, url, cookie) {
+  return http.getText(url, {
     headers: cookie ? { cookie } : {},
   });
 }
@@ -36,18 +39,25 @@ export const bahamutProvider = {
   patterns: [
     /https?:\/\/m\.gamer\.com\.tw\/forum\/((?:C|Co)\.php\?bsn=60076&(?:snA|sn)=[0-9]+)/i,
     /https?:\/\/forum\.gamer\.com\.tw\/((?:C|Co)\.php\?bsn=60076&(?:snA|sn)=[0-9]+)/i,
+    /https:\/\/home\.gamer\.com\.tw\/(artwork\.php\?sn=[0-9]{3,8})(?![0-9a-z])/i,
   ],
   ttlSeconds: 1800,
   cacheKey: (match) => match[1],
   async resolve({ match, http, services, logger }) {
     const path = match[1];
-    const canonicalUrl = `https://forum.gamer.com.tw/${path}`;
+    const sourceHost = new URL(match[0]).hostname.toLowerCase();
+    const canonicalHost = sourceHost === HOME_HOST ? HOME_HOST : FORUM_HOST;
+    const canonicalUrl = `https://${canonicalHost}/${path}`;
     let page;
     try {
-      page = parsePage(await fetchPage(http, path, await services.bahaSession.getCookie()));
+      page = parsePage(await fetchPage(http, canonicalUrl, await services.bahaSession.getCookie()));
     } catch (firstError) {
       logger?.warn({ path, err: firstError }, 'Bahamut request failed; refreshing session');
-      page = parsePage(await fetchPage(http, path, await services.bahaSession.getCookie({ force: true })));
+      page = parsePage(await fetchPage(
+        http,
+        canonicalUrl,
+        await services.bahaSession.getCookie({ force: true }),
+      ));
     }
     return createPreview({
       canonicalUrl,

@@ -130,6 +130,8 @@ test('matches real-world URL forms and keeps tracking parameters out of the cach
     ['bahamut', 'https://forum.gamer.com.tw/C.php?bsn=60076&snA=9208478&tnum=27', 'C.php?bsn=60076&snA=9208478'],
     ['bahamut', 'https://forum.gamer.com.tw/C.php?bsn=60076&snA=5170434&tnum=707672', 'C.php?bsn=60076&snA=5170434'],
     ['bahamut', 'https://forum.gamer.com.tw/C.php?bsn=60076&snA=8876354&tnum=471&bPage=3', 'C.php?bsn=60076&snA=8876354'],
+    ['bahamut', 'https://home.gamer.com.tw/artwork.php?sn=6117279', 'artwork.php?sn=6117279'],
+    ['tiktok', 'https://vt.tiktok.com/ABC123/', undefined],
   ];
   for (const [expected, url, cacheKey] of realWorld) {
     const result = registry.match(`看看這個 ${url} 如何`);
