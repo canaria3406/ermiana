@@ -22,6 +22,7 @@ import {
   NHENTAI_PAGINATION_IDS,
   PAGINATION_IDS,
 } from './renderer.js';
+import { localizeInteraction } from './interaction-i18n.js';
 
 const PAGINATION_HANDLERS = new Map([
   [PAGINATION_IDS.cycle, handleUrlStoragePagination],
@@ -44,15 +45,15 @@ const CHECKED_CHANNEL_TYPES = new Set([
 
 const VIEW_CHANNEL_PERMISSION = Object.freeze({
   flag: PermissionFlagsBits.ViewChannel,
-  label: '檢視頻道',
+  messageKey: 'check.permission.viewChannel',
 });
 
 const CHANNEL_PERMISSION_CHECKS = Object.freeze([
-  { flag: PermissionFlagsBits.SendMessages, label: '發送訊息' },
-  { flag: PermissionFlagsBits.SendMessagesInThreads, label: '在討論串中傳送訊息' },
-  { flag: PermissionFlagsBits.ManageMessages, label: '管理訊息' },
-  { flag: PermissionFlagsBits.EmbedLinks, label: '嵌入連結' },
-  { flag: PermissionFlagsBits.ReadMessageHistory, label: '讀取訊息歷史' },
+  { flag: PermissionFlagsBits.SendMessages, messageKey: 'check.permission.sendMessages' },
+  { flag: PermissionFlagsBits.SendMessagesInThreads, messageKey: 'check.permission.sendMessagesInThreads' },
+  { flag: PermissionFlagsBits.ManageMessages, messageKey: 'check.permission.manageMessages' },
+  { flag: PermissionFlagsBits.EmbedLinks, messageKey: 'check.permission.embedLinks' },
+  { flag: PermissionFlagsBits.ReadMessageHistory, messageKey: 'check.permission.readMessageHistory' },
 ]);
 
 const DIRECT_MESSAGE_CHANNEL_TYPES = new Set([
@@ -61,41 +62,6 @@ const DIRECT_MESSAGE_CHANNEL_TYPES = new Set([
 ]);
 
 const MAX_MENTIONED_CHANNELS_PER_PERMISSION = 10;
-
-const MESSAGES = {
-  success: {
-    'en-US': 'Message deleted successfully.',
-    'en-GB': 'Message deleted successfully.',
-    'zh-TW': '成功刪除訊息。',
-    'zh-CN': '成功删除信息。',
-    ja: 'メッセージを削除しました。',
-  },
-  failed: {
-    'en-US': 'Failed to delete the message.',
-    'en-GB': 'Failed to delete the message.',
-    'zh-TW': '刪除訊息時發生錯誤。',
-    'zh-CN': '删除信息时发生错误。',
-    ja: 'メッセージの削除に失敗しました。',
-  },
-  noPermission: {
-    'en-US': 'I cannot delete this message. Please contact the server administrator to grant me the necessary permissions.',
-    'en-GB': 'I cannot delete this message. Please contact the server administrator to grant me the necessary permissions.',
-    'zh-TW': '我無法刪除這個訊息，請聯絡伺服器管理員，並給我相關權限。',
-    'zh-CN': '我无法删除这个信息，请联系服务器管理员，并给我相关权限。',
-    ja: 'このメッセージを削除できません。サーバー管理者に連絡して、関連する権限を与えてください。',
-  },
-  notMine: {
-    'en-US': 'I can only delete messages that I have sent.',
-    'en-GB': 'I can only delete messages that I have sent.',
-    'zh-TW': '我只能刪除由我自己發送的訊息喔。',
-    'zh-CN': '我只能删除由我自己发送的信息。',
-    ja: '私は自分で送信したメッセージのみを削除できます。',
-  },
-};
-
-function localize(group, locale) {
-  return MESSAGES[group][locale] ?? MESSAGES[group]['en-US'];
-}
 
 function templatePage(interaction) {
   const label = interaction.message.components[0]?.components[2]?.label;
@@ -112,7 +78,10 @@ async function editPaginationMessage(interaction, payload) {
 
 async function paginationUnavailable(interaction) {
   await editPaginationMessage(interaction, { components: [] });
-  await interaction.followUp({ content: '發生預期之外的錯誤。', flags: MessageFlags.Ephemeral });
+  await interaction.followUp({
+    content: localizeInteraction('pagination.unavailable', interaction.locale),
+    flags: MessageFlags.Ephemeral,
+  });
 }
 
 async function handleUrlStoragePagination(interaction) {
@@ -213,11 +182,17 @@ async function handleRemoveMessage(interaction, logger) {
   if (interaction.commandName !== REMOVE_MESSAGE_COMMAND_NAME) return;
   const target = interaction.targetMessage;
   if (target.author.id !== interaction.client.user.id) {
-    await interaction.reply({ content: localize('notMine', interaction.locale), flags: MessageFlags.Ephemeral });
+    await interaction.reply({
+      content: localizeInteraction('removeMessage.notMine', interaction.locale),
+      flags: MessageFlags.Ephemeral,
+    });
     return;
   }
   if (!target.deletable) {
-    await interaction.reply({ content: localize('noPermission', interaction.locale), flags: MessageFlags.Ephemeral });
+    await interaction.reply({
+      content: localizeInteraction('removeMessage.noPermission', interaction.locale),
+      flags: MessageFlags.Ephemeral,
+    });
     return;
   }
   const publicSuccess = Boolean(
@@ -228,10 +203,13 @@ async function handleRemoveMessage(interaction, logger) {
   await interaction.deferReply(publicSuccess ? {} : { flags: MessageFlags.Ephemeral });
   try {
     await target.delete();
-    await interaction.editReply({ content: localize('success', interaction.locale) });
+    await interaction.editReply({ content: localizeInteraction('removeMessage.success', interaction.locale) });
   } catch (error) {
     logger?.warn({ err: error, interactionId: interaction.id, targetMessageId: target.id }, 'could not delete target message');
-    const payload = { content: localize('failed', interaction.locale), flags: MessageFlags.Ephemeral };
+    const payload = {
+      content: localizeInteraction('removeMessage.failed', interaction.locale),
+      flags: MessageFlags.Ephemeral,
+    };
     if (publicSuccess) {
       await interaction.deleteReply().catch((responseError) => {
         logger?.warn({ err: responseError, interactionId: interaction.id }, 'could not remove public deletion response');
@@ -255,7 +233,7 @@ async function requireGuildAdministrator(interaction, logger) {
     command: interaction.commandName,
     guildId: interaction.guildId,
   }, 'Administrator-only command denied');
-  await interaction.reply({ content: '只有伺服器管理員可以使用此指令。' });
+  await interaction.reply({ content: localizeInteraction('common.administratorOnly', interaction.locale) });
   return false;
 }
 
@@ -276,9 +254,17 @@ async function handleBanPreview(interaction, { guildSettings, logger }) {
     previewDisabled: result.disabled,
     redisUpdated: result.cacheUpdated,
   }, 'Guild preview setting changed');
-  const action = result.disabled ? '已停用' : '已恢復';
-  const cacheStatus = result.cacheUpdated ? '' : ' 設定已保存；快取恢復後會自動同步。';
-  await interaction.editReply({ content: `${action}此伺服器的 ${provider.name} 預覽。${cacheStatus}` });
+  const messageKey = result.disabled ? 'banPreview.disabled' : 'banPreview.restored';
+  const cacheStatus = result.cacheUpdated
+    ? ''
+    : localizeInteraction('common.settingsSavedCachePending', interaction.locale);
+  const providerName = provider.name_localizations
+    && Object.hasOwn(provider.name_localizations, interaction.locale)
+    ? provider.name_localizations[interaction.locale]
+    : provider.name;
+  await interaction.editReply({
+    content: localizeInteraction(messageKey, interaction.locale, { provider: providerName }) + cacheStatus,
+  });
 }
 
 async function handleTwitterStyle(interaction, { guildSettings }) {
@@ -291,8 +277,12 @@ async function handleTwitterStyle(interaction, { guildSettings }) {
 
   await interaction.deferReply({});
   const result = await guildSettings.setTwitterStyle(interaction.guildId, style);
-  const cacheStatus = result.cacheUpdated ? '' : ' 設定已保存；快取恢復後會自動同步。';
-  await interaction.editReply({ content: `已將此伺服器的 Twitter 預覽設定為 ${style}。${cacheStatus}` });
+  const cacheStatus = result.cacheUpdated
+    ? ''
+    : localizeInteraction('common.settingsSavedCachePending', interaction.locale);
+  await interaction.editReply({
+    content: localizeInteraction('twitterStyle.success', interaction.locale, { style }) + cacheStatus,
+  });
 }
 
 async function handleResetPreview(interaction, { guildSettings, logger }) {
@@ -306,8 +296,12 @@ async function handleResetPreview(interaction, { guildSettings, logger }) {
     guildName: interaction.guild?.name,
     redisUpdated: result.cacheUpdated,
   }, 'Guild preview settings reset');
-  const cacheStatus = result.cacheUpdated ? '' : ' 設定已清除；快取恢復後會自動同步。';
-  await interaction.editReply({ content: `已恢復此伺服器的所有網站預覽。${cacheStatus}` });
+  const cacheStatus = result.cacheUpdated
+    ? ''
+    : localizeInteraction('common.settingsClearedCachePending', interaction.locale);
+  await interaction.editReply({
+    content: localizeInteraction('resetPreview.success', interaction.locale) + cacheStatus,
+  });
 }
 
 async function handleInfo(interaction, { guildSettings }) {
@@ -318,10 +312,10 @@ async function handleInfo(interaction, { guildSettings }) {
 
   await interaction.deferReply({});
   const cacheReady = await guildSettings.probeCacheReady();
-  const serviceStatus = cacheReady ? 'ermiana 正常運作中。' : 'ermiana 降級運作中。';
-  const cacheStatus = cacheReady ? '正常' : '未就緒，暫時直接自資料庫讀取伺服器設定';
   await interaction.editReply({
-    content: `${serviceStatus}\nCache 狀態：${cacheStatus}。\n目前正在 Shard ${interaction.guild.shardId} 運作中。`,
+    content: localizeInteraction(cacheReady ? 'info.healthy' : 'info.degraded', interaction.locale, {
+      shard: interaction.guild.shardId,
+    }),
   });
 }
 
@@ -351,25 +345,40 @@ async function handleCheck(interaction) {
 
   const missing = CHANNEL_PERMISSION_CHECKS
     .filter(({ flag }) => missingChannels.get(flag).length > 0)
-    .map(({ flag, label }) => {
+    .map(({ flag, messageKey }) => {
       const channelIds = missingChannels.get(flag);
       const mentions = channelIds
         .slice(0, MAX_MENTIONED_CHANNELS_PER_PERMISSION)
         .map((channelId) => `<#${channelId}>`)
-        .join('、');
+        .join(localizeInteraction('check.channelSeparator', interaction.locale));
       const remaining = channelIds.length - MAX_MENTIONED_CHANNELS_PER_PERMISSION;
-      const overflow = remaining > 0 ? `，另 ${remaining} 個` : '';
-      return `- ${label}：${channelIds.length} 個頻道缺少 (${mentions}${overflow})`;
+      const overflow = remaining > 0
+        ? localizeInteraction('check.overflow', interaction.locale, { count: remaining })
+        : '';
+      return localizeInteraction('check.missingPermission', interaction.locale, {
+        permission: localizeInteraction(messageKey, interaction.locale),
+        count: channelIds.length,
+        channels: mentions,
+        overflow,
+      });
     });
   const status = missing.length === 0
-    ? '可讀取頻道中未發現其他權限缺失。'
-    : `可讀取頻道的 Bot 權限設定異常：\n${missing.join('\n')}`;
+    ? localizeInteraction('check.noMissingPermissions', interaction.locale)
+    : localizeInteraction('check.missingPermissions', interaction.locale, { missing: missing.join('\n') });
   const hiddenChannels = channels.length - readableChannels;
   const visibility = hiddenChannels === 0
     ? ''
-    : `\n未開放「${VIEW_CHANNEL_PERMISSION.label}」權限：${hiddenChannels} 個。`;
+    : localizeInteraction('check.hiddenChannels', interaction.locale, {
+      permission: localizeInteraction(VIEW_CHANNEL_PERMISSION.messageKey, interaction.locale),
+      count: hiddenChannels,
+    });
   await interaction.reply({
-    content: `可讀取頻道：${readableChannels} / ${channels.length} 個。${visibility}\n${status}`,
+    content: localizeInteraction('check.summary', interaction.locale, {
+      readable: readableChannels,
+      total: channels.length,
+      visibility,
+      status,
+    }),
   });
 }
 
@@ -379,14 +388,17 @@ async function handleFix(interaction, { previewService, renderer }) {
   const content = interaction.options.getString('url', true);
   const candidate = previewService.match(content);
   if (!candidate) {
-    await interaction.reply({ content: '不支援的連結。', flags: MessageFlags.Ephemeral });
+    await interaction.reply({
+      content: localizeInteraction('fix.unsupported', interaction.locale),
+      flags: MessageFlags.Ephemeral,
+    });
     return;
   }
 
   await interaction.deferReply({});
   const preview = await previewService.resolve(candidate);
   if (!preview) {
-    await interaction.editReply({ content: '目前無法產生此連結的預覽。' });
+    await interaction.editReply({ content: localizeInteraction('fix.noPreview', interaction.locale) });
     return;
   }
 
@@ -440,25 +452,26 @@ export function createInteractionHandler({ guildSettings, previewService, render
         command: interaction.commandName,
         guildId: interaction.guildId,
       }, 'interaction handling failed');
+      const errorMessage = localizeInteraction('common.unexpectedError', interaction.locale);
       if ((isAdministratorCommand(interaction) || interaction.commandName === FIX_COMMAND_NAME)
         && interaction.deferred && !interaction.replied) {
-        await interaction.editReply({ content: '處理時發生錯誤。' }).catch((responseError) => {
+        await interaction.editReply({ content: errorMessage }).catch((responseError) => {
           logger?.warn({ err: responseError, interactionId: interaction.id }, 'could not edit interaction error reply');
         });
       } else if (isAdministratorCommand(interaction) && (interaction.replied || interaction.deferred)) {
-        await interaction.followUp({ content: '處理時發生錯誤。' }).catch((responseError) => {
+        await interaction.followUp({ content: errorMessage }).catch((responseError) => {
           logger?.warn({ err: responseError, interactionId: interaction.id }, 'could not send interaction error follow-up');
         });
       } else if (isAdministratorCommand(interaction)) {
-        await interaction.reply({ content: '處理時發生錯誤。' }).catch((responseError) => {
+        await interaction.reply({ content: errorMessage }).catch((responseError) => {
           logger?.warn({ err: responseError, interactionId: interaction.id }, 'could not send interaction error reply');
         });
       } else if (interaction.replied || interaction.deferred) {
-        await interaction.followUp({ content: '處理時發生錯誤。', flags: MessageFlags.Ephemeral }).catch((responseError) => {
+        await interaction.followUp({ content: errorMessage, flags: MessageFlags.Ephemeral }).catch((responseError) => {
           logger?.warn({ err: responseError, interactionId: interaction.id }, 'could not send interaction error follow-up');
         });
       } else {
-        await interaction.reply({ content: '處理時發生錯誤。', flags: MessageFlags.Ephemeral }).catch((responseError) => {
+        await interaction.reply({ content: errorMessage, flags: MessageFlags.Ephemeral }).catch((responseError) => {
           logger?.warn({ err: responseError, interactionId: interaction.id }, 'could not send interaction error reply');
         });
       }

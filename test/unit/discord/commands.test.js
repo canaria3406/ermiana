@@ -69,7 +69,11 @@ test('builds the command options from the supported providers and Twitter styles
   const previewOption = byName.get(BAN_PREVIEW_COMMAND_NAME).options[0];
   assert.equal(previewOption.required, true);
   assert.deepEqual(
-    previewOption.choices.map(({ name, value }) => ({ name, value })),
+    previewOption.choices.map(({ name, name_localizations: nameLocalizations, value }) => ({
+      name,
+      ...(nameLocalizations ? { name_localizations: nameLocalizations } : {}),
+      value,
+    })),
     PREVIEW_PROVIDER_CHOICES,
   );
   assert.deepEqual(
@@ -77,12 +81,24 @@ test('builds the command options from the supported providers and Twitter styles
     [...PREVIEW_PROVIDER_IDS].sort(),
   );
   assert.deepEqual(
-    byName.get(TWITTER_STYLE_COMMAND_NAME).options[0].choices
-      .map(({ name, value }) => ({ name, value })),
+    byName.get(TWITTER_STYLE_COMMAND_NAME).options[0].choices.map(({ name, value }) => ({ name, value })),
     TWITTER_STYLE_CHOICES,
   );
   assert.deepEqual(
     byName.get(FIX_COMMAND_NAME).options.map(({ name, required }) => ({ name, required })),
     [{ name: 'url', required: true }],
   );
+});
+
+test('localizes command descriptions, options, and selected provider choices', () => {
+  const byName = new Map(buildApplicationCommands().map((command) => [command.name, command]));
+  const banPreview = byName.get(BAN_PREVIEW_COMMAND_NAME);
+  assert.equal(banPreview.description, 'Enable or disable previews for a specific website');
+  assert.equal(banPreview.description_localizations['zh-TW'], '開啟或關閉指定網站的預覽處理');
+  assert.equal(banPreview.options[0].description_localizations.ja, 'プレビューを無効化または再有効化するサイト');
+  assert.equal(
+    banPreview.options[0].choices.find(({ value }) => value === 'bahamut').name_localizations['zh-TW'],
+    '巴哈姆特',
+  );
+  assert.equal(byName.get(FIX_COMMAND_NAME).description_localizations['zh-CN'], '修复网站链接并显示预览');
 });

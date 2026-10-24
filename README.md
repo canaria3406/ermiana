@@ -14,13 +14,17 @@
     <a href="https://discord.gg/QBwjpHcMyw"><img src="https://img.shields.io/discord/1172363356406042684?style=flat-square&logo=Discord&logoColor=white&label=support&color=yellow"></a>
 </p>
 
-A Discord bot that fixes sites with broken preview by providing more detailed images and webpage content. Supports multiple popular sites in Taiwan, East Asia. 
+A Discord bot that provides better link previews with images and webpage content. Supports popular sites across Taiwan and East Asia.
 
 ![demo](pic/demo30.png)
 
 ## Invite BOT
 
 [discord.com/application-directory/1078919650764652594](https://discord.com/application-directory/1078919650764652594)
+
+## Interaction languages
+
+Discord commands and fixed interaction responses support Traditional Chinese, English, Simplified Chinese, and Japanese.
 
 ## Policies
 
@@ -49,6 +53,7 @@ A Discord bot that fixes sites with broken preview by providing more detailed im
   - [x] PTT.cc
   - [x] 巴哈姆特電玩資訊站
     - [x] 場外休憩區
+    - [x] 個人小屋
   - [x] Bilibili
 - [x] Social media
   - [x] Plurk

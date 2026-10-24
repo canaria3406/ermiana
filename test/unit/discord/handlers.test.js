@@ -93,6 +93,7 @@ test('fix returns an ephemeral response when no current provider matches', async
   });
   await handler({
     id: 'fix-unsupported',
+    locale: 'zh-TW',
     commandName: 'fix',
     guildId: null,
     channelId: 'private-channel',
@@ -184,6 +185,7 @@ test('banpreview lets a Guild administrator toggle one provider', async () => {
   });
   await handler({
     id: 'ban-preview',
+    locale: 'zh-TW',
     commandName: 'banpreview',
     guildId: 'guild',
     guild: { name: 'Test Guild' },
@@ -218,6 +220,7 @@ test('banpreview rejects a non-administrator without changing settings', async (
   });
   await handler({
     id: 'ban-preview-denied',
+    locale: 'zh-TW',
     commandName: 'banpreview',
     inGuild() { return true; },
     memberPermissions: { has() { return false; } },
@@ -247,6 +250,7 @@ test('resetpreview lets a Guild administrator restore every provider', async () 
   });
   await handler({
     id: 'reset-preview',
+    locale: 'zh-TW',
     commandName: 'resetpreview',
     guildId: 'guild',
     guild: { name: 'Test Guild' },
@@ -279,6 +283,7 @@ test('info publicly reports the service status and Guild shard to an administrat
   });
   await handler({
     id: 'info',
+    locale: 'zh-TW',
     commandName: 'info',
     guildId: 'guild',
     guild: { shardId: 4 },
@@ -306,6 +311,7 @@ test('info reports degraded SQLite reads when the Guild cache is unavailable', a
   });
   await handler({
     id: 'info-cache-unavailable',
+    locale: 'zh-TW',
     commandName: 'info',
     guildId: 'guild',
     guild: { shardId: 2 },
@@ -347,6 +353,7 @@ test('check publicly reports readable channels and missing permissions', async (
   const handler = createInteractionHandler();
   await handler({
     id: 'check',
+    locale: 'zh-TW',
     commandName: 'check',
     guildId: 'guild',
     guild: {
@@ -386,7 +393,7 @@ test('check publicly reports readable channels and missing permissions', async (
     '可讀取頻道的 Bot 權限設定異常：',
     '- 在討論串中傳送訊息：1 個頻道缺少 (<#1002>)',
     '- 管理訊息：1 個頻道缺少 (<#1002>)',
-    '- 讀取訊息歷史：1 個頻道缺少 (<#1002>)',
+    '- 讀取訊息歷史記錄：1 個頻道缺少 (<#1002>)',
   ].join('\n'));
   assert.equal('flags' in reply, false);
 });
@@ -404,6 +411,7 @@ test('check limits channel mentions so its public response stays within Discord 
   const handler = createInteractionHandler();
   await handler({
     id: 'check-many-missing',
+    locale: 'zh-TW',
     commandName: 'check',
     guildId: 'guild',
     guild: {
@@ -419,7 +427,7 @@ test('check limits channel mentions so its public response stays within Discord 
   });
   assert.match(
     reply.content,
-    new RegExp(`- 發送訊息：12 個頻道缺少 \\(<#${channelIds[0]}>.*，另 2 個\\)`),
+    new RegExp(`- 傳送訊息：12 個頻道缺少 \\(<#${channelIds[0]}>.*，另 2 個\\)`),
   );
   assert.equal(reply.content.includes(`<#${channelIds[10]}>`), false);
   assert.ok(reply.content.length <= 2_000);

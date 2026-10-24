@@ -1,6 +1,10 @@
 import process from 'node:process';
 import { config as loadEnv } from 'dotenv';
 import {
+  applicationCommandLocalizationShape,
+  applicationCommandsMatchDefinition,
+} from '../../src/discord/command-verification.js';
+import {
   buildApplicationCommands,
   REMOVE_MESSAGE_COMMAND_NAME,
   REMOVE_MESSAGE_NAME_LOCALIZATIONS,
@@ -48,11 +52,7 @@ const removeMessage = commands.find((command) => command.name === REMOVE_MESSAGE
 const removeMessageLocalizationsValid = Boolean(removeMessage)
   && Object.entries(REMOVE_MESSAGE_NAME_LOCALIZATIONS)
     .every(([locale, name]) => removeMessage.name_localizations?.[locale] === name);
-const globalCommandsMatchDefinition = commands.length === expectedCommands.length
-  && expectedCommands.every((expected) => commands.some((command) => command.name === expected.name
-    && command.type === expected.type
-    && Object.entries(expected.name_localizations ?? {})
-      .every(([locale, name]) => command.name_localizations?.[locale] === name)));
+const globalCommandsMatchDefinition = applicationCommandsMatchDefinition(commands, expectedCommands);
 const startupChecks = discordStartupChecks({
   bot, application, gateway,
   clientId: configuredClientId,
@@ -74,11 +74,7 @@ console.log(JSON.stringify({
     resetAfterMs: gateway.session_start_limit?.reset_after,
     maxConcurrency: gateway.session_start_limit?.max_concurrency,
   },
-  globalCommands: commands.map(({ name, type, name_localizations: nameLocalizations }) => ({
-    name,
-    type,
-    nameLocalizations,
-  })),
+  globalCommands: commands.map(applicationCommandLocalizationShape),
   removeMessageCommandValid: Boolean(removeMessage),
   removeMessageLocalizationsValid,
   globalCommandsMatchDefinition,
