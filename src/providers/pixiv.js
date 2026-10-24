@@ -1,8 +1,8 @@
 import {
   createPreview,
-  escapeMarkdownLinkLabel,
   fallbackPreview,
   ICONS,
+  markdownLinkLabel,
   markdownLinkUrl,
   proxyPixivUrl,
   truncate,
@@ -27,7 +27,7 @@ export const pixivProvider = {
     /https:\/\/www\.pixiv\.net\/en\/artworks\/([0-9]+)/i,
   ],
   ttlSeconds: 7200,
-  cacheKey: (match) => `v3:${match[1]}`,
+  cacheKey: (match) => `v4:${match[1]}`,
   async resolve({ match, http, logger }) {
     const id = match[1];
     const canonicalUrl = `https://www.pixiv.net/artworks/${id}`;
@@ -47,7 +47,7 @@ export const pixivProvider = {
       let tags = '';
       for (const { tag } of (artwork.tags?.tags ?? []).slice(0, 20)) {
         const url = markdownLinkUrl(`https://www.pixiv.net/tags/${encodeURIComponent(tag)}/artworks`);
-        const link = `[${escapeMarkdownLinkLabel(tag)}](${url})`;
+        const link = `[${markdownLinkLabel(tag)}](${url})`;
         const next = tagLinks.length > 0 ? `${tags}, ${link}` : link;
         if (next.length > 1024) break;
         tagLinks.push(link);

@@ -44,7 +44,24 @@ export function engagement({ replies = 0, reposts = 0, likes = 0 } = {}) {
 }
 
 export function escapeMarkdownLinkLabel(text) {
-  return String(text).replace(/[\\*_~`|[\]]/g, '\\$&');
+  return String(text).replace(/[\\*_~`|<[\]]/g, '\\$&');
+}
+
+const INVISIBLE_MARKDOWN_BREAK = '\u200B';
+
+export function markdownLinkLabel(text) {
+  return escapeMarkdownLinkLabel(text).replace(/\\([\s\S])/g, `$1${INVISIBLE_MARKDOWN_BREAK}`);
+}
+
+export function normalizeTwitterHandle(value) {
+  if (typeof value !== 'string') return undefined;
+  const candidate = value.trim();
+  const username = candidate.startsWith('@') ? candidate.slice(1) : candidate;
+  return /^[A-Za-z0-9_]{1,15}$/.test(username) ? `@${username}` : undefined;
+}
+
+export function twitterHandleLinkLabel(handle) {
+  return handle && (handle.match(/_/g) ?? []).length <= 1 ? handle : undefined;
 }
 
 export function markdownLinkUrl(url) {

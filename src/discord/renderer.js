@@ -11,8 +11,12 @@ import {
   TextDisplayBuilder,
 } from 'discord.js';
 import {
+  markdownLinkLabel,
+  markdownLinkUrl,
   MAX_DISCORD_STORED_MEDIA,
+  normalizeTwitterHandle,
   truncate,
+  twitterHandleLinkLabel,
   twitterImageUrl,
 } from '../providers/helpers.js';
 
@@ -55,7 +59,8 @@ function discordTimestamp(value) {
 
 function twitterMediaFooter(data, emoji, handle) {
   const parts = [];
-  if (handle) parts.push(escapeMarkdown(handle));
+  const normalizedHandle = normalizeTwitterHandle(handle);
+  if (normalizedHandle) parts.push(escapeMarkdown(normalizedHandle));
   const timestamp = discordTimestamp(data.timestamp);
   if (timestamp) parts.push(timestamp);
   return `-# ${emoji}${parts.length > 0 ? ` ${parts.join(' | ')}` : ''}`;
@@ -67,13 +72,14 @@ function twitterEngagement(data) {
 }
 
 function maskedLink(label, url) {
-  const escapedLabel = escapeMarkdown(label).replaceAll('[', '\\[').replaceAll(']', '\\]');
-  return url ? `[${escapedLabel}](${url.replaceAll(')', '%29')})` : escapedLabel;
+  const safeLabel = markdownLinkLabel(label);
+  return url ? `[${safeLabel}](${markdownLinkUrl(url)})` : safeLabel;
 }
 
 function twitterTitleLink(label, url, handle) {
   const emojiIndex = label.search(/\p{Extended_Pictographic}/u);
-  const linkLabel = handle ? `(${handle})` : '開啟推文';
+  const handleLabel = twitterHandleLinkLabel(normalizeTwitterHandle(handle));
+  const linkLabel = handleLabel ? `(${handleLabel})` : '開啟推文';
   if (emojiIndex < 0) return maskedLink(label, url);
   if (emojiIndex === 0) return `${escapeMarkdown(label)} ${maskedLink(linkLabel, url)}`;
   const prefix = label.slice(0, emojiIndex).trimEnd();
@@ -339,7 +345,9 @@ export class DiscordRenderer {
         const renderedMediaUrl = preview.provider === 'twitter' && twitterStyle !== 'new'
           ? twitterVideoUrl(mediaUrl)
           : mediaUrl;
-        const link = `[連結](${renderedMediaUrl})`;
+        const validatedMediaUrl = safeUrl(renderedMediaUrl);
+        if (!validatedMediaUrl) continue;
+        const link = `[連結](${markdownLinkUrl(validatedMediaUrl)})`;
         await message.channel.send({
           content: spoilerText(link, spoiler),
           allowedMentions: { parse: [] },

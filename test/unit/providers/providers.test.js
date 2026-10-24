@@ -34,11 +34,21 @@ test('Twitter provider maps FXTwitter media and engagement', async () => {
     logger: quietLogger,
     http: { async getJson() { return { tweet: {
       text: 'hello', replies: 1, retweets: 2, likes: 3, created_timestamp: 1700000000,
-      url, author: { screen_name: 'example', name: 'Example', avatar_url: 'https://img.test/avatar.jpg' },
+      url, author: { screen_name: '@example', name: 'Example', avatar_url: 'https://img.test/avatar.jpg' },
+      quote: {
+        url: 'https://x.com/quoted_name/status/456',
+        text: 'quoted',
+        author: { screen_name: 'quoted_name' },
+      },
       media: { photos: [{ url: 'https://img.test/photo.jpg' }], all: [{ type: 'photo', url: 'https://img.test/photo.jpg' }] },
     } }; } },
   });
   assert.equal(preview.embed.title, 'Example');
+  assert.equal(preview.embed.author.name, '@example');
+  assert.equal(
+    preview.embed.description,
+    'hello\n> RT: [@quoted_name](https://x.com/quoted_name/status/456)\n> quoted',
+  );
   assert.equal(preview.embed.footer, '💬1 🔁2 ❤️3');
   assert.equal(preview.images[0], 'https://img.test/photo.jpg?name=large');
 });
@@ -90,11 +100,11 @@ test('Pixiv provider escapes markdown in tag labels and link URLs', async () => 
 
   assert.equal(preview.embed.fields[0].value, [
     '[orz)](https://www.pixiv.net/tags/orz%29/artworks)',
-    '[\\[腐\\]](https://www.pixiv.net/tags/%5B%E8%85%90%5D/artworks)',
-    '[blue\\_archive](https://www.pixiv.net/tags/blue_archive/artworks)',
-    '[a\\*b\\*c](https://www.pixiv.net/tags/a*b*c/artworks)',
+    '[[\u200B腐]\u200B](https://www.pixiv.net/tags/%5B%E8%85%90%5D/artworks)',
+    '[blue_\u200Barchive](https://www.pixiv.net/tags/blue_archive/artworks)',
+    '[a*\u200Bb*\u200Bc](https://www.pixiv.net/tags/a*b*c/artworks)',
   ].join(', '));
-  assert.equal(pixivProvider.cacheKey(match(pixivProvider, url)), 'v3:42');
+  assert.equal(pixivProvider.cacheKey(match(pixivProvider, url)), 'v4:42');
 });
 
 test('Bahamut provider extracts Open Graph data', async () => {

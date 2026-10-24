@@ -148,14 +148,17 @@ test('renderer keeps pagination stateless, sends media, and suppresses the origi
     canonicalUrl: 'https://www.pixiv.net/artworks/42',
     embed: { title: 'Preview', url: 'https://example.test/post' },
     images: ['https://example.test/1.jpg', 'https://example.test/2.jpg'],
-    media: ['https://example.test/video.mp4'],
+    media: ['https://example.test/(video).mp4?next=(1)'],
     suppressOriginal: true,
   }, { spoiler: true });
   const components = replyPayload.components[0].toJSON().components;
   assert.equal(replyPayload.content, '||https://www.pixiv.net/artworks/42||');
   assert.equal(components[0].custom_id, PAGINATION_IDS.cycle);
   assert.equal(components[1].url, 'https://example.test/2.jpg');
-  assert.match(channelMessages[0].content, /^\|\|/);
+  assert.equal(
+    channelMessages[0].content,
+    '||[連結](https://example.test/%28video%29.mp4?next=%281%29)||',
+  );
   assert.equal(suppressed, true);
 });
 
@@ -230,14 +233,15 @@ test('renders Twitter video media galleries only for the new Guild style', async
 test('Twitter new style uses the handle link when the display name starts with emoji', async () => {
   const url = 'https://x.com/example/status/123';
   const cases = [
-    ['😀', `## 😀 [(@example)](${url})`],
-    ['😀 User', `## 😀 User [(@example)](${url})`],
-    ['User 😀', `## [User](${url}) 😀`],
-    ['User', `## [User](${url})`],
-    ['User [Official]', `## [User \\[Official\\]](${url})`],
+    ['😀', '@example', `## 😀 [(@example)](${url})`],
+    ['😀 User', '@example', `## 😀 User [(@example)](${url})`],
+    ['User 😀', '@example', `## [User](${url}) 😀`],
+    ['User', '@example', `## [User](${url})`],
+    ['User [Official]', '@example', `## [User [\u200BOfficial]\u200B](${url})`],
+    ['😀 Tsuki', '@_tsuki_', `## 😀 Tsuki [開啟推文](${url})`, '-# :bird: @\\_tsuki\\_'],
   ];
 
-  for (const [title, expected] of cases) {
+  for (const [title, handle, expected, expectedFooter] of cases) {
     let replyPayload;
     await new DiscordRenderer().send({
       deletable: false,
@@ -245,14 +249,16 @@ test('Twitter new style uses the handle link when the display name starts with e
       channel: { async send() { throw new Error('new gallery must not send follow-up links'); } },
     }, {
       provider: 'twitter',
-      embed: { title, url, author: { name: '@example' } },
+      embed: { title, url, author: { name: handle } },
       twitterGalleryMedia: [
         { type: 'video', url: 'https://video.twimg.com/ext_tw_video/example.mp4' },
       ],
       media: ['https://video.twimg.com/ext_tw_video/example.mp4'],
     }, { twitterStyle: 'new' });
 
-    assert.equal(replyPayload.components[0].toJSON().components[0].content, expected);
+    const components = replyPayload.components[0].toJSON().components;
+    assert.equal(components[0].content, expected);
+    if (expectedFooter) assert.equal(components.at(-1).content, expectedFooter);
   }
 });
 

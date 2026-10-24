@@ -1,18 +1,23 @@
 import {
   createPreview,
   engagement,
+  escapeMarkdownLinkLabel,
   fallbackPreview,
   ICONS,
+  markdownLinkUrl,
   MAX_DISCORD_STORED_MEDIA,
+  normalizeTwitterHandle,
   truncate,
+  twitterHandleLinkLabel,
   twitterImageUrl,
   uniqueUrls,
 } from './helpers.js';
 
 function twitterEmbed({ handle, avatar, name, url, text, image, timestamp, footer }) {
+  const normalizedHandle = normalizeTwitterHandle(handle);
   return {
     color: 0x1da1f2,
-    author: handle ? { name: `@${handle}`, iconUrl: avatar } : undefined,
+    author: normalizedHandle ? { name: normalizedHandle, iconUrl: avatar } : undefined,
     title: truncate(name || 'X / Twitter', 256),
     url,
     description: truncate(text, 4080),
@@ -26,8 +31,20 @@ function quoteText(quote) {
   if (!quote) return '';
   const handle = quote.author?.screen_name ?? quote.user_screen_name;
   const url = quote.url ?? quote.tweetURL;
+  let linkUrl;
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol === 'http:' || parsed.protocol === 'https:') linkUrl = markdownLinkUrl(parsed.href);
+  } catch {
+    linkUrl = undefined;
+  }
+  const author = normalizeTwitterHandle(handle);
+  const linkLabel = twitterHandleLinkLabel(author);
+  let attribution = author ? escapeMarkdownLinkLabel(author) : '';
+  if (linkUrl && linkLabel) attribution = `[${linkLabel}](${linkUrl})`;
+  else if (linkUrl && author) attribution = `${attribution} [開啟推文](${linkUrl})`;
   const text = quote.text ? `\n${String(quote.text).replace(/^/gm, '> ')}` : '';
-  return `\n> RT: [@${handle}](${url})${text}`;
+  return `\n> RT:${attribution ? ` ${attribution}` : ''}${text}`;
 }
 
 function canonicalTwitterUrl(value, id) {
@@ -169,7 +186,7 @@ export const twitterProvider = {
     /https:\/\/twitter\.com\/[A-Za-z0-9_]{1,15}\/status\/([0-9]+)/i,
   ],
   ttlSeconds: 3600,
-  cacheKey: (match) => `v4:${match[1]}`,
+  cacheKey: (match) => `v5:${match[1]}`,
   async resolve({ match, http, logger }) {
     const id = match[1];
     try {
