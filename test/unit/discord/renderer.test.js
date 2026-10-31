@@ -49,6 +49,22 @@ test('preserves a 1024-character description and truncates the next character', 
   assert.ok(truncated.endsWith('…'));
 });
 
+test('limits descriptions to fifteen lines while preserving blank lines and complete Markdown links', () => {
+  const input = [
+    'line 1',
+    '',
+    '',
+    ...Array.from({ length: 11 }, (_value, index) => `line ${index + 4}`),
+    'prefix [linked',
+    'label](https://example.test) overflow',
+  ].join('\n');
+  const description = createEmbed({ description: input }).toJSON().description;
+  assert.ok(description.startsWith('line 1\n\n\nline 4'));
+  assert.equal(description.split('\n').length, 15);
+  assert.doesNotMatch(description, /\[linked/);
+  assert.ok(description.endsWith('…'));
+});
+
 test('description truncation never splits an emoji surrogate pair', () => {
   const input = `${'a'.repeat(1022)}😀${'b'.repeat(10)}`;
   const description = createEmbed({ description: input }).toJSON().description;

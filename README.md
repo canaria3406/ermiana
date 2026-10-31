@@ -55,6 +55,7 @@ Discord commands and fixed interaction responses support Traditional Chinese, En
     - [x] 場外休憩區
     - [x] 個人小屋
   - [x] Bilibili
+  - [x] Steam Workshop
 - [x] Social media
   - [x] Plurk
   - [x] Twitter

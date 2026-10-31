@@ -121,4 +121,13 @@ export class FetchHttpClient {
       return response;
     });
   }
+
+  async postFormJson(url, values, options = {}) {
+    return this.request(url, {
+      ...options,
+      method: 'POST',
+      headers: mergeHeaders({ 'content-type': 'application/x-www-form-urlencoded' }, options.headers),
+      body: new URLSearchParams(values),
+    }, async (response) => JSON.parse(await readResponseText(response)));
+  }
 }

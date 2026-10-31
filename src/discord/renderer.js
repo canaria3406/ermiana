@@ -16,6 +16,7 @@ import {
   MAX_DISCORD_STORED_MEDIA,
   normalizeTwitterHandle,
   truncate,
+  truncateMarkdown,
   twitterHandleLinkLabel,
   twitterImageUrl,
 } from '../providers/helpers.js';
@@ -38,7 +39,24 @@ export const NHENTAI_PAGINATION_IDS = Object.freeze({
 });
 
 const PREVIEW_DESCRIPTION_MAX_CHARS = 1024;
+const PREVIEW_DESCRIPTION_MAX_LINES = 15;
 const PREVIEW_DESCRIPTION_SUFFIX = '…';
+
+function truncatePreviewDescription(value, maxLength, suffix = PREVIEW_DESCRIPTION_SUFFIX) {
+  if (value === undefined || value === null) return undefined;
+  const normalized = String(value).replace(/\r\n?/g, '\n');
+  const characterLimited = truncateMarkdown(normalized, maxLength, suffix);
+  if (!characterLimited) return characterLimited;
+  const lines = characterLimited.split('\n');
+  if (lines.length <= PREVIEW_DESCRIPTION_MAX_LINES) return characterLimited;
+  const lineLimited = lines.slice(0, PREVIEW_DESCRIPTION_MAX_LINES).join('\n');
+  const prefix = truncateMarkdown(
+    characterLimited,
+    Math.min(lineLimited.length, Math.max(0, maxLength - suffix.length)),
+    '',
+  ) ?? '';
+  return `${prefix}${suffix}`;
+}
 
 function safeUrl(value) {
   return typeof value === 'string' && /^https?:\/\//.test(value) ? value : undefined;
@@ -156,7 +174,7 @@ function createTwitterMediaContainer(preview, mediaUrls, spoiler, footerEmoji) {
     .setSpoiler(spoiler);
   const title = truncate(data.title, 256) ?? 'X / Twitter';
   const titleUrl = safeUrl(data.url);
-  const description = truncate(
+  const description = truncatePreviewDescription(
     data.description,
     PREVIEW_DESCRIPTION_MAX_CHARS,
     PREVIEW_DESCRIPTION_SUFFIX,
@@ -180,9 +198,9 @@ export function createEmbed(data = {}, iconUrl) {
   const embed = new EmbedBuilder();
   const footerText = truncate(data.footer, 2048) ?? 'ermiana';
   let remainingCharacters = 6000 - footerText.length;
-  const consume = (value, maximum, suffix) => {
+  const consume = (value, maximum, suffix, truncateText = truncate) => {
     if (!value || remainingCharacters <= 0) return '';
-    const text = truncate(String(value), Math.min(maximum, remainingCharacters), suffix);
+    const text = truncateText(String(value), Math.min(maximum, remainingCharacters), suffix);
     remainingCharacters -= text.length;
     return text;
   };
@@ -203,6 +221,7 @@ export function createEmbed(data = {}, iconUrl) {
       data.description,
       PREVIEW_DESCRIPTION_MAX_CHARS,
       PREVIEW_DESCRIPTION_SUFFIX,
+      truncatePreviewDescription,
     ));
   }
   if (safeUrl(data.image)) embed.setImage(data.image);

@@ -93,6 +93,11 @@ export const PREVIEW_PROVIDER_CHOICES = Object.freeze([
   frozenChoice('Bilibili', 'bilibili'),
   frozenChoice('TikTok', 'tiktok'),
   frozenChoice('PChome', 'pchome'),
+  frozenChoice(
+    'Steam Workshop',
+    'steam',
+    translations('Steam Workshop', 'Steam 工作坊', 'Steam 创意工坊', 'Steamワークショップ'),
+  ),
   frozenChoice('ehentai', 'ehentai'),
   frozenChoice('nhentai', 'nhentai'),
 ]);

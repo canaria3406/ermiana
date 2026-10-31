@@ -10,6 +10,7 @@ import { pchomeProvider } from './pchome.js';
 import { pixivProvider } from './pixiv.js';
 import { plurkProvider } from './plurk.js';
 import { pttProvider } from './ptt.js';
+import { steamProvider } from './steam.js';
 import { threadsProvider } from './threads.js';
 import { tiktokProvider } from './tiktok.js';
 import { twitterProvider } from './twitter.js';
@@ -22,6 +23,7 @@ export const providers = Object.freeze([
   ehentaiProvider,
   plurkProvider,
   pchomeProvider,
+  steamProvider,
   blueskyProvider,
   misskeyProvider,
   tiktokProvider,

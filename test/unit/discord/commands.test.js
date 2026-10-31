@@ -100,5 +100,9 @@ test('localizes command descriptions, options, and selected provider choices', (
     banPreview.options[0].choices.find(({ value }) => value === 'bahamut').name_localizations['zh-TW'],
     '巴哈姆特',
   );
+  assert.equal(
+    banPreview.options[0].choices.find(({ value }) => value === 'steam').name_localizations['zh-CN'],
+    'Steam 创意工坊',
+  );
   assert.equal(byName.get(FIX_COMMAND_NAME).description_localizations['zh-CN'], '修复网站链接并显示预览');
 });

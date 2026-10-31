@@ -123,3 +123,21 @@ test('posts URL-encoded forms and consumes the response body before returning he
   assert.equal(consumed, true);
   assert.equal(response.headers, headers);
 });
+
+test('posts URL-encoded forms and parses JSON responses', async () => {
+  let received;
+  const client = new FetchHttpClient({
+    fetchImpl: async (_url, options) => {
+      received = options;
+      return Response.json({ response: { result: 1 } });
+    },
+  });
+  const payload = await client.postFormJson('https://example.test/details', {
+    itemcount: '1',
+    'publishedfileids[0]': '3828686379',
+  });
+  assert.equal(received.method, 'POST');
+  assert.equal(received.headers.get('content-type'), 'application/x-www-form-urlencoded');
+  assert.equal(String(received.body), 'itemcount=1&publishedfileids%5B0%5D=3828686379');
+  assert.deepEqual(payload, { response: { result: 1 } });
+});

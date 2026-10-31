@@ -8,6 +8,7 @@ const cases = [
   ['bahamut', 'https://forum.gamer.com.tw/C.php?bsn=60076&snA=123'],
   ['pixiv', 'https://www.pixiv.net/artworks/123'],
   ['nhentai', 'https://nhentai.net/g/633830'],
+  ['steam', 'https://steamcommunity.com/sharedfiles/filedetails/?id=3828686379'],
   ['ehentai', 'https://e-hentai.org/g/123/abcdef'],
   ['plurk', 'https://www.plurk.com/p/abc123'],
   ['pchome', 'https://24h.pchome.com.tw/prod/DRAAAA-A900AAAAA'],

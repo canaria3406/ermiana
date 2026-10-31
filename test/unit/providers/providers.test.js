@@ -12,6 +12,7 @@ import { pchomeProvider } from '../../../src/providers/pchome.js';
 import { pixivProvider } from '../../../src/providers/pixiv.js';
 import { plurkProvider } from '../../../src/providers/plurk.js';
 import { pttProvider } from '../../../src/providers/ptt.js';
+import { steamProvider } from '../../../src/providers/steam.js';
 import { threadsProvider } from '../../../src/providers/threads.js';
 import { tiktokProvider } from '../../../src/providers/tiktok.js';
 import { twitterProvider } from '../../../src/providers/twitter.js';
@@ -150,6 +151,40 @@ test('Plurk provider sanitizes content and supports multiple images', async () =
   const preview = await plurkProvider.resolve({ match: match(plurkProvider, url), http: { async getText() { return html; } } });
   assert.equal(preview.embed.description, 'hello\nworld');
   assert.equal(preview.images.length, 2);
+});
+
+test('Steam Workshop provider maps public metadata and omits unavailable items', async () => {
+  const url = 'https://steamcommunity.com/workshop/filedetails/?id=3828686379';
+  let request;
+  const preview = await steamProvider.resolve({
+    match: match(steamProvider, url),
+    http: { async postFormJson(requestUrl, values) {
+      request = { requestUrl, values };
+      return { response: { publishedfiledetails: [{
+        publishedfileid: '3828686379',
+        result: 1,
+        title: 'LC *Core*',
+        description: '[b]RimWorld[/b]\n[h1]Introduction[/h1]\nhttps://example.test/a_b\n[img]https://img.test/banner.png[/img]',
+        preview_url: 'https://images.steamusercontent.com/ugc/preview/',
+      }] } };
+    } },
+  });
+  assert.deepEqual(request, {
+    requestUrl: 'https://api.steampowered.com/ISteamRemoteStorage/GetPublishedFileDetails/v1/',
+    values: { itemcount: '1', 'publishedfileids[0]': '3828686379' },
+  });
+  assert.equal(preview.embed.title, 'LC \\*Core\\*');
+  assert.equal(preview.embed.description, 'RimWorld\n\nIntroduction\n\nhttps://example.test/a_b');
+  assert.equal(preview.embed.image, 'https://images.steamusercontent.com/ugc/preview/');
+  assert.equal(preview.iconUrl, 'https://ermiana.canaria.cc/pic/steam.png');
+  const resolveWith = (file) => steamProvider.resolve({
+    match: match(steamProvider, url),
+    http: { async postFormJson() {
+      return { response: { publishedfiledetails: [file] } };
+    } },
+  });
+  assert.equal(await resolveWith({ publishedfileid: '3828686379', result: 9 }), null);
+  assert.equal(await resolveWith({ publishedfileid: '3828686379', result: 1, banned: 1 }), null);
 });
 
 test('PChome provider parses JSONP product and description responses', async () => {
